@@ -20,7 +20,7 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .bubble{position:absolute;bottom:-80px;background:rgba(255,255,255,0.1);border-radius:50%;animation:rise linear infinite}
 @keyframes rise{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:.6}90%{opacity:.25}100%{transform:translateY(-110vh) translateX(15px);opacity:0}}
 /* SCREENS */
-.screen{display:none;position:relative;z-index:1;min-height:100vh;max-width:560px;margin:0 auto;padding:16px}
+.screen{display:none;position:relative;z-index:1;min-height:100vh;max-width:720px;margin:0 auto;padding:16px}
 .screen.active{display:flex;flex-direction:column}
 /* TOPBAR */
 .topbar{display:flex;align-items:center;gap:10px;padding-bottom:14px}
@@ -36,6 +36,19 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .mascot-e{font-size:clamp(2.5rem,9vw,4rem);display:inline-block;animation:float 3s ease-in-out infinite}
 .mascot-m{color:var(--sand);font-size:clamp(.8rem,3vw,.95rem);font-style:italic;margin-top:4px}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+/* SPONGEBOB SVG CHARACTERS */
+.sb-character{display:inline-block;animation:float 3s ease-in-out infinite}
+.sb-character svg{display:block}
+/* CHARACTER REACTION */
+#char-reaction{position:fixed;bottom:80px;right:16px;z-index:50;pointer-events:none;opacity:0;transition:opacity .3s;animation:float 2s ease-in-out infinite}
+#char-reaction.show{opacity:1}
+/* SEABED */
+#seabed{position:fixed;bottom:0;left:0;right:0;height:80px;pointer-events:none;z-index:0;overflow:hidden}
+.coral{position:absolute;bottom:0;animation:sway 4s ease-in-out infinite}
+@keyframes sway{0%,100%{transform-origin:bottom center;transform:rotate(-4deg)}50%{transform-origin:bottom center;transform:rotate(4deg)}}
+/* JELLYFISH */
+.jelly{position:fixed;pointer-events:none;z-index:0;animation:jellyrise linear infinite}
+@keyframes jellyrise{0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:.7}85%{opacity:.4}100%{transform:translateY(-20vh) translateX(20px);opacity:0}}
 /* LABELS */
 .sec-label{color:rgba(255,255,255,.5);font-size:.72rem;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px}
 /* PROFILE SLOTS */
@@ -59,6 +72,9 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .patty{font-size:1.05rem}
 .patty.dim{opacity:.2}
 .lt-info{color:rgba(255,255,255,.55);font-size:.68rem}
+.set-card.focus-card{border-color:var(--coral);background:rgba(230,57,70,0.18)}
+.set-card.focus-card:hover{border-color:#ff9090;background:rgba(230,57,70,0.32)}
+.focus-badge{display:inline-block;background:var(--coral);color:#fff;font-size:.65rem;font-weight:700;border-radius:99px;padding:2px 8px;margin-top:4px}
 /* MODE CARDS */
 .mode-card{background:var(--glass);backdrop-filter:blur(8px);border:2px solid var(--glass-b);border-radius:var(--r-xl);padding:16px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all .2s}
 .mode-card:hover{background:rgba(255,255,255,.24);border-color:var(--yellow);transform:translateX(3px)}
@@ -145,7 +161,7 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .shake{animation:shake .38s ease-out}
 /* ── LANDING CARD ── */
 #s-home{justify-content:center;padding:80px 16px 40px}
-.landing-card{background:#FFFBF0;border-radius:var(--r-xl);padding:0 24px 24px;width:100%;max-width:480px;margin:0 auto;box-shadow:0 24px 64px rgba(0,0,0,0.3);text-align:center;position:relative}
+.landing-card{background:#FFFBF0;border-radius:var(--r-xl);padding:0 24px 24px;width:100%;max-width:600px;margin:0 auto;box-shadow:0 24px 64px rgba(0,0,0,0.3);text-align:center;position:relative}
 .lc-mascot{width:120px;height:120px;background:linear-gradient(135deg,#FFD700,#F4A030);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:4rem;margin:-60px auto 18px;border:6px solid #FFFBF0;box-shadow:0 8px 24px rgba(0,0,0,0.2);animation:float 3s ease-in-out infinite}
 .lc-title{font-size:clamp(1.8rem,5vw,2.4rem);font-weight:900;color:#E07020;line-height:1.1;margin-bottom:2px}
 .lc-sub{color:#aaa;font-size:.83rem;margin-bottom:12px;letter-spacing:.5px}
@@ -180,16 +196,31 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .home-save-inp:focus{border-color:var(--ocean)}
 .import-btn{width:100%;margin-top:8px;padding:11px;background:var(--ocean);color:#fff;border:none;border-radius:var(--r-sm);font-size:.9rem;font-weight:700;cursor:pointer;transition:background .2s}
 .import-btn:hover{background:var(--ocean-deep)}
+/* ── PRAC COLS ── */
+.prac-cols{display:flex;flex-direction:column}
+.prac-left{display:flex;flex-direction:column;justify-content:center}
 /* ── RESPONSIVE ── */
 @media(min-width:600px){.sets-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:768px){
+  .screen{max-width:860px;padding:18px 28px}
+  .landing-card{max-width:660px}
+  .btn-lg{padding:16px 28px;font-size:1.05rem}
+  .answer-field{font-size:1.35rem;padding:18px}
+  .hear-btn{width:88px;height:88px;font-size:2.4rem}
+}
 @media(min-width:900px){
-  .screen{max-width:820px;padding:20px 32px}
+  .screen{max-width:1000px;padding:20px 36px}
   .sets-grid{grid-template-columns:repeat(4,1fr)}
-  #s-modes{max-width:680px}
-  #s-practice,#s-results{max-width:600px}
+  #s-modes{max-width:800px}
+  #s-practice,#s-results{max-width:1000px}
+  .prac-cols{flex-direction:row;gap:36px;align-items:flex-start;flex:1}
+  .prac-left{flex:1;min-height:260px;justify-content:center;align-items:center}
+  .prac-right{flex:1}
+  .word-text{font-size:clamp(2.8rem,5vw,4.5rem)}
+  .hear-btn{width:110px;height:110px;font-size:3rem}
 }
 @media(min-width:1200px){
-  .screen{max-width:1040px}
+  .screen{max-width:1120px}
   .sets-grid{grid-template-columns:repeat(5,1fr)}
 }
 </style>
@@ -198,10 +229,95 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 
 <div id="bubbles"></div>
 
+<!-- Character reaction -->
+<div id="char-reaction"></div>
+
+<!-- Seabed -->
+<div id="seabed">
+  <svg width="100%" height="80" viewBox="0 0 800 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="800" height="80" fill="#01579B" opacity="0.5"/>
+    <!-- sand -->
+    <ellipse cx="400" cy="80" rx="500" ry="24" fill="#C4A35A" opacity="0.7"/>
+    <!-- coral left -->
+    <g transform="translate(60,60)" style="animation:sway 3.5s ease-in-out infinite;transform-origin:bottom center">
+      <rect x="-4" y="-40" width="8" height="40" rx="4" fill="#FF6B6B"/>
+      <circle cx="-4" cy="-40" r="8" fill="#FF4444"/>
+      <circle cx="4" cy="-30" r="7" fill="#FF6B6B"/>
+      <circle cx="-2" cy="-20" r="6" fill="#FF8888"/>
+    </g>
+    <!-- coral right -->
+    <g transform="translate(720,55)" style="animation:sway 4.5s ease-in-out infinite 1s;transform-origin:bottom center">
+      <rect x="-3" y="-30" width="6" height="30" rx="3" fill="#FF9F45"/>
+      <circle cx="0" cy="-30" r="7" fill="#FFB347"/>
+      <circle cx="-6" cy="-22" r="5" fill="#FF9F45"/>
+      <circle cx="6" cy="-18" r="5" fill="#FFC07A"/>
+    </g>
+    <!-- seaweed -->
+    <path d="M200 80 Q190 60 200 40 Q210 20 200 0" stroke="#52B788" stroke-width="5" fill="none" stroke-linecap="round" style="animation:sway 5s ease-in-out infinite 0.5s;transform-origin:200px 80px"/>
+    <path d="M600 80 Q615 55 600 30 Q585 10 600 0" stroke="#40916C" stroke-width="5" fill="none" stroke-linecap="round" style="animation:sway 4s ease-in-out infinite 2s;transform-origin:600px 80px"/>
+    <!-- small rocks -->
+    <ellipse cx="350" cy="76" rx="22" ry="8" fill="#7B7B7B" opacity="0.5"/>
+    <ellipse cx="480" cy="78" rx="14" ry="6" fill="#7B7B7B" opacity="0.4"/>
+  </svg>
+</div>
+
 <!-- HOME -->
 <div id="s-home" class="screen">
   <div class="landing-card">
-    <div class="lc-mascot">🧽</div>
+    <div class="lc-mascot sb-character">
+      <!-- SpongeBob CSS art -->
+      <svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+        <!-- body -->
+        <rect x="18" y="28" width="60" height="58" rx="10" fill="#FFD700"/>
+        <!-- pants -->
+        <rect x="18" y="68" width="60" height="18" rx="6" fill="#8B4513"/>
+        <!-- belt -->
+        <rect x="18" y="64" width="60" height="6" fill="#5C3317"/>
+        <rect x="44" y="61" width="8" height="12" rx="2" fill="#C0A030"/>
+        <!-- shirt collar -->
+        <rect x="30" y="55" width="36" height="14" rx="3" fill="#fff"/>
+        <polygon points="36,55 48,65 60,55" fill="#fff"/>
+        <!-- tie -->
+        <polygon points="44,56 52,56 50,70 48,72 46,70" fill="#FF4444"/>
+        <!-- eyes -->
+        <ellipse cx="36" cy="42" rx="8" ry="9" fill="#fff"/>
+        <ellipse cx="60" cy="42" rx="8" ry="9" fill="#fff"/>
+        <circle cx="37" cy="43" r="4" fill="#6699CC"/>
+        <circle cx="61" cy="43" r="4" fill="#6699CC"/>
+        <circle cx="38" cy="42" r="2" fill="#000"/>
+        <circle cx="62" cy="42" r="2" fill="#000"/>
+        <circle cx="39" cy="41" r="1" fill="#fff"/>
+        <circle cx="63" cy="41" r="1" fill="#fff"/>
+        <!-- eyelashes -->
+        <line x1="28" y1="34" x2="30" y2="37" stroke="#000" stroke-width="1.5"/>
+        <line x1="33" y1="32" x2="34" y2="35" stroke="#000" stroke-width="1.5"/>
+        <line x1="38" y1="32" x2="38" y2="35" stroke="#000" stroke-width="1.5"/>
+        <line x1="58" y1="32" x2="58" y2="35" stroke="#000" stroke-width="1.5"/>
+        <line x1="63" y1="32" x2="62" y2="35" stroke="#000" stroke-width="1.5"/>
+        <line x1="68" y1="34" x2="66" y2="37" stroke="#000" stroke-width="1.5"/>
+        <!-- nose -->
+        <ellipse cx="48" cy="50" rx="3" ry="2" fill="#E8A000"/>
+        <!-- mouth (big smile) -->
+        <path d="M34 56 Q48 68 62 56" stroke="#000" stroke-width="2" fill="none"/>
+        <!-- teeth -->
+        <rect x="40" y="56" width="7" height="6" rx="1" fill="#fff" stroke="#ccc" stroke-width=".5"/>
+        <rect x="48" y="56" width="7" height="6" rx="1" fill="#fff" stroke="#ccc" stroke-width=".5"/>
+        <!-- cheeks -->
+        <circle cx="26" cy="54" r="5" fill="rgba(255,100,100,0.25)"/>
+        <circle cx="70" cy="54" r="5" fill="rgba(255,100,100,0.25)"/>
+        <!-- pores -->
+        <circle cx="28" cy="38" r="2" fill="rgba(0,0,0,0.08)"/>
+        <circle cx="52" cy="32" r="1.5" fill="rgba(0,0,0,0.08)"/>
+        <circle cx="68" cy="40" r="2" fill="rgba(0,0,0,0.08)"/>
+        <circle cx="40" cy="60" r="1.5" fill="rgba(0,0,0,0.08)"/>
+        <!-- arms -->
+        <rect x="4" y="45" width="14" height="7" rx="4" fill="#FFD700" transform="rotate(-20,4,45)"/>
+        <rect x="78" y="45" width="14" height="7" rx="4" fill="#FFD700" transform="rotate(20,92,45)"/>
+        <!-- legs/shoes -->
+        <rect x="24" y="84" width="16" height="8" rx="3" fill="#1A1A1A"/>
+        <rect x="56" y="84" width="16" height="8" rx="3" fill="#1A1A1A"/>
+      </svg>
+    </div>
     <div class="lc-title">Spelling Quest</div>
     <div class="lc-sub">BIKINI BOTTOM ADVENTURE</div>
     <p class="lc-desc">Join <strong>SpongeBob</strong> on a quest through Bikini Bottom! Spell words, earn <strong>Krabby Patties 🍔</strong>, and become a champion speller!</p>
@@ -275,21 +391,27 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
     <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
     <div class="prog-lbl" id="prog-lbl">1 / 10</div>
   </div>
-  <div class="word-reveal" id="lcwc-reveal" style="display:none">
-    <div class="word-text" id="word-text"></div>
-    <button class="hint-btn" id="hint-btn" onclick="showWordAgain()">👁️ Show again</button>
-  </div>
-  <div class="hear-wrap" id="hear-wrap" style="display:none">
-    <button class="hear-btn" onclick="playWord()">🔊</button>
-    <div class="hear-sub">Tap to hear the word</div>
-  </div>
-  <div class="input-zone">
-    <input id="answer" class="answer-field" type="text" inputmode="text"
-      autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
-      placeholder="Type your answer…" />
-    <div class="feedback-line" id="feedback"></div>
-    <div class="reveal-line" id="reveal"></div>
-    <button class="btn btn-yellow btn-lg btn-full" id="check-btn" onclick="check()">Check ✓</button>
+  <div class="prac-cols">
+    <div class="prac-left">
+      <div class="word-reveal" id="lcwc-reveal" style="display:none">
+        <div class="word-text" id="word-text"></div>
+        <button class="hint-btn" id="hint-btn" onclick="showWordAgain()">👁️ Show again</button>
+      </div>
+      <div class="hear-wrap" id="hear-wrap" style="display:none">
+        <button class="hear-btn" onclick="playWord()">🔊</button>
+        <div class="hear-sub">Tap to hear the word</div>
+      </div>
+    </div>
+    <div class="prac-right">
+      <div class="input-zone">
+        <input id="answer" class="answer-field" type="text" inputmode="text"
+          autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
+          placeholder="Type your answer…" />
+        <div class="feedback-line" id="feedback"></div>
+        <div class="reveal-line" id="reveal"></div>
+        <button class="btn btn-yellow btn-lg btn-full" id="check-btn" onclick="check()">Check ✓</button>
+      </div>
+    </div>
   </div>
   <div class="stats-bar">
     <div class="stat-cell"><div class="stat-val" id="sc-cor">0</div><div class="stat-key">Correct</div></div>
@@ -490,7 +612,19 @@ const SKEY = 'spellingQuest.v1';
 const CPFX = 'SPQ1.';
 
 function blankSets(){const s={};SK.forEach(k=>{s[k]={lcwc:0,hear:0,sent:0,lightning:0,patties:0}});return s}
-function newProfile(name){return{id:'p'+Date.now(),name,sets:blankSets()}}
+function newProfile(name){return{id:'p'+Date.now(),name,sets:blankSets(),focusWords:[]}}
+
+function addFocusWord(p,item){
+  if(!p.focusWords)p.focusWords=[];
+  const existing=p.focusWords.find(f=>f.w===item.w);
+  if(existing){existing.misses=(existing.misses||1)+1}
+  else p.focusWords.push({w:item.w,s:item.s,misses:1});
+}
+function removeFocusWord(p,word){
+  if(!p.focusWords)return;
+  p.focusWords=p.focusWords.filter(f=>f.w!==word);
+}
+function getFocusWords(p){return(p&&p.focusWords)||[]}
 function loadAll(){try{return JSON.parse(localStorage.getItem(SKEY))||[]}catch{return[]}}
 function saveAll(ps){localStorage.setItem(SKEY,JSON.stringify(ps))}
 function getP(id){return loadAll().find(p=>p.id===id)||null}
@@ -631,6 +765,14 @@ function renderMap(){
   el('map-h').textContent=`🗺️ ${p.name}'s Quest`;
   mascot('map-e','map-m',G.pid);
   const grid=el('sets-grid');grid.innerHTML='';
+  // Focus Words card
+  const fw=getFocusWords(p);
+  if(fw.length>0){
+    const fc=document.createElement('div');fc.className='set-card focus-card';
+    fc.innerHTML=`<span class="set-em">🎯</span><div class="set-nm">Focus Words</div><div class="focus-badge">${fw.length} word${fw.length!==1?'s':''} to practise</div><div class="lt-info" style="margin-top:4px">Words you've missed</div>`;
+    fc.onclick=()=>{G.setKey='focus';go('modes')};
+    grid.appendChild(fc);
+  }
   SK.forEach(key=>{
     const def=SETS[key],data=p.sets[key],pts=data.patties,ls=data.lightning;
     const c=document.createElement('div');c.className='set-card';
@@ -642,7 +784,7 @@ function renderMap(){
 
 // ── MODES ─────────────────────────────────────────────────────────────────
 function renderModes(){
-  const def=SETS[G.setKey];
+  const def=setDef();
   el('modes-h').textContent=`${def.emoji} ${def.name}`;
 }
 
@@ -664,22 +806,29 @@ function playWord(){
 // ── GAME ──────────────────────────────────────────────────────────────────
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[b[i],b[j]]=[b[j],b[i]]}return b}
 
+function getWordPool(setKey){
+  if(setKey==='focus'){const p=getP(G.pid);return getFocusWords(p)}
+  return SETS[setKey].words;
+}
 function begin(mode){
   G.mode=mode;G.idx=G.correct=G.attempted=0;G.results=[];G.answered=false;
-  G.words=shuffle(SETS[G.setKey].words).slice(0,10);
-  if(mode==='lightning')G.words=shuffle(SETS[G.setKey].words);
+  const pool=getWordPool(G.setKey);
+  if(!pool||pool.length===0){alert('No focus words yet — make some mistakes first!');return}
+  G.words=shuffle(pool).slice(0,Math.min(10,pool.length));
+  if(mode==='lightning')G.words=shuffle(pool);
   go('practice');setupPractice();renderQ();
 }
 
+function setDef(){return G.setKey==='focus'?{emoji:'🎯',name:'Focus Words'}:SETS[G.setKey]}
 function setupPractice(){
-  const def=SETS[G.setKey],p=getP(G.pid),isL=G.mode==='lightning';
+  const def=setDef(),p=getP(G.pid),isL=G.mode==='lightning';
   el('prac-title').textContent=`${def.emoji} ${def.name}`;
   el('prac-back').onclick=()=>go('modes');
   el('timer-wrap').style.display  =isL?'block':'none';
   el('prog-row').style.display    =isL?'none':'flex';
   el('lcwc-reveal').style.display =G.mode==='lcwc'?'block':'none';
   el('hear-wrap').style.display   =['hear','sent','lightning'].includes(G.mode)?'block':'none';
-  el('sc-pat').textContent='🍔×'+(p?p.sets[G.setKey].patties:0);
+  el('sc-pat').textContent='🎯×'+(p&&G.setKey==='focus'?getFocusWords(p).length:(p?p.sets[G.setKey].patties:0));
   el('sc-prog-k').textContent=isL?'tried':'of 10';
   if(isL)startLt();
 }
@@ -722,6 +871,14 @@ function check(){
   const ok=typed===item.w.toLowerCase();
   G.answered=true;G.attempted++;if(ok)G.correct++;
   el('answer').className='answer-field '+(ok?'ok':'wrong');
+  // update focus words
+  const all=loadAll(),p=all.find(x=>x.id===G.pid);
+  if(p){
+    if(!ok&&G.setKey!=='focus')addFocusWord(p,item);
+    else if(ok&&G.setKey==='focus')removeFocusWord(p,item.w);
+    saveAll(all);
+  }
+  showReaction(ok);
   if(ok){
     el('feedback').textContent=pick(['🌟 Brilliant!','🎉 Correct!','✅ Spot on!','🧽 Superstar!','🍔 Nice one!']);
     confetti();
@@ -753,7 +910,7 @@ function updTimer(){
 function endLt(){
   if(window.speechSynthesis)window.speechSynthesis.cancel();
   const all=loadAll(),p=all.find(x=>x.id===G.pid);
-  if(p&&G.correct>p.sets[G.setKey].lightning){p.sets[G.setKey].lightning=G.correct;saveAll(all)}
+  if(p&&G.setKey!=='focus'&&G.correct>p.sets[G.setKey].lightning){p.sets[G.setKey].lightning=G.correct;saveAll(all)}
   go('results');
   el('res-title').textContent='⚡ Lightning Round!';
   el('res-score').textContent=G.correct;
@@ -770,18 +927,26 @@ function endLt(){
 function endRound(){
   if(window.speechSynthesis)window.speechSynthesis.cancel();
   const all=loadAll(),p=all.find(x=>x.id===G.pid);
-  if(p){const sd=p.sets[G.setKey];if(G.correct>sd[G.mode])sd[G.mode]=G.correct;sd.patties=calcPat(sd);saveAll(all)}
+  if(p&&G.setKey!=='focus'){const sd=p.sets[G.setKey];if(G.correct>sd[G.mode])sd[G.mode]=G.correct;sd.patties=calcPat(sd);saveAll(all)}
   go('results');renderResults();
 }
 
 function renderResults(){
-  const p=getP(G.pid),pts=p?p.sets[G.setKey].patties:0;
+  const p=getP(G.pid),isFocus=G.setKey==='focus';
+  const pts=p&&!isFocus?p.sets[G.setKey].patties:0;
+  const total=G.words.length;
   el('res-title').textContent='Round Complete! 🎉';
-  el('res-score').textContent=`${G.correct}/10`;
-  el('res-sub').textContent=G.correct===10?'Perfect score!':`${10-G.correct} to improve`;
-  let ph='';for(let i=0;i<3;i++)ph+=i<pts?'🍔':'<span style="opacity:.2">🍔</span>';
-  el('res-patties').innerHTML=ph;
-  el('res-plbl').textContent=pts===3?'Maximum patties! 🎉':pts>0?`${pts} of 3 patties earned`:'Aim for 6+ to earn patties';
+  el('res-score').textContent=`${G.correct}/${total}`;
+  el('res-sub').textContent=G.correct===total?'Perfect score!':`${total-G.correct} to improve`;
+  if(isFocus){
+    const remaining=getFocusWords(p).length;
+    el('res-patties').textContent='🎯';
+    el('res-plbl').textContent=remaining>0?`${remaining} focus word${remaining!==1?'s':''} still to master`:'All focus words cleared! 🎉';
+  }else{
+    let ph='';for(let i=0;i<3;i++)ph+=i<pts?'🍔':'<span style="opacity:.2">🍔</span>';
+    el('res-patties').innerHTML=ph;
+    el('res-plbl').textContent=pts===3?'Maximum patties! 🎉':pts>0?`${pts} of 3 patties earned`:'Aim for 6+ to earn patties';
+  }
   el('res-enc').textContent=G.correct===10?pick(ENC.perfect):G.correct>=8?pick(ENC.great):G.correct>=6?pick(ENC.ok):pick(ENC.poor);
   const list=el('res-list');list.innerHTML='';
   G.results.forEach(r=>{
@@ -841,6 +1006,33 @@ document.addEventListener('keydown',e=>{
   }
 });
 if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();
+
+// ── SPONGEBOB CHARACTERS ─────────────────────────────────────────────────
+const SB_HAPPY=`<svg width="64" height="64" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="28" width="60" height="58" rx="10" fill="#FFD700"/><rect x="18" y="68" width="60" height="18" rx="6" fill="#8B4513"/><rect x="18" y="64" width="60" height="6" fill="#5C3317"/><rect x="44" y="61" width="8" height="12" rx="2" fill="#C0A030"/><rect x="30" y="55" width="36" height="14" rx="3" fill="#fff"/><polygon points="36,55 48,65 60,55" fill="#fff"/><polygon points="44,56 52,56 50,70 48,72 46,70" fill="#FF4444"/><ellipse cx="36" cy="42" rx="8" ry="9" fill="#fff"/><ellipse cx="60" cy="42" rx="8" ry="9" fill="#fff"/><circle cx="37" cy="43" r="4" fill="#6699CC"/><circle cx="61" cy="43" r="4" fill="#6699CC"/><circle cx="38" cy="42" r="2" fill="#000"/><circle cx="62" cy="42" r="2" fill="#000"/><ellipse cx="48" cy="50" rx="3" ry="2" fill="#E8A000"/><path d="M32 54 Q48 70 64 54" stroke="#000" stroke-width="2.5" fill="none"/><rect x="40" y="55" width="7" height="7" rx="1" fill="#fff"/><rect x="48" y="55" width="7" height="7" rx="1" fill="#fff"/><circle cx="26" cy="54" r="6" fill="rgba(255,80,80,0.35)"/><circle cx="70" cy="54" r="6" fill="rgba(255,80,80,0.35)"/><circle cx="28" cy="38" r="2" fill="rgba(0,0,0,0.08)"/><circle cx="68" cy="40" r="2" fill="rgba(0,0,0,0.08)"/></svg>`;
+
+const PATRICK=`<svg width="64" height="64" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><ellipse cx="48" cy="55" rx="34" ry="38" fill="#FF9DC4"/><rect x="20" y="68" width="56" height="20" rx="4" fill="#2E8B57" opacity="0.9"/><polygon points="20,68 35,52 50,68" fill="#228B22"/><polygon points="46,68 61,52 76,68" fill="#228B22"/><ellipse cx="35" cy="44" rx="9" ry="6" fill="#fff"/><ellipse cx="61" cy="44" rx="9" ry="6" fill="#fff"/><circle cx="35" cy="45" r="3.5" fill="#000"/><circle cx="61" cy="45" r="3.5" fill="#000"/><circle cx="36" cy="44" r="1.5" fill="#fff"/><circle cx="62" cy="44" r="1.5" fill="#fff"/><path d="M34 60 Q48 50 62 60" stroke="#000" stroke-width="2" fill="none"/><ellipse cx="38" cy="65" rx="5" ry="3" fill="rgba(0,0,0,0.08)"/><ellipse cx="58" cy="65" rx="5" ry="3" fill="rgba(0,0,0,0.08)"/></svg>`;
+
+const SB_SAD=`<svg width="64" height="64" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="28" width="60" height="58" rx="10" fill="#FFD700"/><rect x="18" y="68" width="60" height="18" rx="6" fill="#8B4513"/><rect x="18" y="64" width="60" height="6" fill="#5C3317"/><rect x="44" y="61" width="8" height="12" rx="2" fill="#C0A030"/><rect x="30" y="55" width="36" height="14" rx="3" fill="#fff"/><polygon points="36,55 48,65 60,55" fill="#fff"/><polygon points="44,56 52,56 50,70 48,72 46,70" fill="#FF4444"/><ellipse cx="36" cy="44" rx="8" ry="7" fill="#fff"/><ellipse cx="60" cy="44" rx="8" ry="7" fill="#fff"/><circle cx="37" cy="45" r="4" fill="#6699CC"/><circle cx="61" cy="45" r="4" fill="#6699CC"/><circle cx="38" cy="44" r="2" fill="#000"/><circle cx="62" cy="44" r="2" fill="#000"/><line x1="28" y1="38" x2="44" y2="42" stroke="#000" stroke-width="2.5"/><line x1="68" y1="38" x2="52" y2="42" stroke="#000" stroke-width="2.5"/><ellipse cx="48" cy="52" rx="3" ry="2" fill="#E8A000"/><path d="M34 64 Q48 56 62 64" stroke="#000" stroke-width="2.5" fill="none"/><line x1="30" y1="42" x2="28" y2="55" stroke="#48CAE4" stroke-width="1.5" opacity="0.8"/><line x1="66" y1="42" x2="68" y2="55" stroke="#48CAE4" stroke-width="1.5" opacity="0.8"/><circle cx="28" cy="56" r="2" fill="#48CAE4" opacity="0.7"/><circle cx="68" cy="56" r="2" fill="#48CAE4" opacity="0.7"/></svg>`;
+
+let _reactionTimer=null;
+function showReaction(ok){
+  const el2=el('char-reaction');
+  el2.innerHTML=ok?SB_HAPPY:PATRICK;
+  el2.classList.add('show');
+  if(_reactionTimer)clearTimeout(_reactionTimer);
+  _reactionTimer=setTimeout(()=>el2.classList.remove('show'),2000);
+}
+
+// ── JELLYFISH ────────────────────────────────────────────────────────────
+(function spawnJellyfish(){
+  for(let i=0;i<5;i++){
+    const j=document.createElement('div');j.className='jelly';
+    const sz=28+Math.random()*24;
+    j.innerHTML=`<svg width="${sz}" height="${sz*1.3}" viewBox="0 0 40 52" xmlns="http://www.w3.org/2000/svg"><ellipse cx="20" cy="18" rx="18" ry="16" fill="rgba(255,182,255,0.6)" stroke="rgba(200,100,220,0.4)" stroke-width="1"/><ellipse cx="20" cy="20" rx="10" ry="8" fill="rgba(255,210,255,0.4)"/><line x1="12" y1="30" x2="8" y2="52" stroke="rgba(200,100,220,0.5)" stroke-width="1.2" stroke-linecap="round"/><line x1="17" y1="32" x2="15" y2="52" stroke="rgba(200,100,220,0.4)" stroke-width="1" stroke-linecap="round"/><line x1="23" y1="32" x2="25" y2="52" stroke="rgba(200,100,220,0.4)" stroke-width="1" stroke-linecap="round"/><line x1="28" y1="30" x2="32" y2="52" stroke="rgba(200,100,220,0.5)" stroke-width="1.2" stroke-linecap="round"/></svg>`;
+    j.style.cssText=`left:${Math.random()*90}%;animation-duration:${14+Math.random()*16}s;animation-delay:${Math.random()*18}s`;
+    document.body.appendChild(j);
+  }
+})();
 
 // ── BOOT ──────────────────────────────────────────────────────────────────
 go('home');
