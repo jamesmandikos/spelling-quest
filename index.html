@@ -111,19 +111,12 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .hub-card.card-lightning{border-bottom-color:#FF9F1C}
 .hub-card.card-scramble{border-bottom-color:#FF6B6B}
 @media(max-width:599px){.hub-card:nth-child(5){grid-column:span 2;max-width:260px;justify-self:center;width:100%}}
-.hub-specials{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
-.hub-special{background:#fff;border:none;border-radius:20px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 14px rgba(0,0,0,.07);border-bottom:5px solid #ddd}
-.hub-special:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
-.hub-special:active{transform:translateY(0)}
-.hub-special-icon{font-size:2.2rem;flex-shrink:0}
-.hub-special-name{color:#1A1A2E;font-weight:700;font-size:1rem}
-.hub-special-sub{color:#888;font-size:.78rem;margin-top:2px}
+.hub-specials{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px}
 .focus-special{border-bottom-color:#FF6B6B}
 .rules-special{border-bottom-color:#00B4D8}
-.hub-special.dim{opacity:.45;cursor:default}
-.hub-special.dim:hover{transform:none;box-shadow:0 4px 14px rgba(0,0,0,.07)}
-#s-hub .btn-glass{background:rgba(255,255,255,.92);color:#444;backdrop-filter:none;border:none;box-shadow:0 4px 14px rgba(0,0,0,.18)}
-#s-hub .btn-glass:hover{background:#fff;transform:none}
+.card-wordsets{border-bottom-color:#52B788}
+@media(max-width:767px){.card-wordsets{grid-column:span 2;max-width:280px;justify-self:center;width:100%}}
+.hub-card.dim{opacity:.45;cursor:default;pointer-events:none}
 /* ── SETS GRID (word sets map) ── */
 .sets-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .set-card{background:var(--glass);backdrop-filter:blur(8px);border:2px solid var(--glass-b);border-radius:var(--r-xl);padding:14px 12px;cursor:pointer;text-align:center;transition:all .2s}
@@ -245,8 +238,8 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
   .answer-field{font-size:1.35rem;padding:18px}
   .hear-btn{width:88px;height:88px;font-size:2.4rem}
   .hub-games-grid{grid-template-columns:repeat(3,1fr)}
-  .hub-specials{flex-direction:row}
-  .hub-special{flex:1}
+  .hub-specials{grid-template-columns:repeat(3,1fr)}
+  .card-wordsets{grid-column:auto;max-width:none}
   .rules-grid{grid-template-columns:repeat(4,1fr)}
 }
 @media(min-width:900px){
@@ -361,25 +354,25 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 
   <div class="sec-label">Special</div>
   <div class="hub-specials">
-    <div class="hub-special focus-special" id="focus-hub-btn" onclick="beginFocus()">
-      <div class="hub-special-icon">&#x1F3AF;</div>
-      <div>
-        <div class="hub-special-name">Focus Words</div>
-        <div class="hub-special-sub" id="focus-hub-sub">No mistakes recorded yet</div>
-      </div>
+    <div class="hub-card focus-special" id="focus-hub-btn" onclick="beginFocus()">
+      <div class="hub-card-icon">&#x1F3AF;</div>
+      <div class="hub-card-name">Focus Words</div>
+      <div class="hub-card-desc">Practise your tricky words</div>
+      <div class="hub-card-best" id="focus-hub-sub">No mistakes recorded yet</div>
     </div>
-    <div class="hub-special rules-special" onclick="go('rules')">
-      <div class="hub-special-icon">&#x1F4DA;</div>
-      <div>
-        <div class="hub-special-name">Spelling Rules</div>
-        <div class="hub-special-sub">Learn the rules, then practise</div>
-      </div>
+    <div class="hub-card rules-special" onclick="go('rules')">
+      <div class="hub-card-icon">&#x1F4DA;</div>
+      <div class="hub-card-name">Spelling Rules</div>
+      <div class="hub-card-desc">Learn the rules, then practise</div>
+      <div class="hub-card-best">&nbsp;</div>
+    </div>
+    <div class="hub-card card-wordsets" onclick="go('map')">
+      <div class="hub-card-icon">&#x1F5FA;&#xFE0F;</div>
+      <div class="hub-card-name">Word Sets</div>
+      <div class="hub-card-desc">Practise a specific set</div>
+      <div class="hub-card-best">&nbsp;</div>
     </div>
   </div>
-
-  <button class="btn btn-glass btn-lg btn-full" onclick="go('map')" style="margin-top:4px">
-    &#x1F5FA;&#xFE0F; Word Sets &#x2014; practise a specific set
-  </button>
 </div>
 
 <!-- WORD SETS MAP -->
