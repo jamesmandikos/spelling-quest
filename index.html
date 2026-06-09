@@ -27,42 +27,103 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .back-btn{background:var(--glass);backdrop-filter:blur(6px);border:1px solid var(--glass-b);border-radius:50%;width:40px;height:40px;flex-shrink:0;cursor:pointer;font-size:1.1rem;color:#fff;display:flex;align-items:center;justify-content:center;transition:background .2s}
 .back-btn:hover{background:rgba(255,255,255,.25)}
 .topbar-title{color:#fff;font-size:clamp(1rem,4vw,1.3rem);font-weight:700;flex:1}
-/* TITLE */
-.app-title{text-align:center;padding:20px 0 8px}
-.app-title h1{color:var(--yellow);font-size:clamp(1.6rem,5.5vw,2.4rem);font-weight:900;text-shadow:0 3px 0 rgba(0,0,0,.3),0 0 20px rgba(255,215,0,.4);line-height:1.15;word-break:break-word}
-.app-sub{color:rgba(255,255,255,.7);font-size:clamp(.8rem,3vw,.95rem);margin-top:4px}
-/* MASCOT */
-.mascot{text-align:center;padding:10px 0 14px}
-.mascot-e{font-size:clamp(2.5rem,9vw,4rem);display:inline-block;animation:float 3s ease-in-out infinite}
-.mascot-m{color:var(--sand);font-size:clamp(.8rem,3vw,.95rem);font-style:italic;margin-top:4px}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-/* SPONGEBOB SVG CHARACTERS */
+/* LABELS */
+.sec-label{color:rgba(255,255,255,.6);font-size:.75rem;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;margin-top:4px}
+/* SPONGEBOB SVG */
 .sb-character{display:inline-block;animation:float 3s ease-in-out infinite}
 .sb-character svg{display:block}
 /* CHARACTER REACTION */
-#char-reaction{position:fixed;bottom:80px;right:16px;z-index:50;pointer-events:none;opacity:0;transition:opacity .3s;animation:float 2s ease-in-out infinite}
+#char-reaction{position:fixed;bottom:90px;right:16px;z-index:50;pointer-events:none;opacity:0;transition:opacity .3s;animation:float 2s ease-in-out infinite}
 #char-reaction.show{opacity:1}
 /* SEABED */
 #seabed{position:fixed;bottom:0;left:0;right:0;height:80px;pointer-events:none;z-index:0;overflow:hidden}
-.coral{position:absolute;bottom:0;animation:sway 4s ease-in-out infinite}
 @keyframes sway{0%,100%{transform-origin:bottom center;transform:rotate(-4deg)}50%{transform-origin:bottom center;transform:rotate(4deg)}}
 /* JELLYFISH */
 .jelly{position:fixed;pointer-events:none;z-index:0;animation:jellyrise linear infinite}
 @keyframes jellyrise{0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:.7}85%{opacity:.4}100%{transform:translateY(-20vh) translateX(20px);opacity:0}}
-/* LABELS */
-.sec-label{color:rgba(255,255,255,.5);font-size:.72rem;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px}
-/* PROFILE SLOTS */
-.pslot{background:var(--glass);backdrop-filter:blur(8px);border:2px solid var(--glass-b);border-radius:var(--r-xl);padding:14px 16px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s}
-.pslot:hover{background:rgba(255,255,255,.22);border-color:var(--yellow)}
-.pslot.empty{border-style:dashed;justify-content:center;color:rgba(255,255,255,.55);font-size:.9rem}
-.pavatar{width:46px;height:46px;background:var(--yellow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
-.pinfo{flex:1;min-width:0}
-.pname{color:#fff;font-weight:700;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pstat{color:rgba(255,255,255,.7);font-size:.78rem;margin-top:2px}
-.pbtns{display:flex;gap:6px;flex-shrink:0}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:var(--r-md);cursor:pointer;font-weight:700;transition:transform .1s,box-shadow .1s}
+.btn:active{transform:scale(.96)!important}
+.btn-lg{padding:14px 24px;font-size:clamp(.95rem,3.5vw,1.05rem)}
+.btn-full{width:100%;margin-bottom:8px}
+.btn-yellow{background:var(--yellow);color:#1A1A2E;box-shadow:0 4px 0 var(--yellow-dark)}
+.btn-yellow:hover{transform:translateY(-1px);box-shadow:0 5px 0 var(--yellow-dark)}
+.btn-glass{background:var(--glass);backdrop-filter:blur(6px);border:1px solid var(--glass-b);color:#fff}
+.btn-glass:hover{background:rgba(255,255,255,.25)}
 .icon-btn{background:rgba(255,255,255,.15);border:none;border-radius:8px;padding:6px 9px;cursor:pointer;font-size:.8rem;color:#fff;transition:background .2s}
 .icon-btn:hover{background:rgba(255,255,255,.28)}
-/* SETS GRID */
+/* ── LANDING CARD ── */
+#s-home{justify-content:center;padding:80px 16px 40px}
+.landing-card{background:#FFFBF0;border-radius:var(--r-xl);padding:0 24px 24px;width:100%;max-width:600px;margin:0 auto;box-shadow:0 24px 64px rgba(0,0,0,0.3);text-align:center;position:relative}
+.lc-mascot{width:120px;height:120px;background:linear-gradient(135deg,#FFD700,#F4A030);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:4rem;margin:-60px auto 18px;border:6px solid #FFFBF0;box-shadow:0 8px 24px rgba(0,0,0,0.2);animation:float 3s ease-in-out infinite}
+.lc-title{font-size:clamp(1.8rem,5vw,2.4rem);font-weight:900;color:#E07020;line-height:1.1;margin-bottom:2px}
+.lc-sub{color:#aaa;font-size:.83rem;margin-bottom:12px;letter-spacing:.5px}
+.lc-desc{color:#555;font-size:.9rem;line-height:1.55;margin-bottom:18px}
+.lc-desc strong{color:var(--ocean)}
+.profiles-label{color:#bbb;font-size:.7rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.profile-tile{display:flex;align-items:center;gap:10px;background:#EEF6FF;border:2px solid #D8ECFF;border-radius:14px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:all .2s;text-align:left}
+.profile-tile:hover{border-color:var(--ocean);background:#DCF0FF;transform:translateY(-1px)}
+.profile-tile-avatar{font-size:1.6rem;flex-shrink:0}
+.profile-tile-info{flex:1;min-width:0}
+.profile-tile-name{font-weight:700;color:#1A1A2E;font-size:.95rem}
+.profile-tile-stat{color:#888;font-size:.73rem;margin-top:1px}
+.profile-tile-btns{display:flex;gap:4px;flex-shrink:0}
+.icon-btn-sm{background:#e0e0e0;border:none;border-radius:6px;padding:4px 7px;cursor:pointer;font-size:.75rem;transition:background .2s}
+.icon-btn-sm:hover{background:#cacaca}
+.or-divider{color:#ccc;font-size:.8rem;margin:10px 0;position:relative}
+.or-divider::before,.or-divider::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:#e8e8e8}
+.or-divider::before{left:0}.or-divider::after{right:0}
+.name-row{display:flex;gap:8px;margin-bottom:16px}
+.name-field{flex:1;min-width:0;padding:13px 18px;border-radius:99px;border:2px solid #E8E8E8;font-size:.95rem;color:#1A1A2E;outline:none;background:#fff;transition:border-color .2s}
+.name-field:focus{border-color:var(--teal)}
+.play-btn{background:var(--teal);color:#fff;border:none;border-radius:99px;padding:13px 22px;font-size:.95rem;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 4px 0 #2a9ab5;transition:transform .1s,box-shadow .1s;flex-shrink:0}
+.play-btn:hover{transform:translateY(-1px);box-shadow:0 5px 0 #2a9ab5}
+.play-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #2a9ab5}
+.save-toggle{margin-top:2px}
+.save-toggle-btn{background:none;border:none;color:#aaa;font-size:.8rem;cursor:pointer;font-weight:600;padding:4px 0;transition:color .2s;text-align:left;width:100%}
+.save-toggle-btn:hover{color:var(--ocean)}
+.home-save-inp{width:100%;padding:10px 14px;border:2px solid #e8e8e8;border-radius:var(--r-sm);font-size:.88rem;color:#1A1A2E;outline:none;margin-top:8px}
+.home-save-inp:focus{border-color:var(--ocean)}
+.import-btn{width:100%;margin-top:8px;padding:11px;background:var(--ocean);color:#fff;border:none;border-radius:var(--r-sm);font-size:.9rem;font-weight:700;cursor:pointer;transition:background .2s}
+.import-btn:hover{background:var(--ocean-deep)}
+/* ── HUB ── */
+#s-hub.active{position:fixed;inset:0;max-width:none;margin:0;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:10;padding:18px 16px 40px;background:linear-gradient(160deg,#FFFDE7 0%,#EBF5FB 55%,#E8F8F5 100%)}
+#s-hub .sec-label{color:#9aa;letter-spacing:1.2px}
+.hub-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;background:#fff;border-radius:20px;padding:14px 18px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.hub-sb{width:60px;height:60px;background:linear-gradient(135deg,#FFD700,#F4A030);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(255,165,0,.3)}
+.hub-info{flex:1;min-width:0}
+.hub-name{color:#1A1A2E;font-weight:900;font-size:1.2rem}
+.hub-progress{color:#888;font-size:.78rem;margin-top:3px}
+.hub-header-btns{display:flex;gap:6px;flex-shrink:0}
+.hub-header-btns .icon-btn{background:#f0f0f0;color:#555;border-radius:10px;border:none}
+.hub-header-btns .icon-btn:hover{background:#e2e2e2}
+.hub-games-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px}
+.hub-card{background:#fff;border:none;border-radius:20px;padding:22px 14px 16px;cursor:pointer;text-align:center;transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column;align-items:center;box-shadow:0 4px 14px rgba(0,0,0,.07);border-bottom:5px solid #ddd}
+.hub-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.13)}
+.hub-card:active{transform:translateY(1px);box-shadow:0 3px 8px rgba(0,0,0,.07)}
+.hub-card-icon{font-size:2.8rem;margin-bottom:10px}
+.hub-card-name{color:#1A1A2E;font-weight:700;font-size:.9rem;line-height:1.3;margin-bottom:6px}
+.hub-card-best{color:#aaa;font-size:.7rem;margin-bottom:2px}
+.hub-card.card-lcwc{border-bottom-color:#00B4D8}
+.hub-card.card-hear{border-bottom-color:#4361EE}
+.hub-card.card-sent{border-bottom-color:#7B2D8B}
+.hub-card.card-lightning{border-bottom-color:#FF9F1C}
+.hub-card.card-scramble{border-bottom-color:#FF6B6B}
+@media(max-width:599px){.hub-card:nth-child(5){grid-column:span 2;max-width:260px;justify-self:center;width:100%}}
+.hub-specials{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.hub-special{background:#fff;border:none;border-radius:20px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 14px rgba(0,0,0,.07);border-bottom:5px solid #ddd}
+.hub-special:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.hub-special:active{transform:translateY(0)}
+.hub-special-icon{font-size:2.2rem;flex-shrink:0}
+.hub-special-name{color:#1A1A2E;font-weight:700;font-size:1rem}
+.hub-special-sub{color:#888;font-size:.78rem;margin-top:2px}
+.focus-special{border-bottom-color:#FF6B6B}
+.rules-special{border-bottom-color:#00B4D8}
+.hub-special.dim{opacity:.45;cursor:default}
+.hub-special.dim:hover{transform:none;box-shadow:0 4px 14px rgba(0,0,0,.07)}
+#s-hub .btn-glass{background:#fff;color:#555;backdrop-filter:none;border:1.5px solid #e8e8e8;box-shadow:0 3px 8px rgba(0,0,0,.06)}
+#s-hub .btn-glass:hover{background:#f5f5f5;transform:none}
+/* ── SETS GRID (word sets map) ── */
 .sets-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .set-card{background:var(--glass);backdrop-filter:blur(8px);border:2px solid var(--glass-b);border-radius:var(--r-xl);padding:14px 12px;cursor:pointer;text-align:center;transition:all .2s}
 .set-card:hover{background:rgba(255,255,255,.24);border-color:var(--yellow);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.2)}
@@ -75,23 +136,14 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .set-card.focus-card{border-color:var(--coral);background:rgba(230,57,70,0.18)}
 .set-card.focus-card:hover{border-color:#ff9090;background:rgba(230,57,70,0.32)}
 .focus-badge{display:inline-block;background:var(--coral);color:#fff;font-size:.65rem;font-weight:700;border-radius:99px;padding:2px 8px;margin-top:4px}
-/* MODE CARDS */
+/* ── MODE CARDS ── */
 .mode-card{background:var(--glass);backdrop-filter:blur(8px);border:2px solid var(--glass-b);border-radius:var(--r-xl);padding:16px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all .2s}
 .mode-card:hover{background:rgba(255,255,255,.24);border-color:var(--yellow);transform:translateX(3px)}
 .mode-icon{font-size:2.2rem;flex-shrink:0}
 .mode-card>div+div{flex:1;min-width:0}
 .mode-name{color:#fff;font-weight:700;font-size:clamp(.9rem,3.5vw,1rem)}
-.mode-desc{color:rgba(255,255,255,.7);font-size:clamp(.75rem,2.8vw,.82rem);margin-top:3px;line-height:1.3;word-break:break-word}
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:var(--r-md);cursor:pointer;font-weight:700;transition:transform .1s,box-shadow .1s}
-.btn:active{transform:scale(.96)!important}
-.btn-lg{padding:14px 24px;font-size:clamp(.95rem,3.5vw,1.05rem)}
-.btn-full{width:100%;margin-bottom:8px}
-.btn-yellow{background:var(--yellow);color:#1A1A2E;box-shadow:0 4px 0 var(--yellow-dark)}
-.btn-yellow:hover{transform:translateY(-1px);box-shadow:0 5px 0 var(--yellow-dark)}
-.btn-glass{background:var(--glass);backdrop-filter:blur(6px);border:1px solid var(--glass-b);color:#fff}
-.btn-glass:hover{background:rgba(255,255,255,.25)}
-/* PRACTICE */
+.mode-desc{color:rgba(255,255,255,.7);font-size:clamp(.75rem,2.8vw,.82rem);margin-top:3px;line-height:1.3}
+/* ── PRACTICE ── */
 .prog-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .prog-track{flex:1;height:8px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden}
 .prog-fill{height:100%;background:var(--yellow);border-radius:99px;transition:width .4s ease}
@@ -102,8 +154,11 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .timer-sub{color:rgba(255,255,255,.7);font-size:.75rem;margin-top:4px}
 .word-reveal{text-align:center;padding:20px 12px}
-.word-text{font-size:clamp(2rem,10vw,3.2rem);font-weight:900;color:#fff;letter-spacing:3px;text-transform:uppercase;transition:filter .4s ease;user-select:none}
+.word-text{font-size:clamp(2rem,10vw,3.2rem);font-weight:900;color:#fff;letter-spacing:3px;text-transform:uppercase;transition:filter .4s ease;user-select:none;line-height:1.2}
 .word-text.hidden{filter:blur(12px)}
+.scramble-label{color:rgba(255,255,255,.7);font-size:.8rem;margin-top:8px;font-style:italic}
+.scramble-tiles{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;padding:4px 0 8px}
+.s-tile{min-width:38px;height:44px;background:var(--yellow);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;color:#1A1A2E;box-shadow:0 3px 0 var(--yellow-dark);padding:0 6px}
 .hint-btn{display:none;margin:10px auto 0;background:rgba(255,255,255,.18);border:none;border-radius:12px;padding:7px 16px;color:#fff;cursor:pointer;font-size:.82rem}
 .hint-btn.show{display:inline-block}
 .hear-wrap{text-align:center;padding:16px 0 8px}
@@ -121,7 +176,10 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .stat-cell{text-align:center}
 .stat-val{font-size:clamp(1.1rem,4.5vw,1.4rem);font-weight:900;color:#fff}
 .stat-key{font-size:.68rem;color:rgba(255,255,255,.7);margin-top:2px}
-/* RESULTS */
+/* ── PRAC COLS ── */
+.prac-cols{display:flex;flex-direction:column}
+.prac-left{display:flex;flex-direction:column;justify-content:center}
+/* ── RESULTS ── */
 .res-hero{text-align:center;padding:16px 0 10px}
 .res-big{font-size:clamp(2.6rem,11vw,4rem);font-weight:900;color:var(--yellow)}
 .res-sub{color:rgba(255,255,255,.7);font-size:.95rem}
@@ -135,7 +193,24 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .res-icon{font-size:1.1rem;flex-shrink:0}
 .res-word{color:#fff;font-weight:700;font-size:.95rem;text-transform:uppercase;letter-spacing:1px;flex:1}
 .res-typed{color:var(--coral);font-size:.78rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px}
-/* MODAL */
+/* ── RULES ── */
+.rules-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.rule-card{background:var(--glass);backdrop-filter:blur(8px);border:2px solid var(--glass-b);border-radius:var(--r-xl);padding:16px 12px;cursor:pointer;text-align:center;transition:all .2s}
+.rule-card:hover{background:rgba(255,255,255,.24);border-color:var(--yellow);transform:translateY(-2px)}
+.rule-card-icon{font-size:2rem;margin-bottom:6px}
+.rule-card-name{color:#fff;font-weight:700;font-size:.82rem;line-height:1.3}
+.rule-card-done{color:var(--green);font-size:.7rem;margin-top:5px}
+.rule-detail-box{background:var(--glass);backdrop-filter:blur(8px);border:1px solid var(--glass-b);border-radius:var(--r-xl);padding:20px;margin-bottom:14px}
+.rule-statement{color:var(--yellow);font-size:1rem;font-weight:700;line-height:1.5;margin-bottom:10px}
+.rule-tip{color:rgba(255,255,255,.88);font-size:.88rem;line-height:1.55;margin-bottom:14px;font-style:italic;padding:10px 12px;background:rgba(255,255,255,.08);border-radius:var(--r-sm)}
+.rule-examples-label{color:rgba(255,255,255,.6);font-size:.72rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.rule-examples{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.rule-ex{background:rgba(255,255,255,.2);border-radius:99px;padding:5px 14px;color:#fff;font-weight:700;font-size:.9rem}
+.rule-practice-label{color:rgba(255,255,255,.6);font-size:.72rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.rule-mode-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.rule-mode-btn{background:var(--glass);border:2px solid var(--glass-b);border-radius:var(--r-lg);padding:12px 8px;cursor:pointer;text-align:center;color:#fff;font-weight:700;font-size:.85rem;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.rule-mode-btn:hover{background:rgba(255,255,255,.28);border-color:var(--yellow)}
+/* ── MODAL ── */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;padding:16px}
 .modal-bg.open{display:flex}
 .modal-box{background:#fff;border-radius:var(--r-xl);padding:24px;width:100%;max-width:420px;box-shadow:var(--shadow)}
@@ -151,66 +226,32 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .modal-btn-p:hover{background:var(--ocean-deep)}
 .modal-btn-s{background:#f0f0f0;color:#1A1A2E}
 .copy-ok{color:var(--green);font-size:.78rem;margin-top:4px;display:none}
-/* CONFETTI */
+/* ── CONFETTI ── */
 .confetti{position:fixed;pointer-events:none;z-index:300;border-radius:2px;animation:fall linear forwards}
 @keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(120px) rotate(540deg);opacity:0}}
 /* ANIMATIONS */
 @keyframes popIn{0%{transform:scale(.75);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
 @keyframes shake{0%,100%{transform:translateX(0)}18%{transform:translateX(-8px)}36%{transform:translateX(8px)}54%{transform:translateX(-5px)}72%{transform:translateX(5px)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 .pop{animation:popIn .3s ease-out}
 .shake{animation:shake .38s ease-out}
-/* ── LANDING CARD ── */
-#s-home{justify-content:center;padding:80px 16px 40px}
-.landing-card{background:#FFFBF0;border-radius:var(--r-xl);padding:0 24px 24px;width:100%;max-width:600px;margin:0 auto;box-shadow:0 24px 64px rgba(0,0,0,0.3);text-align:center;position:relative}
-.lc-mascot{width:120px;height:120px;background:linear-gradient(135deg,#FFD700,#F4A030);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:4rem;margin:-60px auto 18px;border:6px solid #FFFBF0;box-shadow:0 8px 24px rgba(0,0,0,0.2);animation:float 3s ease-in-out infinite}
-.lc-title{font-size:clamp(1.8rem,5vw,2.4rem);font-weight:900;color:#E07020;line-height:1.1;margin-bottom:2px}
-.lc-sub{color:#aaa;font-size:.83rem;margin-bottom:12px;letter-spacing:.5px}
-.lc-desc{color:#555;font-size:.9rem;line-height:1.55;margin-bottom:18px}
-.lc-desc strong{color:var(--ocean)}
-/* profile tiles inside card */
-.profiles-label{color:#bbb;font-size:.7rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
-.profile-tile{display:flex;align-items:center;gap:10px;background:#EEF6FF;border:2px solid #D8ECFF;border-radius:14px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:all .2s;text-align:left}
-.profile-tile:hover{border-color:var(--ocean);background:#DCF0FF;transform:translateY(-1px)}
-.profile-tile-avatar{font-size:1.6rem;flex-shrink:0}
-.profile-tile-info{flex:1;min-width:0}
-.profile-tile-name{font-weight:700;color:#1A1A2E;font-size:.95rem}
-.profile-tile-stat{color:#888;font-size:.73rem;margin-top:1px}
-.profile-tile-btns{display:flex;gap:4px;flex-shrink:0}
-.icon-btn-sm{background:#e0e0e0;border:none;border-radius:6px;padding:4px 7px;cursor:pointer;font-size:.75rem;transition:background .2s}
-.icon-btn-sm:hover{background:#cacaca}
-.or-divider{color:#ccc;font-size:.8rem;margin:10px 0;position:relative}
-.or-divider::before,.or-divider::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:#e8e8e8}
-.or-divider::before{left:0}.or-divider::after{right:0}
-/* name row */
-.name-row{display:flex;gap:8px;margin-bottom:16px}
-.name-field{flex:1;min-width:0;padding:13px 18px;border-radius:99px;border:2px solid #E8E8E8;font-size:.95rem;color:#1A1A2E;outline:none;background:#fff;transition:border-color .2s}
-.name-field:focus{border-color:var(--teal)}
-.play-btn{background:var(--teal);color:#fff;border:none;border-radius:99px;padding:13px 22px;font-size:.95rem;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 4px 0 #2a9ab5;transition:transform .1s,box-shadow .1s;flex-shrink:0}
-.play-btn:hover{transform:translateY(-1px);box-shadow:0 5px 0 #2a9ab5}
-.play-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #2a9ab5}
-/* save toggle */
-.save-toggle{margin-top:2px}
-.save-toggle-btn{background:none;border:none;color:#aaa;font-size:.8rem;cursor:pointer;font-weight:600;padding:4px 0;transition:color .2s;text-align:left;width:100%}
-.save-toggle-btn:hover{color:var(--ocean)}
-.home-save-inp{width:100%;padding:10px 14px;border:2px solid #e8e8e8;border-radius:var(--r-sm);font-size:.88rem;color:#1A1A2E;outline:none;margin-top:8px}
-.home-save-inp:focus{border-color:var(--ocean)}
-.import-btn{width:100%;margin-top:8px;padding:11px;background:var(--ocean);color:#fff;border:none;border-radius:var(--r-sm);font-size:.9rem;font-weight:700;cursor:pointer;transition:background .2s}
-.import-btn:hover{background:var(--ocean-deep)}
-/* ── PRAC COLS ── */
-.prac-cols{display:flex;flex-direction:column}
-.prac-left{display:flex;flex-direction:column;justify-content:center}
 /* ── RESPONSIVE ── */
-@media(min-width:600px){.sets-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:600px){.sets-grid{grid-template-columns:repeat(3,1fr)}.rules-grid{grid-template-columns:repeat(3,1fr)}}
 @media(min-width:768px){
   .screen{max-width:860px;padding:18px 28px}
   .landing-card{max-width:660px}
   .btn-lg{padding:16px 28px;font-size:1.05rem}
   .answer-field{font-size:1.35rem;padding:18px}
   .hear-btn{width:88px;height:88px;font-size:2.4rem}
+  .hub-games-grid{grid-template-columns:repeat(3,1fr)}
+  .hub-specials{flex-direction:row}
+  .hub-special{flex:1}
+  .rules-grid{grid-template-columns:repeat(4,1fr)}
 }
 @media(min-width:900px){
   .screen{max-width:1000px;padding:20px 36px}
   .sets-grid{grid-template-columns:repeat(4,1fr)}
+  .hub-games-grid{grid-template-columns:repeat(5,1fr)}
   #s-modes{max-width:800px}
   #s-practice,#s-results{max-width:1000px}
   .prac-cols{flex-direction:row;gap:36px;align-items:flex-start;flex:1}
@@ -219,159 +260,160 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
   .word-text{font-size:clamp(2.8rem,5vw,4.5rem)}
   .hear-btn{width:110px;height:110px;font-size:3rem}
 }
-@media(min-width:1200px){
-  .screen{max-width:1120px}
-  .sets-grid{grid-template-columns:repeat(5,1fr)}
-}
+@media(min-width:1200px){.screen{max-width:1120px}.sets-grid{grid-template-columns:repeat(5,1fr)}}
 </style>
 </head>
 <body>
 
 <div id="bubbles"></div>
-
-<!-- Character reaction -->
 <div id="char-reaction"></div>
-
-<!-- Seabed -->
-<div id="seabed">
-  <svg width="100%" height="80" viewBox="0 0 800 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+<div id="seabed"><svg width="100%" height="80" viewBox="0 0 800 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="800" height="80" fill="#01579B" opacity="0.5"/>
-    <!-- sand -->
     <ellipse cx="400" cy="80" rx="500" ry="24" fill="#C4A35A" opacity="0.7"/>
-    <!-- coral left -->
     <g transform="translate(60,60)" style="animation:sway 3.5s ease-in-out infinite;transform-origin:bottom center">
       <rect x="-4" y="-40" width="8" height="40" rx="4" fill="#FF6B6B"/>
       <circle cx="-4" cy="-40" r="8" fill="#FF4444"/>
       <circle cx="4" cy="-30" r="7" fill="#FF6B6B"/>
       <circle cx="-2" cy="-20" r="6" fill="#FF8888"/>
     </g>
-    <!-- coral right -->
     <g transform="translate(720,55)" style="animation:sway 4.5s ease-in-out infinite 1s;transform-origin:bottom center">
       <rect x="-3" y="-30" width="6" height="30" rx="3" fill="#FF9F45"/>
       <circle cx="0" cy="-30" r="7" fill="#FFB347"/>
       <circle cx="-6" cy="-22" r="5" fill="#FF9F45"/>
       <circle cx="6" cy="-18" r="5" fill="#FFC07A"/>
     </g>
-    <!-- seaweed -->
     <path d="M200 80 Q190 60 200 40 Q210 20 200 0" stroke="#52B788" stroke-width="5" fill="none" stroke-linecap="round" style="animation:sway 5s ease-in-out infinite 0.5s;transform-origin:200px 80px"/>
     <path d="M600 80 Q615 55 600 30 Q585 10 600 0" stroke="#40916C" stroke-width="5" fill="none" stroke-linecap="round" style="animation:sway 4s ease-in-out infinite 2s;transform-origin:600px 80px"/>
-    <!-- small rocks -->
     <ellipse cx="350" cy="76" rx="22" ry="8" fill="#7B7B7B" opacity="0.5"/>
     <ellipse cx="480" cy="78" rx="14" ry="6" fill="#7B7B7B" opacity="0.4"/>
-  </svg>
-</div>
+  </svg></div>
 
 <!-- HOME -->
 <div id="s-home" class="screen">
   <div class="landing-card">
-    <div class="lc-mascot sb-character">
-      <!-- SpongeBob CSS art -->
-      <svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
-        <!-- body -->
-        <rect x="18" y="28" width="60" height="58" rx="10" fill="#FFD700"/>
-        <!-- pants -->
-        <rect x="18" y="68" width="60" height="18" rx="6" fill="#8B4513"/>
-        <!-- belt -->
-        <rect x="18" y="64" width="60" height="6" fill="#5C3317"/>
-        <rect x="44" y="61" width="8" height="12" rx="2" fill="#C0A030"/>
-        <!-- shirt collar -->
-        <rect x="30" y="55" width="36" height="14" rx="3" fill="#fff"/>
-        <polygon points="36,55 48,65 60,55" fill="#fff"/>
-        <!-- tie -->
-        <polygon points="44,56 52,56 50,70 48,72 46,70" fill="#FF4444"/>
-        <!-- eyes -->
-        <ellipse cx="36" cy="42" rx="8" ry="9" fill="#fff"/>
-        <ellipse cx="60" cy="42" rx="8" ry="9" fill="#fff"/>
-        <circle cx="37" cy="43" r="4" fill="#6699CC"/>
-        <circle cx="61" cy="43" r="4" fill="#6699CC"/>
-        <circle cx="38" cy="42" r="2" fill="#000"/>
-        <circle cx="62" cy="42" r="2" fill="#000"/>
-        <circle cx="39" cy="41" r="1" fill="#fff"/>
-        <circle cx="63" cy="41" r="1" fill="#fff"/>
-        <!-- eyelashes -->
-        <line x1="28" y1="34" x2="30" y2="37" stroke="#000" stroke-width="1.5"/>
-        <line x1="33" y1="32" x2="34" y2="35" stroke="#000" stroke-width="1.5"/>
-        <line x1="38" y1="32" x2="38" y2="35" stroke="#000" stroke-width="1.5"/>
-        <line x1="58" y1="32" x2="58" y2="35" stroke="#000" stroke-width="1.5"/>
-        <line x1="63" y1="32" x2="62" y2="35" stroke="#000" stroke-width="1.5"/>
-        <line x1="68" y1="34" x2="66" y2="37" stroke="#000" stroke-width="1.5"/>
-        <!-- nose -->
-        <ellipse cx="48" cy="50" rx="3" ry="2" fill="#E8A000"/>
-        <!-- mouth (big smile) -->
-        <path d="M34 56 Q48 68 62 56" stroke="#000" stroke-width="2" fill="none"/>
-        <!-- teeth -->
-        <rect x="40" y="56" width="7" height="6" rx="1" fill="#fff" stroke="#ccc" stroke-width=".5"/>
-        <rect x="48" y="56" width="7" height="6" rx="1" fill="#fff" stroke="#ccc" stroke-width=".5"/>
-        <!-- cheeks -->
-        <circle cx="26" cy="54" r="5" fill="rgba(255,100,100,0.25)"/>
-        <circle cx="70" cy="54" r="5" fill="rgba(255,100,100,0.25)"/>
-        <!-- pores -->
-        <circle cx="28" cy="38" r="2" fill="rgba(0,0,0,0.08)"/>
-        <circle cx="52" cy="32" r="1.5" fill="rgba(0,0,0,0.08)"/>
-        <circle cx="68" cy="40" r="2" fill="rgba(0,0,0,0.08)"/>
-        <circle cx="40" cy="60" r="1.5" fill="rgba(0,0,0,0.08)"/>
-        <!-- arms -->
-        <rect x="4" y="45" width="14" height="7" rx="4" fill="#FFD700" transform="rotate(-20,4,45)"/>
-        <rect x="78" y="45" width="14" height="7" rx="4" fill="#FFD700" transform="rotate(20,92,45)"/>
-        <!-- legs/shoes -->
-        <rect x="24" y="84" width="16" height="8" rx="3" fill="#1A1A1A"/>
-        <rect x="56" y="84" width="16" height="8" rx="3" fill="#1A1A1A"/>
-      </svg>
-    </div>
+    <div class="lc-mascot sb-character"><svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="28" width="60" height="58" rx="10" fill="#FFD700"/><rect x="18" y="68" width="60" height="18" rx="6" fill="#8B4513"/><rect x="18" y="64" width="60" height="6" fill="#5C3317"/><rect x="44" y="61" width="8" height="12" rx="2" fill="#C0A030"/><rect x="30" y="55" width="36" height="14" rx="3" fill="#fff"/><polygon points="36,55 48,65 60,55" fill="#fff"/><polygon points="44,56 52,56 50,70 48,72 46,70" fill="#FF4444"/><ellipse cx="36" cy="42" rx="8" ry="9" fill="#fff"/><ellipse cx="60" cy="42" rx="8" ry="9" fill="#fff"/><circle cx="37" cy="43" r="4" fill="#6699CC"/><circle cx="61" cy="43" r="4" fill="#6699CC"/><circle cx="38" cy="42" r="2" fill="#000"/><circle cx="62" cy="42" r="2" fill="#000"/><circle cx="39" cy="41" r="1" fill="#fff"/><circle cx="63" cy="41" r="1" fill="#fff"/><line x1="28" y1="34" x2="30" y2="37" stroke="#000" stroke-width="1.5"/><line x1="33" y1="32" x2="34" y2="35" stroke="#000" stroke-width="1.5"/><line x1="38" y1="32" x2="38" y2="35" stroke="#000" stroke-width="1.5"/><line x1="58" y1="32" x2="58" y2="35" stroke="#000" stroke-width="1.5"/><line x1="63" y1="32" x2="62" y2="35" stroke="#000" stroke-width="1.5"/><line x1="68" y1="34" x2="66" y2="37" stroke="#000" stroke-width="1.5"/><ellipse cx="48" cy="50" rx="3" ry="2" fill="#E8A000"/><path d="M34 56 Q48 68 62 56" stroke="#000" stroke-width="2" fill="none"/><rect x="40" y="56" width="7" height="6" rx="1" fill="#fff" stroke="#ccc" stroke-width=".5"/><rect x="48" y="56" width="7" height="6" rx="1" fill="#fff" stroke="#ccc" stroke-width=".5"/><circle cx="26" cy="54" r="5" fill="rgba(255,100,100,0.25)"/><circle cx="70" cy="54" r="5" fill="rgba(255,100,100,0.25)"/><circle cx="28" cy="38" r="2" fill="rgba(0,0,0,0.08)"/><circle cx="52" cy="32" r="1.5" fill="rgba(0,0,0,0.08)"/><circle cx="68" cy="40" r="2" fill="rgba(0,0,0,0.08)"/><rect x="4" y="45" width="14" height="7" rx="4" fill="#FFD700" transform="rotate(-20,4,45)"/><rect x="78" y="45" width="14" height="7" rx="4" fill="#FFD700" transform="rotate(20,92,45)"/><rect x="24" y="84" width="16" height="8" rx="3" fill="#1A1A1A"/><rect x="56" y="84" width="16" height="8" rx="3" fill="#1A1A1A"/></svg></div>
     <div class="lc-title">Spelling Quest</div>
     <div class="lc-sub">BIKINI BOTTOM ADVENTURE</div>
-    <p class="lc-desc">Join <strong>SpongeBob</strong> on a quest through Bikini Bottom! Spell words, earn <strong>Krabby Patties 🍔</strong>, and become a champion speller!</p>
+    <p class="lc-desc">Join <strong>SpongeBob</strong> on a quest through Bikini Bottom! Spell words, earn <strong>Krabby Patties &#x1F354;</strong>, and become a champion speller!</p>
     <div id="profiles-section"></div>
     <div class="name-row" id="name-row">
       <input id="quick-name" class="name-field" type="text" maxlength="16" placeholder="Type your name" autocomplete="off" autocorrect="off" autocapitalize="words" />
-      <button class="play-btn" onclick="quickPlay()">Let's play! 🚀</button>
+      <button class="play-btn" onclick="quickPlay()">Let&#39;s play! &#x1F680;</button>
     </div>
     <div class="save-toggle">
-      <button class="save-toggle-btn" id="save-tog-btn" onclick="toggleSaveSection()">▶ Moving from another device? Import a save code 💾</button>
+      <button class="save-toggle-btn" id="save-tog-btn" onclick="toggleSaveSection()">&#9658; Moving from another device? Import a save code &#x1F4BE;</button>
       <div id="home-save-wrap" style="display:none">
-        <input class="home-save-inp" id="home-save-in" type="text" placeholder="Paste your SPQ1. code here…" />
-        <button class="import-btn" onclick="importFromHome()">Import &amp; Play 🚀</button>
+        <input class="home-save-inp" id="home-save-in" type="text" placeholder="Paste your SPQ1. code here&#x2026;" />
+        <button class="import-btn" onclick="importFromHome()">Import &amp; Play &#x1F680;</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- WORLD MAP -->
+<!-- HUB -->
+<div id="s-hub" class="screen">
+  <div class="hub-header">
+    <div class="hub-sb sb-character" id="hub-sb"><svg width="52" height="52" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="28" width="60" height="58" rx="10" fill="#FFD700"/><rect x="18" y="68" width="60" height="18" rx="6" fill="#8B4513"/><rect x="18" y="64" width="60" height="6" fill="#5C3317"/><rect x="44" y="61" width="8" height="12" rx="2" fill="#C0A030"/><rect x="30" y="55" width="36" height="14" rx="3" fill="#fff"/><polygon points="36,55 48,65 60,55" fill="#fff"/><polygon points="44,56 52,56 50,70 48,72 46,70" fill="#FF4444"/><ellipse cx="36" cy="42" rx="8" ry="9" fill="#fff"/><ellipse cx="60" cy="42" rx="8" ry="9" fill="#fff"/><circle cx="37" cy="43" r="4" fill="#6699CC"/><circle cx="61" cy="43" r="4" fill="#6699CC"/><circle cx="38" cy="42" r="2" fill="#000"/><circle cx="62" cy="42" r="2" fill="#000"/><circle cx="39" cy="41" r="1" fill="#fff"/><circle cx="63" cy="41" r="1" fill="#fff"/><line x1="28" y1="34" x2="30" y2="37" stroke="#000" stroke-width="1.5"/><line x1="33" y1="32" x2="34" y2="35" stroke="#000" stroke-width="1.5"/><line x1="38" y1="32" x2="38" y2="35" stroke="#000" stroke-width="1.5"/><line x1="58" y1="32" x2="58" y2="35" stroke="#000" stroke-width="1.5"/><line x1="63" y1="32" x2="62" y2="35" stroke="#000" stroke-width="1.5"/><line x1="68" y1="34" x2="66" y2="37" stroke="#000" stroke-width="1.5"/><ellipse cx="48" cy="50" rx="3" ry="2" fill="#E8A000"/><path d="M34 56 Q48 68 62 56" stroke="#000" stroke-width="2" fill="none"/><rect x="40" y="56" width="7" height="6" rx="1" fill="#fff" stroke="#ccc" stroke-width=".5"/><rect x="48" y="56" width="7" height="6" rx="1" fill="#fff" stroke="#ccc" stroke-width=".5"/><circle cx="26" cy="54" r="5" fill="rgba(255,100,100,0.25)"/><circle cx="70" cy="54" r="5" fill="rgba(255,100,100,0.25)"/><circle cx="28" cy="38" r="2" fill="rgba(0,0,0,0.08)"/><circle cx="52" cy="32" r="1.5" fill="rgba(0,0,0,0.08)"/><circle cx="68" cy="40" r="2" fill="rgba(0,0,0,0.08)"/><rect x="4" y="45" width="14" height="7" rx="4" fill="#FFD700" transform="rotate(-20,4,45)"/><rect x="78" y="45" width="14" height="7" rx="4" fill="#FFD700" transform="rotate(20,92,45)"/><rect x="24" y="84" width="16" height="8" rx="3" fill="#1A1A1A"/><rect x="56" y="84" width="16" height="8" rx="3" fill="#1A1A1A"/></svg></div>
+    <div class="hub-info">
+      <div class="hub-name" id="hub-name">Hey there!</div>
+      <div class="hub-progress" id="hub-progress">0 &#x1F354; earned</div>
+    </div>
+    <div class="hub-header-btns">
+      <button class="icon-btn" title="Save code" onclick="openSave(G.pid)">&#x1F4BE;</button>
+      <button class="icon-btn" title="Switch player" onclick="go('home')">&#x21C4;</button>
+    </div>
+  </div>
+
+  <div class="sec-label">Choose a game</div>
+  <div class="hub-games-grid">
+    <div class="hub-card card-lcwc" onclick="beginAll('lcwc')">
+      <div class="hub-card-icon">&#x1F441;&#xFE0F;</div>
+      <div class="hub-card-name">Look, Cover, Write, Check</div>
+      <div class="hub-card-best" id="hb-lcwc">Best: &#x2014;</div>
+    </div>
+    <div class="hub-card card-hear" onclick="beginAll('hear')">
+      <div class="hub-card-icon">&#x1F50A;</div>
+      <div class="hub-card-name">Hear &amp; Spell</div>
+      <div class="hub-card-best" id="hb-hear">Best: &#x2014;</div>
+    </div>
+    <div class="hub-card card-sent" onclick="beginAll('sent')">
+      <div class="hub-card-icon">&#x1F4AC;</div>
+      <div class="hub-card-name">Hear in a Sentence</div>
+      <div class="hub-card-best" id="hb-sent">Best: &#x2014;</div>
+    </div>
+    <div class="hub-card card-lightning" onclick="beginAll('lightning')">
+      <div class="hub-card-icon">&#x26A1;</div>
+      <div class="hub-card-name">Lightning Round</div>
+      <div class="hub-card-best" id="hb-lightning">Best: &#x2014;</div>
+    </div>
+    <div class="hub-card card-scramble" onclick="beginAll('scramble')">
+      <div class="hub-card-icon">&#x1F9E9;</div>
+      <div class="hub-card-name">Unscramble</div>
+      <div class="hub-card-best" id="hb-scramble">Best: &#x2014;</div>
+    </div>
+  </div>
+
+  <div class="sec-label">Special</div>
+  <div class="hub-specials">
+    <div class="hub-special focus-special" id="focus-hub-btn" onclick="beginFocus()">
+      <div class="hub-special-icon">&#x1F3AF;</div>
+      <div>
+        <div class="hub-special-name">Focus Words</div>
+        <div class="hub-special-sub" id="focus-hub-sub">No mistakes recorded yet</div>
+      </div>
+    </div>
+    <div class="hub-special rules-special" onclick="go('rules')">
+      <div class="hub-special-icon">&#x1F4DA;</div>
+      <div>
+        <div class="hub-special-name">Spelling Rules</div>
+        <div class="hub-special-sub">Learn the rules, then practise</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-glass btn-lg btn-full" onclick="go('map')" style="margin-top:4px">
+    &#x1F5FA;&#xFE0F; Word Sets &#x2014; practise a specific set
+  </button>
+</div>
+
+<!-- WORD SETS MAP -->
 <div id="s-map" class="screen">
   <div class="topbar">
-    <button class="back-btn" onclick="go('home')">←</button>
-    <div class="topbar-title" id="map-h">🗺️ World Map</div>
+    <button class="back-btn" onclick="go('hub')">&#x2190;</button>
+    <div class="topbar-title" id="map-h">&#x1F5FA;&#xFE0F; Word Sets</div>
   </div>
-  <div class="mascot" style="padding:4px 0 12px">
-    <div class="mascot-e" id="map-e">🧽</div>
-    <div class="mascot-m" id="map-m">Pick a location!</div>
-  </div>
+  <p style="color:rgba(255,255,255,.7);font-size:.82rem;margin-bottom:14px">Pick a set to focus on, then choose your game mode</p>
   <div class="sets-grid" id="sets-grid"></div>
 </div>
 
-<!-- MODES -->
+<!-- MODES (for specific word set) -->
 <div id="s-modes" class="screen">
   <div class="topbar">
-    <button class="back-btn" onclick="go('map')">←</button>
+    <button class="back-btn" onclick="go('map')">&#x2190;</button>
     <div class="topbar-title" id="modes-h">Choose a mode</div>
   </div>
   <div class="mode-card" onclick="begin('lcwc')">
-    <div class="mode-icon">👁️</div>
+    <div class="mode-icon">&#x1F441;&#xFE0F;</div>
     <div><div class="mode-name">Look, Cover, Write, Check</div>
     <div class="mode-desc">See the word, then hide it and spell from memory</div></div>
   </div>
   <div class="mode-card" onclick="begin('hear')">
-    <div class="mode-icon">🔊</div>
+    <div class="mode-icon">&#x1F50A;</div>
     <div><div class="mode-name">Hear &amp; Spell</div>
     <div class="mode-desc">Hear the word and type the spelling</div></div>
   </div>
   <div class="mode-card" onclick="begin('sent')">
-    <div class="mode-icon">💬</div>
+    <div class="mode-icon">&#x1F4AC;</div>
     <div><div class="mode-name">Hear in a Sentence</div>
     <div class="mode-desc">Hear a sentence, then spell the word</div></div>
   </div>
+  <div class="mode-card" onclick="begin('scramble')">
+    <div class="mode-icon">&#x1F9E9;</div>
+    <div><div class="mode-name">Unscramble</div>
+    <div class="mode-desc">Rearrange the jumbled letters to spell the word</div></div>
+  </div>
   <div class="mode-card" onclick="begin('lightning')">
-    <div class="mode-icon">⚡</div>
+    <div class="mode-icon">&#x26A1;</div>
     <div><div class="mode-name">Lightning Round</div>
     <div class="mode-desc">Spell as many words as you can in 60 seconds</div></div>
   </div>
@@ -380,7 +422,7 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 <!-- PRACTICE -->
 <div id="s-practice" class="screen">
   <div class="topbar">
-    <button class="back-btn" id="prac-back">←</button>
+    <button class="back-btn" id="prac-back">&#x2190;</button>
     <div class="topbar-title" id="prac-title">Practice</div>
   </div>
   <div class="timer-wrap" id="timer-wrap" style="display:none">
@@ -395,10 +437,12 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
     <div class="prac-left">
       <div class="word-reveal" id="lcwc-reveal" style="display:none">
         <div class="word-text" id="word-text"></div>
-        <button class="hint-btn" id="hint-btn" onclick="showWordAgain()">👁️ Show again</button>
+        <div class="scramble-tiles" id="scramble-tiles" style="display:none"></div>
+        <div class="scramble-label" id="scramble-label" style="display:none">Rearrange these letters!</div>
+        <button class="hint-btn" id="hint-btn" onclick="showWordAgain()">&#x1F441;&#xFE0F; Show again</button>
       </div>
       <div class="hear-wrap" id="hear-wrap" style="display:none">
-        <button class="hear-btn" onclick="playWord()">🔊</button>
+        <button class="hear-btn" onclick="playWord()">&#x1F50A;</button>
         <div class="hear-sub">Tap to hear the word</div>
       </div>
     </div>
@@ -406,24 +450,24 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
       <div class="input-zone">
         <input id="answer" class="answer-field" type="text" inputmode="text"
           autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
-          placeholder="Type your answer…" />
+          placeholder="Type your answer&#x2026;" />
         <div class="feedback-line" id="feedback"></div>
         <div class="reveal-line" id="reveal"></div>
-        <button class="btn btn-yellow btn-lg btn-full" id="check-btn" onclick="check()">Check ✓</button>
+        <button class="btn btn-yellow btn-lg btn-full" id="check-btn" onclick="check()">Check &#x2713;</button>
       </div>
     </div>
   </div>
   <div class="stats-bar">
     <div class="stat-cell"><div class="stat-val" id="sc-cor">0</div><div class="stat-key">Correct</div></div>
     <div class="stat-cell"><div class="stat-val" id="sc-prog">1</div><div class="stat-key" id="sc-prog-k">of 10</div></div>
-    <div class="stat-cell"><div class="stat-val" id="sc-pat">🍔×0</div><div class="stat-key">Best</div></div>
+    <div class="stat-cell"><div class="stat-val" id="sc-pat">&#x1F354;&#xD7;0</div><div class="stat-key">Best</div></div>
   </div>
 </div>
 
 <!-- RESULTS -->
 <div id="s-results" class="screen">
   <div class="topbar">
-    <div class="topbar-title" id="res-title">Round Complete! 🎉</div>
+    <div class="topbar-title" id="res-title">Round Complete! &#x1F389;</div>
   </div>
   <div class="res-hero">
     <div class="res-big" id="res-score"></div>
@@ -433,24 +477,43 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
   </div>
   <div class="encouragement" id="res-enc"></div>
   <div class="res-card"><ul class="res-list" id="res-list"></ul></div>
-  <button class="btn btn-yellow btn-lg btn-full" id="res-again">Play Again ↺</button>
-  <button class="btn btn-glass btn-lg btn-full" onclick="go('modes')">Try Another Mode</button>
-  <button class="btn btn-glass btn-lg btn-full" onclick="go('map')">World Map 🗺️</button>
+  <button class="btn btn-yellow btn-lg btn-full" id="res-again">Play Again &#x21BA;</button>
+  <button class="btn btn-glass btn-lg btn-full" id="res-back-hub" onclick="go('hub')">&#x1F3AE; Back to Games</button>
+  <button class="btn btn-glass btn-lg btn-full" id="res-word-sets" onclick="go('map')" style="display:none">&#x1F5FA;&#xFE0F; Word Sets</button>
+</div>
+
+<!-- RULES BROWSER -->
+<div id="s-rules" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="go('hub')">&#x2190;</button>
+    <div class="topbar-title">&#x1F4DA; Spelling Rules</div>
+  </div>
+  <p style="color:rgba(255,255,255,.7);font-size:.82rem;margin-bottom:14px">Tap a rule to learn it, then practise with real words</p>
+  <div class="rules-grid" id="rules-grid"></div>
+</div>
+
+<!-- RULE DETAIL -->
+<div id="s-rule-detail" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="go('rules')">&#x2190;</button>
+    <div class="topbar-title" id="rule-detail-title">Rule</div>
+  </div>
+  <div id="rule-detail-content"></div>
 </div>
 
 <!-- MODAL: SAVE CODE -->
 <div class="modal-bg" id="modal-save">
   <div class="modal-box">
-    <div class="modal-h">💾 Save Code</div>
+    <div class="modal-h">&#x1F4BE; Save Code</div>
     <div class="modal-desc">Copy this code to save your progress or move it to another device</div>
     <div class="modal-lbl">Your save code:</div>
     <textarea class="modal-ta" id="save-out" rows="3" readonly onclick="this.select()"></textarea>
     <div style="text-align:right;margin-top:6px">
-      <button class="modal-btn modal-btn-s" onclick="copyCode()">Copy 📋</button>
+      <button class="modal-btn modal-btn-s" onclick="copyCode()">Copy &#x1F4CB;</button>
       <span class="copy-ok" id="copy-ok">Copied!</span>
     </div>
     <div class="modal-lbl">Import a save code:</div>
-    <input class="modal-inp" id="save-in" type="text" placeholder="Paste SPQ1. code here…" />
+    <input class="modal-inp" id="save-in" type="text" placeholder="Paste SPQ1. code here&#x2026;" />
     <div class="modal-row">
       <button class="modal-btn modal-btn-s" onclick="closeSave()">Close</button>
       <button class="modal-btn modal-btn-p" onclick="importCode()">Import</button>
@@ -461,9 +524,9 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 <!-- MODAL: NEW PROFILE -->
 <div class="modal-bg" id="modal-name">
   <div class="modal-box">
-    <div class="modal-h">🧽 New Explorer</div>
+    <div class="modal-h">&#x1F9FD; New Explorer</div>
     <div class="modal-desc">What shall we call you?</div>
-    <input class="modal-inp" id="name-inp" type="text" maxlength="16" placeholder="Enter your name…" />
+    <input class="modal-inp" id="name-inp" type="text" maxlength="16" placeholder="Enter your name&#x2026;" />
     <div class="modal-row">
       <button class="modal-btn modal-btn-s" onclick="closeNameModal()">Cancel</button>
       <button class="modal-btn modal-btn-p" onclick="createProfile()">Start Quest!</button>
@@ -472,11 +535,12 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 </div>
 
 <script>
+
 'use strict';
 
 // ── WORD DATA ──────────────────────────────────────────────────────────────
 const SETS = {
-  krusty_krab:     {name:'Krusty Krab',       emoji:'🦀', words:[
+  krusty_krab:     {name:'Krusty Krab',       emoji:'\u{1F980}', words:[
     {w:'accident',  s:'It was an accident when I spilled the juice.'},
     {w:'address',   s:'Write your address on the envelope.'},
     {w:'answer',    s:'Do you know the answer to the question?'},
@@ -488,7 +552,7 @@ const SETS = {
     {w:'breathe',   s:'Remember to breathe slowly.'},
     {w:'build',     s:'We want to build a sandcastle.'}
   ]},
-  jellyfish_fields:{name:'Jellyfish Fields',   emoji:'🪼', words:[
+  jellyfish_fields:{name:'Jellyfish Fields',   emoji:'\u{1FAB7}', words:[
     {w:'busy',      s:'The market was very busy on Saturday.'},
     {w:'business',  s:'Dad started a new business this year.'},
     {w:'calendar',  s:'Mark your birthday on the calendar.'},
@@ -500,7 +564,7 @@ const SETS = {
     {w:'complete',  s:'Can you complete this sentence?'},
     {w:'consider',  s:'Please consider how the other person feels.'}
   ]},
-  sandy_treedome:  {name:"Sandy's Treedome",   emoji:'🌵', words:[
+  sandy_treedome:  {name:"Sandy's Treedome",   emoji:'\u{1F335}', words:[
     {w:'continue',  s:'Please continue reading from page ten.'},
     {w:'decide',    s:'It is hard to decide which flavour to choose.'},
     {w:'describe',  s:'Describe what you can see outside.'},
@@ -512,7 +576,7 @@ const SETS = {
     {w:'eight',     s:'There are eight legs on a spider.'},
     {w:'enough',    s:'Have you eaten enough for dinner?'}
   ]},
-  rock_bottom:     {name:'Rock Bottom',         emoji:'🪨', words:[
+  rock_bottom:     {name:'Rock Bottom',         emoji:'\u{1FAA8}', words:[
     {w:'exercise',  s:'Swimming is good exercise.'},
     {w:'experience',s:'It was an amazing experience.'},
     {w:'experiment',s:'We did an experiment with vinegar and baking soda.'},
@@ -524,7 +588,7 @@ const SETS = {
     {w:'fruit',     s:'An apple is a type of fruit.'},
     {w:'grammar',   s:'Good grammar helps people understand your writing.'}
   ]},
-  goo_lagoon:      {name:'Goo Lagoon',           emoji:'🏖️', words:[
+  goo_lagoon:      {name:'Goo Lagoon',           emoji:'\u{1F3D6}️', words:[
     {w:'group',     s:'Work in a group of four.'},
     {w:'guard',     s:'A guard stood outside the palace.'},
     {w:'guide',     s:'The tour guide showed us around the museum.'},
@@ -548,7 +612,7 @@ const SETS = {
     {w:'mention',   s:'Did she mention when she is coming?'},
     {w:'minute',    s:'Wait just one minute, please.'}
   ]},
-  chum_bucket:     {name:'The Chum Bucket',      emoji:'🪣', words:[
+  chum_bucket:     {name:'The Chum Bucket',      emoji:'\u{1FAA3}', words:[
     {w:'natural',   s:'Honey is a natural sweetener.'},
     {w:'naughty',   s:'The puppy was very naughty today.'},
     {w:'notice',    s:'Did you notice the new painting on the wall?'},
@@ -558,8 +622,7 @@ const SETS = {
     {w:'ordinary',  s:'It was just an ordinary Tuesday.'},
     {w:'particular',s:'Is there a particular book you would like?'},
     {w:'peculiar',  s:'That is a peculiar smell.'},
-    {w:'perhaps',   s:'Perhaps we can go to the park later.'},
-    {w:'popular',   s:'Football is a popular sport.'}
+    {w:'perhaps',   s:'Perhaps we can go to the park later.'}
   ]},
   boating_school:  {name:'Boating School',       emoji:'⛵', words:[
     {w:'position',  s:'What position do you play in the team?'},
@@ -573,7 +636,7 @@ const SETS = {
     {w:'quarter',   s:'Cut the apple into a quarter.'},
     {w:'question',  s:'Ask a question if you do not understand.'}
   ]},
-  larrys_gym:      {name:"Larry's Gym",           emoji:'💪', words:[
+  larrys_gym:      {name:"Larry's Gym",           emoji:'\u{1F4AA}', words:[
     {w:'recent',    s:'Have you seen any recent films?'},
     {w:'regular',   s:'Brush your teeth at regular intervals.'},
     {w:'reign',     s:'The queen had a long reign.'},
@@ -585,7 +648,7 @@ const SETS = {
     {w:'strange',   s:'That is a very strange shape.'},
     {w:'strength',  s:'She showed great strength in the race.'}
   ]},
-  bikini_bottom:   {name:'Bikini Bottom Town',    emoji:'🌊', words:[
+  bikini_bottom:   {name:'Bikini Bottom Town',    emoji:'\u{1F30A}', words:[
     {w:'suppose',   s:'I suppose we could try it.'},
     {w:'surprise',  s:'What a lovely surprise!'},
     {w:'therefore', s:'It was raining; therefore, we stayed inside.'},
@@ -600,19 +663,143 @@ const SETS = {
 };
 const SK = Object.keys(SETS);
 
+// ── SPELLING RULES ────────────────────────────────────────────────────────
+const RULES = [
+  { id:'ie_ei', name:'i before e', emoji:'\u{1F4DD}',
+    rule:'Write i before e, except after c (when the sound is "ee")',
+    tip:'"i before e, except after c" — so believe, piece, field use ie. After c, swap to ei: receive, ceiling.',
+    examples:['believe','piece','field','receive','ceiling'],
+    words:[
+      {w:'believe',  s:'I believe you can do anything you try.'},
+      {w:'piece',    s:'Can I have a piece of cake please?'},
+      {w:'field',    s:'The cows grazed in the field.'},
+      {w:'receive',  s:'Did you receive my letter?'},
+      {w:'ceiling',  s:'She painted the ceiling blue.'}
+    ]
+  },
+  { id:'double_consonant', name:'Double the Consonant', emoji:'✌️',
+    rule:'Double the final consonant before adding -ing, -ed, -er when the word ends in a short vowel + single consonant',
+    tip:'Short vowel + single consonant at end? Double it! run→running, stop→stopped, big→bigger.',
+    examples:['running','stopped','bigger','sitting','dropped'],
+    words:[
+      {w:'running',  s:'She was running very fast.'},
+      {w:'stopped',  s:'The car stopped at the red light.'},
+      {w:'bigger',   s:'The elephant is bigger than the horse.'},
+      {w:'sitting',  s:'He was sitting on the bench.'},
+      {w:'dropped',  s:'She dropped her bag on the floor.'}
+    ]
+  },
+  { id:'drop_e', name:'Drop the Silent e', emoji:'\u{1F6AB}',
+    rule:'Drop the silent e at the end of a word before adding a suffix that starts with a vowel (-ing, -ed, -er)',
+    tip:'make→making (drop e), bake→baked (drop e), nice→nicer (drop e). Keep e before consonant suffixes: hope→hopeful.',
+    examples:['making','baked','nicer','smiling','loved'],
+    words:[
+      {w:'making',   s:'She is making a birthday cake.'},
+      {w:'baked',    s:'Mum baked fresh bread this morning.'},
+      {w:'nicer',    s:'That is a much nicer colour.'},
+      {w:'smiling',  s:'She was smiling at the joke.'},
+      {w:'loved',    s:'He loved playing football.'}
+    ]
+  },
+  { id:'y_to_i', name:'Change y to i', emoji:'\u{1F504}',
+    rule:'Change y to i before adding a suffix, when y follows a consonant',
+    tip:'cry→cried, happy→happier, carry→carried. But keep y before -ing: cry→crying (not criing!).',
+    examples:['cried','happier','carried','stories','easiest'],
+    words:[
+      {w:'cried',    s:'The baby cried all night.'},
+      {w:'happier',  s:'I am happier when the sun shines.'},
+      {w:'carried',  s:'She carried the heavy bags.'},
+      {w:'stories',  s:'He told us funny stories.'},
+      {w:'easiest',  s:'That was the easiest question.'}
+    ]
+  },
+  { id:'silent_letters', name:'Silent Letters', emoji:'\u{1F910}',
+    rule:'Some words have silent letters — letters that are written but not spoken',
+    tip:'Silent k: know, knee, knock. Silent w: write, wrong, wrap. Silent g: gnome. Silent b: lamb, climb.',
+    examples:['knock','write','gnome','lamb','wrong'],
+    words:[
+      {w:'knock',    s:'Please knock before you come in.'},
+      {w:'write',    s:'Write your name at the top of the page.'},
+      {w:'gnome',    s:'There is a gnome in the garden.'},
+      {w:'lamb',     s:'The lamb was soft and fluffy.'},
+      {w:'wrong',    s:'That answer is wrong — try again.'}
+    ]
+  },
+  { id:'tion_sion', name:'-tion and -sion', emoji:'\u{1F4E2}',
+    rule:'The "shun" sound at the end of a word is usually spelled -tion or -sion',
+    tip:'-tion is most common: station, action, nation. -sion often follows a vowel: vision, confusion, television.',
+    examples:['station','action','vision','mission','question'],
+    words:[
+      {w:'station',  s:'We caught the train from the station.'},
+      {w:'action',   s:"Let's take action right now!"},
+      {w:'vision',   s:'Eagles have excellent vision.'},
+      {w:'mission',  s:'Our mission is to spell every word.'},
+      {w:'question', s:'Ask a question if you are unsure.'}
+    ]
+  },
+  { id:'soft_c', name:'Soft c (the /s/ sound)', emoji:'\u{1F408}',
+    rule:'The letter c makes an /s/ sound (soft c) when it is followed by e, i, or y',
+    tip:'c + e/i/y = /s/ sound: circle, city, cycle. c + a/o/u = /k/ sound: cat, cod, cup.',
+    examples:['circle','city','cycle','centre','century'],
+    words:[
+      {w:'circle',   s:'Draw a circle on the paper.'},
+      {w:'city',     s:'London is a very large city.'},
+      {w:'cycle',    s:'She likes to cycle to school.'},
+      {w:'centre',   s:'Meet me in the centre of town.'},
+      {w:'century',  s:'A century is one hundred years.'}
+    ]
+  },
+  { id:'prefixes', name:'Prefixes', emoji:'\u{1F527}',
+    rule:'A prefix is a group of letters added to the start of a word to change its meaning',
+    tip:'un- = not (unhappy). dis- = not/opposite (disagree). re- = again (replay). mis- = wrongly (mistake). im-/in- = not (impossible).',
+    examples:['unhappy','disagree','replay','mistake','impossible'],
+    words:[
+      {w:'unhappy',    s:'She was unhappy about the result.'},
+      {w:'disagree',   s:'It is fine to disagree politely.'},
+      {w:'replay',     s:'Can we replay that video?'},
+      {w:'mistake',    s:'Everyone makes a mistake sometimes.'},
+      {w:'impossible', s:'Nothing is impossible if you try.'}
+    ]
+  },
+  { id:'suffixes', name:'Suffixes -ful, -less, -ness', emoji:'\u{1F3F7}️',
+    rule:'Suffixes are added to the end of a word to change its meaning or word type',
+    tip:'-ful means "full of": careful. -less means "without": careless. -ness makes a noun: kindness.',
+    examples:['careful','careless','kindness','hopeful','darkness'],
+    words:[
+      {w:'careful',   s:'Be careful crossing the road.'},
+      {w:'careless',  s:'A careless mistake cost us the match.'},
+      {w:'kindness',  s:'Her kindness made everyone smile.'},
+      {w:'hopeful',   s:'I am hopeful we will win.'},
+      {w:'darkness',  s:'The darkness made it hard to see.'}
+    ]
+  },
+  { id:'homophones', name:'Homophones', emoji:'\u{1F46F}',
+    rule:'Homophones are words that sound the same but have different spellings and different meanings',
+    tip:'there = place, their = belonging to them. hear = use your ears, here = this place. wear = clothing, where = location.',
+    examples:['there','their','hear','here','wear'],
+    words:[
+      {w:'there',  s:'Put it over there on the table.'},
+      {w:'their',  s:'It is their turn to play.'},
+      {w:'hear',   s:'Can you hear that music?'},
+      {w:'here',   s:'Come over here please.'},
+      {w:'wear',   s:'What will you wear to the party?'}
+    ]
+  }
+];
+
 const ENC = {
-  perfect:['🎉 Perfect! Krabby Patties for everyone!','🤩 Perfect score! SpongeBob is amazed!','⭐ Sandy would be SO proud!','🏆 Best speller in all of Bikini Bottom!'],
-  great:  ['😄 Imagination! Amazing work!','🧽 SpongeBob is cheering for you!','🌟 Nearly perfect — keep it up!'],
-  ok:     ["🙂 I'm ready to try again! Keep going!",'🐠 Not bad! You are getting there!','🦀 Keep working for those Krabby Patties!'],
-  poor:   ['😐 Oh, tartar sauce. Let\'s try again!','🪼 Don\'t give up! Even jellyfish practise!','💪 You will get it — keep trying!']
+  perfect:['Krabby Patties for everyone!','SpongeBob is AMAZED!','Sandy would be SO proud!','Best speller in all of Bikini Bottom!'],
+  great:  ['Imagination! Amazing work!','SpongeBob is cheering for you!','Nearly perfect — keep it up!'],
+  ok:     ["Keep going — you are getting there!",'Not bad! Try again for a better score!','Keep working for those Krabby Patties!'],
+  poor:   ['Oh, tartar sauce. Try again!','Don\'t give up! Even jellyfish practise!','You will get it — keep trying!']
 };
 
 // ── PROFILES ──────────────────────────────────────────────────────────────
 const SKEY = 'spellingQuest.v1';
 const CPFX = 'SPQ1.';
 
-function blankSets(){const s={};SK.forEach(k=>{s[k]={lcwc:0,hear:0,sent:0,lightning:0,patties:0}});return s}
-function newProfile(name){return{id:'p'+Date.now(),name,sets:blankSets(),focusWords:[]}}
+function blankSets(){const s={};SK.forEach(k=>{s[k]={lcwc:0,hear:0,sent:0,lightning:0,scramble:0,patties:0}});return s}
+function newProfile(name){return{id:'p'+Date.now(),name,sets:blankSets(),focusWords:[],rulesPlayed:{}}}
 
 function addFocusWord(p,item){
   if(!p.focusWords)p.focusWords=[];
@@ -630,25 +817,31 @@ function saveAll(ps){localStorage.setItem(SKEY,JSON.stringify(ps))}
 function getP(id){return loadAll().find(p=>p.id===id)||null}
 
 function calcPat(sd){
-  const best=Math.max(sd.lcwc,sd.hear,sd.sent);
+  const best=Math.max(sd.lcwc||0,sd.hear||0,sd.sent||0,sd.scramble||0);
   return best>=10?3:best>=8?2:best>=6?1:0;
 }
-function totalPat(p){return SK.reduce((n,k)=>n+p.sets[k].patties,0)}
+function totalPat(p){return SK.reduce((n,k)=>n+(p.sets[k]?p.sets[k].patties:0),0)}
+function modeAllBest(mode,p){
+  if(!p)return 0;
+  return SK.reduce((b,k)=>Math.max(b,p.sets[k]?p.sets[k][mode]||0:0),0);
+}
 
 function encode(p){return CPFX+btoa(unescape(encodeURIComponent(JSON.stringify(p))))}
 function decode(c){try{if(!c.startsWith(CPFX))return null;return JSON.parse(decodeURIComponent(escape(atob(c.slice(CPFX.length)))))}catch{return null}}
 
 // ── GAME STATE ─────────────────────────────────────────────────────────────
-let G={pid:null,setKey:null,mode:null,words:[],idx:0,correct:0,attempted:0,results:[],answered:false,ltTimer:null,ltLeft:60,lcwcT:null};
+let G={pid:null,setKey:null,mode:null,words:[],idx:0,correct:0,attempted:0,results:[],answered:false,ltTimer:null,ltLeft:60,lcwcT:null,fromHub:false};
 
 // ── NAV ───────────────────────────────────────────────────────────────────
 function go(s){
   stopAll();
   document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
   document.getElementById('s-'+s).classList.add('active');
-  if(s==='home')  renderHome();
-  if(s==='map')   renderMap();
-  if(s==='modes') renderModes();
+  if(s==='home')   renderHome();
+  if(s==='hub')    renderHub();
+  if(s==='map')    renderMap();
+  if(s==='modes')  renderModes();
+  if(s==='rules')  renderRules();
 }
 function stopAll(){
   if(G.ltTimer){clearInterval(G.ltTimer);G.ltTimer=null}
@@ -673,18 +866,18 @@ function renderHome(){
   const sec=el('profiles-section');
   const row=el('name-row');
   if(all.length>0){
-    let h=`<div class="profiles-label">👋 Welcome back!</div>`;
+    let h='<div class="profiles-label">\u{1F44B} Welcome back!</div>';
     all.forEach(p=>{
       const tp=totalPat(p);
       h+=`<div class="profile-tile" onclick="selectP('${p.id}')">
-        <span class="profile-tile-avatar">🧽</span>
+        <span class="profile-tile-avatar">\u{1F9FD}</span>
         <div class="profile-tile-info">
           <div class="profile-tile-name">${esc(p.name)}</div>
-          <div class="profile-tile-stat">${tp} 🍔 earned</div>
+          <div class="profile-tile-stat">${tp} \u{1F354} earned</div>
         </div>
         <div class="profile-tile-btns">
-          <button class="icon-btn-sm" title="Save code" onclick="event.stopPropagation();openSave('${p.id}')">💾</button>
-          <button class="icon-btn-sm" title="Delete" onclick="event.stopPropagation();delP('${p.id}')">🗑️</button>
+          <button class="icon-btn-sm" title="Save code" onclick="event.stopPropagation();openSave('${p.id}')">\u{1F4BE}</button>
+          <button class="icon-btn-sm" title="Delete" onclick="event.stopPropagation();delP('${p.id}')">\u{1F5D1}️</button>
         </div>
       </div>`;
     });
@@ -692,17 +885,10 @@ function renderHome(){
     if(all.length<3){
       sec.innerHTML+='<div class="or-divider">or start a new quest</div>';
       row.style.display='flex';
-    }else{
-      row.style.display='none';
-    }
-  }else{
-    sec.innerHTML='';
-    row.style.display='flex';
-  }
+    }else{row.style.display='none'}
+  }else{sec.innerHTML='';row.style.display='flex'}
 }
-
-function selectP(id){G.pid=id;go('map')}
-
+function selectP(id){G.pid=id;go('hub')}
 function quickPlay(){
   const name=el('quick-name').value.trim();
   if(!name){el('quick-name').focus();return}
@@ -712,72 +898,73 @@ function quickPlay(){
     if(all.length>=3){alert('Maximum 3 explorers!');return}
     p=newProfile(name);all.push(p);saveAll(all);
   }
-  G.pid=p.id;go('map');
+  G.pid=p.id;go('hub');
 }
-
 function toggleSaveSection(){
   const w=el('home-save-wrap');
   const open=w.style.display==='none';
   w.style.display=open?'block':'none';
-  el('save-tog-btn').textContent=(open?'▼':'▶')+' Moving from another device? Import a save code 💾';
+  el('save-tog-btn').textContent=(open?'▼':'▶')+' Moving from another device? Import a save code \u{1F4BE}';
 }
-
 function importFromHome(){
   const raw=el('home-save-in').value.trim();
   const data=decode(raw);
   if(!data||!data.id||!data.name||!data.sets){alert('Invalid save code — please check and try again.');return}
-  SK.forEach(k=>{if(!data.sets[k])data.sets[k]={lcwc:0,hear:0,sent:0,lightning:0,patties:0}});
+  SK.forEach(k=>{if(!data.sets[k])data.sets[k]={lcwc:0,hear:0,sent:0,lightning:0,scramble:0,patties:0}});
   const all=loadAll();
   const idx=all.findIndex(p=>p.id===data.id);
   if(idx>=0)all[idx]=data;
   else if(all.length<3)all.push(data);
   else{alert('Maximum 3 explorers. Delete one first.');return}
-  saveAll(all);G.pid=data.id;go('map');
-}
-
-function mascot(eId,mId,pid){
-  const p=pid?getP(pid):null;
-  const pct=p?totalPat(p)/30:0;
-  const e=document.getElementById(eId),m=document.getElementById(mId);
-  if(!p)         {e.textContent='😐';m.textContent="Pick your explorer!"}
-  else if(pct===0){e.textContent='😐';m.textContent="Let's get started!"}
-  else if(pct<.2){e.textContent='😢';m.textContent='Oh barnacles...'}
-  else if(pct<.4){e.textContent='🙂';m.textContent='Keep practising!'}
-  else if(pct<.7){e.textContent='😄';m.textContent="I'm ready!"}
-  else           {e.textContent='🤩';m.textContent='Krabby Patties for everyone!'}
-}
-
-function openNameModal(){if(loadAll().length>=3){alert('Maximum 3 explorers!');return}el('name-inp').value='';el('modal-name').classList.add('open');setTimeout(()=>el('name-inp').focus(),80)}
-function closeNameModal(){el('modal-name').classList.remove('open')}
-function createProfile(){
-  const name=el('name-inp').value.trim();if(!name)return;
-  const all=loadAll();all.push(newProfile(name));saveAll(all);closeNameModal();renderHome();
+  saveAll(all);G.pid=data.id;go('hub');
 }
 function delP(id){
   if(!confirm('Delete this explorer? This cannot be undone.'))return;
   saveAll(loadAll().filter(p=>p.id!==id));
   if(G.pid===id)G.pid=null;renderHome();
 }
+function openNameModal(){if(loadAll().length>=3){alert('Maximum 3 explorers!');return}el('name-inp').value='';el('modal-name').classList.add('open');setTimeout(()=>el('name-inp').focus(),80)}
+function closeNameModal(){el('modal-name').classList.remove('open')}
+function createProfile(){
+  const name=el('name-inp').value.trim();if(!name)return;
+  const all=loadAll();all.push(newProfile(name));saveAll(all);closeNameModal();renderHome();
+}
 
-// ── MAP ───────────────────────────────────────────────────────────────────
+// ── HUB ───────────────────────────────────────────────────────────────────
+function renderHub(){
+  const p=getP(G.pid);if(!p){go('home');return}
+  el('hub-name').textContent='Hey, '+p.name+'!';
+  const tp=totalPat(p);
+  el('hub-progress').textContent=tp+' \u{1F354} earned • '+Math.round(tp/30*100)+'% complete';
+  // best scores on cards
+  const modes=['lcwc','hear','sent','lightning','scramble'];
+  modes.forEach(m=>{
+    const b=m==='lightning'?SK.reduce((x,k)=>Math.max(x,p.sets[k]?p.sets[k].lightning||0:0),0):modeAllBest(m,p);
+    const label=m==='lightning'?b+' words':b+'/10';
+    el('hb-'+m).textContent=b>0?'Best: '+label:'Not played yet';
+  });
+  // focus words
+  const fw=getFocusWords(p);
+  const focBtn=el('focus-hub-btn');
+  if(fw.length>0){
+    el('focus-hub-sub').textContent=fw.length+' word'+(fw.length!==1?'s':'')+' to practise';
+    focBtn.classList.remove('dim');
+  }else{
+    el('focus-hub-sub').textContent='No mistakes recorded yet';
+    focBtn.classList.add('dim');
+  }
+}
+
+// ── MAP (word sets) ────────────────────────────────────────────────────────
 function renderMap(){
   const p=getP(G.pid);if(!p){go('home');return}
-  el('map-h').textContent=`🗺️ ${p.name}'s Quest`;
-  mascot('map-e','map-m',G.pid);
+  el('map-h').textContent='\u{1F5FA}️ Word Sets — '+p.name;
   const grid=el('sets-grid');grid.innerHTML='';
-  // Focus Words card
-  const fw=getFocusWords(p);
-  if(fw.length>0){
-    const fc=document.createElement('div');fc.className='set-card focus-card';
-    fc.innerHTML=`<span class="set-em">🎯</span><div class="set-nm">Focus Words</div><div class="focus-badge">${fw.length} word${fw.length!==1?'s':''} to practise</div><div class="lt-info" style="margin-top:4px">Words you've missed</div>`;
-    fc.onclick=()=>{G.setKey='focus';go('modes')};
-    grid.appendChild(fc);
-  }
   SK.forEach(key=>{
-    const def=SETS[key],data=p.sets[key],pts=data.patties,ls=data.lightning;
+    const def=SETS[key],data=p.sets[key]||{},pts=data.patties||0,ls=data.lightning||0;
     const c=document.createElement('div');c.className='set-card';
-    c.innerHTML=`<span class="set-em">${def.emoji}</span><div class="set-nm">${def.name}</div><div class="patties-row"><span class="patty${pts<1?' dim':''}">🍔</span><span class="patty${pts<2?' dim':''}">🍔</span><span class="patty${pts<3?' dim':''}">🍔</span></div><div class="lt-info">${ls>0?'⚡ Best: '+ls+' words':'⚡ Not played yet'}</div>`;
-    c.onclick=()=>{G.setKey=key;go('modes')};
+    c.innerHTML=`<span class="set-em">${def.emoji}</span><div class="set-nm">${def.name}</div><div class="patties-row"><span class="patty${pts<1?' dim':''}">&#x{1F354}</span><span class="patty${pts<2?' dim':''}">&#x{1F354}</span><span class="patty${pts<3?' dim':''}">&#x{1F354}</span></div><div class="lt-info">${ls>0?'⚡ Best: '+ls+' words':'⚡ Not played yet'}</div>`;
+    c.onclick=()=>{G.setKey=key;G.fromHub=false;go('modes')};
     grid.appendChild(c);
   });
 }
@@ -785,7 +972,7 @@ function renderMap(){
 // ── MODES ─────────────────────────────────────────────────────────────────
 function renderModes(){
   const def=setDef();
-  el('modes-h').textContent=`${def.emoji} ${def.name}`;
+  el('modes-h').textContent=def.emoji+' '+def.name;
 }
 
 // ── AUDIO ─────────────────────────────────────────────────────────────────
@@ -803,33 +990,86 @@ function playWord(){
   speak(G.mode==='sent'?item.w+'. '+item.s:item.w);
 }
 
+// ── SCRAMBLE ─────────────────────────────────────────────────────────────
+function scramble(word){
+  const a=word.toUpperCase().split('');
+  let s,tries=0;
+  do{s=shuffle([...a]).join('');tries++;}
+  while(s===word.toUpperCase()&&word.length>1&&tries<30);
+  return s;
+}
+function buildScrambleTiles(scrambled){
+  return scrambled.split('').map(ch=>`<div class="s-tile">${ch}</div>`).join('');
+}
+
 // ── GAME ──────────────────────────────────────────────────────────────────
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[b[i],b[j]]=[b[j],b[i]]}return b}
 
 function getWordPool(setKey){
+  if(setKey==='all') return SK.flatMap(k=>SETS[k].words);
   if(setKey==='focus'){const p=getP(G.pid);return getFocusWords(p)}
-  return SETS[setKey].words;
+  if(setKey.startsWith('rule:')){
+    const rid=setKey.slice(5);
+    const rule=RULES.find(r=>r.id===rid);
+    return rule?rule.words:[];
+  }
+  return SETS[setKey]?SETS[setKey].words:[];
 }
+function setDef(){
+  if(G.setKey==='all')return{emoji:'\u{1F30A}',name:'All Words'};
+  if(G.setKey==='focus')return{emoji:'\u{1F3AF}',name:'Focus Words'};
+  if(G.setKey&&G.setKey.startsWith('rule:')){
+    const rid=G.setKey.slice(5);
+    const rule=RULES.find(r=>r.id===rid);
+    return rule?{emoji:rule.emoji,name:rule.name}:{emoji:'\u{1F4DA}',name:'Rule Practice'};
+  }
+  return SETS[G.setKey]||{emoji:'\u{1F30A}',name:'Practice'};
+}
+function isSpecialSet(){return G.setKey==='all'||G.setKey==='focus'||G.setKey.startsWith('rule:')}
+
+function beginAll(mode){
+  G.setKey='all';G.fromHub=true;
+  begin(mode);
+}
+function beginFocus(){
+  const p=getP(G.pid);
+  if(!p||!getFocusWords(p).length)return;
+  G.setKey='focus';G.fromHub=true;
+  begin('hear');
+}
+
 function begin(mode){
   G.mode=mode;G.idx=G.correct=G.attempted=0;G.results=[];G.answered=false;
   const pool=getWordPool(G.setKey);
-  if(!pool||pool.length===0){alert('No focus words yet — make some mistakes first!');return}
+  if(!pool||pool.length===0){
+    if(G.setKey==='focus')alert('No focus words yet — make some mistakes first!');
+    return;
+  }
   G.words=shuffle(pool).slice(0,Math.min(10,pool.length));
   if(mode==='lightning')G.words=shuffle(pool);
   go('practice');setupPractice();renderQ();
 }
 
-function setDef(){return G.setKey==='focus'?{emoji:'🎯',name:'Focus Words'}:SETS[G.setKey]}
 function setupPractice(){
   const def=setDef(),p=getP(G.pid),isL=G.mode==='lightning';
-  el('prac-title').textContent=`${def.emoji} ${def.name}`;
-  el('prac-back').onclick=()=>go('modes');
+  el('prac-title').textContent=def.emoji+' '+def.name;
+  el('prac-back').onclick=()=>G.fromHub?go('hub'):go('modes');
   el('timer-wrap').style.display  =isL?'block':'none';
   el('prog-row').style.display    =isL?'none':'flex';
-  el('lcwc-reveal').style.display =G.mode==='lcwc'?'block':'none';
+  el('lcwc-reveal').style.display =(G.mode==='lcwc'||G.mode==='scramble')?'block':'none';
   el('hear-wrap').style.display   =['hear','sent','lightning'].includes(G.mode)?'block':'none';
-  el('sc-pat').textContent='🎯×'+(p&&G.setKey==='focus'?getFocusWords(p).length:(p?p.sets[G.setKey].patties:0));
-  el('sc-prog-k').textContent=isL?'tried':'of 10';
+  el('scramble-tiles').style.display=G.mode==='scramble'?'flex':'none';
+  el('scramble-label').style.display=G.mode==='scramble'?'block':'none';
+  el('word-text').style.display=G.mode==='scramble'?'none':'block';
+  el('hint-btn').className='hint-btn';
+  if(p&&!isSpecialSet()){
+    const sd=p.sets[G.setKey]||{};
+    const pat=sd.patties||0;
+    el('sc-pat').textContent='\u{1F354}\xD7'+pat;
+  }else{
+    el('sc-pat').textContent=G.setKey==='focus'?'\u{1F3AF}\xD7'+getFocusWords(p).length:'\u{1F354}';
+  }
+  el('sc-prog-k').textContent=isL?'tried':'of '+G.words.length;
   if(isL)startLt();
 }
 
@@ -842,8 +1082,8 @@ function renderQ(){
   el('sc-cor').textContent=G.correct;
   el('sc-prog').textContent=G.mode==='lightning'?G.attempted:G.idx+1;
   if(G.mode!=='lightning'){
-    el('prog-fill').style.width=(G.idx/10*100)+'%';
-    el('prog-lbl').textContent=`${G.idx+1} / 10`;
+    el('prog-fill').style.width=(G.idx/G.words.length*100)+'%';
+    el('prog-lbl').textContent=(G.idx+1)+' / '+G.words.length;
   }
   if(G.mode==='lcwc'){
     el('word-text').textContent=item.w.toUpperCase();
@@ -851,6 +1091,10 @@ function renderQ(){
     el('hint-btn').classList.remove('show');
     if(G.lcwcT)clearTimeout(G.lcwcT);
     G.lcwcT=setTimeout(()=>{el('word-text').classList.add('hidden');el('hint-btn').classList.add('show')},3000);
+  }
+  if(G.mode==='scramble'){
+    const sc=scramble(item.w);
+    el('scramble-tiles').innerHTML=buildScrambleTiles(sc);
   }
   if(G.mode==='hear'||G.mode==='sent')setTimeout(playWord,350);
   if(G.mode==='lightning')setTimeout(playWord,200);
@@ -874,27 +1118,28 @@ function check(){
   // update focus words
   const all=loadAll(),p=all.find(x=>x.id===G.pid);
   if(p){
-    if(!ok&&G.setKey!=='focus')addFocusWord(p,item);
+    if(!ok&&G.setKey!=='focus'&&!G.setKey.startsWith('rule:'))addFocusWord(p,item);
     else if(ok&&G.setKey==='focus')removeFocusWord(p,item.w);
     saveAll(all);
   }
   showReaction(ok);
   if(ok){
-    el('feedback').textContent=pick(['🌟 Brilliant!','🎉 Correct!','✅ Spot on!','🧽 Superstar!','🍔 Nice one!']);
+    el('feedback').textContent=pick(['\u{1F31F} Brilliant!','\u{1F389} Correct!','✅ Spot on!','\u{1F9FD} Superstar!','\u{1F354} Nice one!']);
     confetti();
   }else{
     el('answer').classList.add('shake');setTimeout(()=>el('answer').classList.remove('shake'),400);
-    el('feedback').textContent=pick(['😬 Nearly!','💭 Keep trying!','📖 Oh, barnacles!']);
+    el('feedback').textContent=pick(['\u{1F62C} Nearly!','\u{1F4AD} Keep trying!','\u{1F4D6} Oh, barnacles!']);
     el('reveal').textContent='✏️ Correct spelling: '+item.w;
   }
   if(G.mode!=='lightning')G.results.push({w:item.w,ok,typed});
   el('sc-cor').textContent=G.correct;
   el('sc-prog').textContent=G.mode==='lightning'?G.attempted:G.idx+1;
   if(G.mode==='lightning'){
-    setTimeout(()=>{G.idx++;if(G.idx>=G.words.length){G.words=shuffle(SETS[G.setKey].words);G.idx=0}renderQ()},ok?500:1300);
+    const pool=getWordPool(G.setKey);
+    setTimeout(()=>{G.idx++;if(G.idx>=G.words.length){G.words=shuffle(pool);G.idx=0}renderQ()},ok?500:1300);
   }else{
     el('check-btn').disabled=true;
-    setTimeout(()=>{G.idx++;if(G.idx>=10)endRound();else renderQ()},ok?700:1600);
+    setTimeout(()=>{G.idx++;if(G.idx>=G.words.length)endRound();else renderQ()},ok?700:1600);
   }
 }
 
@@ -910,44 +1155,61 @@ function updTimer(){
 function endLt(){
   if(window.speechSynthesis)window.speechSynthesis.cancel();
   const all=loadAll(),p=all.find(x=>x.id===G.pid);
-  if(p&&G.setKey!=='focus'&&G.correct>p.sets[G.setKey].lightning){p.sets[G.setKey].lightning=G.correct;saveAll(all)}
+  if(p&&!isSpecialSet()){
+    const sd=p.sets[G.setKey];
+    if(sd&&G.correct>sd.lightning){sd.lightning=G.correct;saveAll(all)}
+  }
   go('results');
   el('res-title').textContent='⚡ Lightning Round!';
   el('res-score').textContent=G.correct;
   el('res-sub').textContent='words spelled correctly in 60 seconds';
-  const best=getP(G.pid)?.sets[G.setKey].lightning||G.correct;
+  const best=p&&!isSpecialSet()&&p.sets[G.setKey]?p.sets[G.setKey].lightning:G.correct;
   el('res-patties').textContent='⚡';
-  el('res-plbl').textContent=`Best ever: ${best} word${best!==1?'s':''}`;
+  el('res-plbl').textContent='Best ever: '+best+' word'+(best!==1?'s':'');
   el('res-enc').textContent=pick(G.correct>=15?ENC.perfect:G.correct>=8?ENC.great:ENC.ok);
   el('res-list').innerHTML='';
   el('res-again').onclick=()=>begin('lightning');
+  el('res-word-sets').style.display=G.fromHub?'none':'block';
 }
 
 // ── END ROUND ─────────────────────────────────────────────────────────────
 function endRound(){
   if(window.speechSynthesis)window.speechSynthesis.cancel();
   const all=loadAll(),p=all.find(x=>x.id===G.pid);
-  if(p&&G.setKey!=='focus'){const sd=p.sets[G.setKey];if(G.correct>sd[G.mode])sd[G.mode]=G.correct;sd.patties=calcPat(sd);saveAll(all)}
+  if(p&&!isSpecialSet()){
+    const sd=p.sets[G.setKey];
+    if(sd){if(G.correct>sd[G.mode])sd[G.mode]=G.correct;sd.patties=calcPat(sd);}
+    saveAll(all);
+  }
+  if(p&&G.setKey.startsWith('rule:')){
+    if(!p.rulesPlayed)p.rulesPlayed={};
+    const rid=G.setKey.slice(5);
+    p.rulesPlayed[rid]=(p.rulesPlayed[rid]||0)+1;
+    saveAll(all);
+  }
   go('results');renderResults();
 }
 
 function renderResults(){
   const p=getP(G.pid),isFocus=G.setKey==='focus';
-  const pts=p&&!isFocus?p.sets[G.setKey].patties:0;
+  const pts=p&&!isSpecialSet()&&p.sets[G.setKey]?p.sets[G.setKey].patties:0;
   const total=G.words.length;
-  el('res-title').textContent='Round Complete! 🎉';
-  el('res-score').textContent=`${G.correct}/${total}`;
-  el('res-sub').textContent=G.correct===total?'Perfect score!':`${total-G.correct} to improve`;
+  el('res-title').textContent='Round Complete! \u{1F389}';
+  el('res-score').textContent=G.correct+'/'+total;
+  el('res-sub').textContent=G.correct===total?'Perfect score!':''+(total-G.correct)+' to improve';
   if(isFocus){
     const remaining=getFocusWords(p).length;
-    el('res-patties').textContent='🎯';
-    el('res-plbl').textContent=remaining>0?`${remaining} focus word${remaining!==1?'s':''} still to master`:'All focus words cleared! 🎉';
+    el('res-patties').textContent='\u{1F3AF}';
+    el('res-plbl').textContent=remaining>0?remaining+' focus word'+(remaining!==1?'s':'')+' still to master':'All focus words cleared! \u{1F389}';
+  }else if(isSpecialSet()){
+    el('res-patties').textContent=G.correct===total?'\u{1F31F}\u{1F31F}\u{1F31F}':G.correct>=Math.ceil(total*.7)?'\u{1F31F}\u{1F31F}':'\u{1F31F}';
+    el('res-plbl').textContent=G.correct===total?'Perfect!':'Keep practising this rule';
   }else{
-    let ph='';for(let i=0;i<3;i++)ph+=i<pts?'🍔':'<span style="opacity:.2">🍔</span>';
+    let ph='';for(let i=0;i<3;i++)ph+=i<pts?'\u{1F354}':'<span style="opacity:.2">\u{1F354}</span>';
     el('res-patties').innerHTML=ph;
-    el('res-plbl').textContent=pts===3?'Maximum patties! 🎉':pts>0?`${pts} of 3 patties earned`:'Aim for 6+ to earn patties';
+    el('res-plbl').textContent=pts===3?'Maximum patties! \u{1F389}':pts>0?pts+' of 3 patties earned':'Aim for 6+ to earn patties';
   }
-  el('res-enc').textContent=G.correct===10?pick(ENC.perfect):G.correct>=8?pick(ENC.great):G.correct>=6?pick(ENC.ok):pick(ENC.poor);
+  el('res-enc').textContent='\u{1F389} '+(G.correct===total?pick(ENC.perfect):G.correct>=Math.ceil(total*.8)?pick(ENC.great):G.correct>=Math.ceil(total*.6)?pick(ENC.ok):pick(ENC.poor));
   const list=el('res-list');list.innerHTML='';
   G.results.forEach(r=>{
     const li=document.createElement('li');li.className='res-item';
@@ -955,6 +1217,42 @@ function renderResults(){
     list.appendChild(li);
   });
   el('res-again').onclick=()=>begin(G.mode);
+  el('res-word-sets').style.display=G.fromHub?'none':'block';
+}
+
+// ── RULES ─────────────────────────────────────────────────────────────────
+function renderRules(){
+  const p=getP(G.pid);
+  const grid=el('rules-grid');grid.innerHTML='';
+  RULES.forEach(rule=>{
+    const played=p&&p.rulesPlayed&&p.rulesPlayed[rule.id]?p.rulesPlayed[rule.id]:0;
+    const c=document.createElement('div');c.className='rule-card';
+    c.innerHTML=`<div class="rule-card-icon">${rule.emoji}</div><div class="rule-card-name">${rule.name}</div><div class="rule-card-done">${played>0?'✓ Practised '+played+' time'+(played!==1?'s':''):'Tap to learn'}</div>`;
+    c.onclick=()=>showRuleDetail(rule.id);
+    grid.appendChild(c);
+  });
+}
+
+function showRuleDetail(ruleId){
+  const rule=RULES.find(r=>r.id===ruleId);if(!rule)return;
+  G.setKey='rule:'+ruleId;G.fromHub=true;
+  el('rule-detail-title').textContent=rule.emoji+' '+rule.name;
+  const exHtml=rule.examples.map(e=>`<span class="rule-ex">${e}</span>`).join('');
+  el('rule-detail-content').innerHTML=`
+    <div class="rule-detail-box">
+      <div class="rule-statement">${rule.rule}</div>
+      <div class="rule-tip">${rule.tip}</div>
+      <div class="rule-examples-label">Examples</div>
+      <div class="rule-examples">${exHtml}</div>
+    </div>
+    <div class="rule-practice-label">Practise this rule</div>
+    <div class="rule-mode-grid">
+      <button class="rule-mode-btn" onclick="begin('lcwc')">\u{1F441}️ Look, Cover, Write, Check</button>
+      <button class="rule-mode-btn" onclick="begin('hear')">\u{1F50A} Hear &amp; Spell</button>
+      <button class="rule-mode-btn" onclick="begin('scramble')">\u{1F9E9} Unscramble</button>
+      <button class="rule-mode-btn" onclick="begin('sent')">\u{1F4AC} Hear in a Sentence</button>
+    </div>`;
+  go('rule-detail');
 }
 
 // ── SAVE CODES ────────────────────────────────────────────────────────────
@@ -973,13 +1271,13 @@ function copyCode(){
 function importCode(){
   const raw=el('save-in').value.trim(),data=decode(raw);
   if(!data||!data.id||!data.name||!data.sets){alert('Invalid save code — please check and try again.');return}
-  SK.forEach(k=>{if(!data.sets[k])data.sets[k]={lcwc:0,hear:0,sent:0,lightning:0,patties:0}});
+  SK.forEach(k=>{if(!data.sets[k])data.sets[k]={lcwc:0,hear:0,sent:0,lightning:0,scramble:0,patties:0}});
   const all=loadAll(),idx=all.findIndex(p=>p.id===data.id);
   if(idx>=0)all[idx]=data;
   else if(all.length<3)all.push(data);
   else{alert('You already have 3 explorers. Delete one first.');return}
   saveAll(all);closeSave();go('home');
-  alert(`Welcome back, ${data.name}! Progress restored.`);
+  alert('Welcome back, '+data.name+'! Progress restored.');
 }
 
 // ── CONFETTI ──────────────────────────────────────────────────────────────
@@ -1008,11 +1306,8 @@ document.addEventListener('keydown',e=>{
 if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();
 
 // ── SPONGEBOB CHARACTERS ─────────────────────────────────────────────────
-const SB_HAPPY=`<svg width="64" height="64" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="28" width="60" height="58" rx="10" fill="#FFD700"/><rect x="18" y="68" width="60" height="18" rx="6" fill="#8B4513"/><rect x="18" y="64" width="60" height="6" fill="#5C3317"/><rect x="44" y="61" width="8" height="12" rx="2" fill="#C0A030"/><rect x="30" y="55" width="36" height="14" rx="3" fill="#fff"/><polygon points="36,55 48,65 60,55" fill="#fff"/><polygon points="44,56 52,56 50,70 48,72 46,70" fill="#FF4444"/><ellipse cx="36" cy="42" rx="8" ry="9" fill="#fff"/><ellipse cx="60" cy="42" rx="8" ry="9" fill="#fff"/><circle cx="37" cy="43" r="4" fill="#6699CC"/><circle cx="61" cy="43" r="4" fill="#6699CC"/><circle cx="38" cy="42" r="2" fill="#000"/><circle cx="62" cy="42" r="2" fill="#000"/><ellipse cx="48" cy="50" rx="3" ry="2" fill="#E8A000"/><path d="M32 54 Q48 70 64 54" stroke="#000" stroke-width="2.5" fill="none"/><rect x="40" y="55" width="7" height="7" rx="1" fill="#fff"/><rect x="48" y="55" width="7" height="7" rx="1" fill="#fff"/><circle cx="26" cy="54" r="6" fill="rgba(255,80,80,0.35)"/><circle cx="70" cy="54" r="6" fill="rgba(255,80,80,0.35)"/><circle cx="28" cy="38" r="2" fill="rgba(0,0,0,0.08)"/><circle cx="68" cy="40" r="2" fill="rgba(0,0,0,0.08)"/></svg>`;
-
-const PATRICK=`<svg width="64" height="64" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><ellipse cx="48" cy="55" rx="34" ry="38" fill="#FF9DC4"/><rect x="20" y="68" width="56" height="20" rx="4" fill="#2E8B57" opacity="0.9"/><polygon points="20,68 35,52 50,68" fill="#228B22"/><polygon points="46,68 61,52 76,68" fill="#228B22"/><ellipse cx="35" cy="44" rx="9" ry="6" fill="#fff"/><ellipse cx="61" cy="44" rx="9" ry="6" fill="#fff"/><circle cx="35" cy="45" r="3.5" fill="#000"/><circle cx="61" cy="45" r="3.5" fill="#000"/><circle cx="36" cy="44" r="1.5" fill="#fff"/><circle cx="62" cy="44" r="1.5" fill="#fff"/><path d="M34 60 Q48 50 62 60" stroke="#000" stroke-width="2" fill="none"/><ellipse cx="38" cy="65" rx="5" ry="3" fill="rgba(0,0,0,0.08)"/><ellipse cx="58" cy="65" rx="5" ry="3" fill="rgba(0,0,0,0.08)"/></svg>`;
-
-const SB_SAD=`<svg width="64" height="64" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="28" width="60" height="58" rx="10" fill="#FFD700"/><rect x="18" y="68" width="60" height="18" rx="6" fill="#8B4513"/><rect x="18" y="64" width="60" height="6" fill="#5C3317"/><rect x="44" y="61" width="8" height="12" rx="2" fill="#C0A030"/><rect x="30" y="55" width="36" height="14" rx="3" fill="#fff"/><polygon points="36,55 48,65 60,55" fill="#fff"/><polygon points="44,56 52,56 50,70 48,72 46,70" fill="#FF4444"/><ellipse cx="36" cy="44" rx="8" ry="7" fill="#fff"/><ellipse cx="60" cy="44" rx="8" ry="7" fill="#fff"/><circle cx="37" cy="45" r="4" fill="#6699CC"/><circle cx="61" cy="45" r="4" fill="#6699CC"/><circle cx="38" cy="44" r="2" fill="#000"/><circle cx="62" cy="44" r="2" fill="#000"/><line x1="28" y1="38" x2="44" y2="42" stroke="#000" stroke-width="2.5"/><line x1="68" y1="38" x2="52" y2="42" stroke="#000" stroke-width="2.5"/><ellipse cx="48" cy="52" rx="3" ry="2" fill="#E8A000"/><path d="M34 64 Q48 56 62 64" stroke="#000" stroke-width="2.5" fill="none"/><line x1="30" y1="42" x2="28" y2="55" stroke="#48CAE4" stroke-width="1.5" opacity="0.8"/><line x1="66" y1="42" x2="68" y2="55" stroke="#48CAE4" stroke-width="1.5" opacity="0.8"/><circle cx="28" cy="56" r="2" fill="#48CAE4" opacity="0.7"/><circle cx="68" cy="56" r="2" fill="#48CAE4" opacity="0.7"/></svg>`;
+const SB_HAPPY='<svg width="64" height="64" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="28" width="60" height="58" rx="10" fill="#FFD700"/><rect x="18" y="68" width="60" height="18" rx="6" fill="#8B4513"/><rect x="18" y="64" width="60" height="6" fill="#5C3317"/><rect x="44" y="61" width="8" height="12" rx="2" fill="#C0A030"/><rect x="30" y="55" width="36" height="14" rx="3" fill="#fff"/><polygon points="36,55 48,65 60,55" fill="#fff"/><polygon points="44,56 52,56 50,70 48,72 46,70" fill="#FF4444"/><ellipse cx="36" cy="42" rx="8" ry="9" fill="#fff"/><ellipse cx="60" cy="42" rx="8" ry="9" fill="#fff"/><circle cx="37" cy="43" r="4" fill="#6699CC"/><circle cx="61" cy="43" r="4" fill="#6699CC"/><circle cx="38" cy="42" r="2" fill="#000"/><circle cx="62" cy="42" r="2" fill="#000"/><ellipse cx="48" cy="50" rx="3" ry="2" fill="#E8A000"/><path d="M32 54 Q48 70 64 54" stroke="#000" stroke-width="2.5" fill="none"/><rect x="40" y="55" width="7" height="7" rx="1" fill="#fff"/><rect x="48" y="55" width="7" height="7" rx="1" fill="#fff"/><circle cx="26" cy="54" r="6" fill="rgba(255,80,80,0.35)"/><circle cx="70" cy="54" r="6" fill="rgba(255,80,80,0.35)"/></svg>';
+const PATRICK='<svg width="64" height="64" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><ellipse cx="48" cy="55" rx="34" ry="38" fill="#FF9DC4"/><rect x="20" y="68" width="56" height="20" rx="4" fill="#2E8B57" opacity="0.9"/><polygon points="20,68 35,52 50,68" fill="#228B22"/><polygon points="46,68 61,52 76,68" fill="#228B22"/><ellipse cx="35" cy="44" rx="9" ry="6" fill="#fff"/><ellipse cx="61" cy="44" rx="9" ry="6" fill="#fff"/><circle cx="35" cy="45" r="3.5" fill="#000"/><circle cx="61" cy="45" r="3.5" fill="#000"/><circle cx="36" cy="44" r="1.5" fill="#fff"/><circle cx="62" cy="44" r="1.5" fill="#fff"/><path d="M34 60 Q48 50 62 60" stroke="#000" stroke-width="2" fill="none"/></svg>';
 
 let _reactionTimer=null;
 function showReaction(ok){
@@ -1036,6 +1331,7 @@ function showReaction(ok){
 
 // ── BOOT ──────────────────────────────────────────────────────────────────
 go('home');
+
 </script>
 </body>
 </html>
