@@ -352,7 +352,7 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
     </div>
   </div>
 
-  <div class="sec-label">Special</div>
+  <div class="sec-label">Learning Aids</div>
   <div class="hub-specials">
     <div class="hub-card focus-special" id="focus-hub-btn" onclick="beginFocus()">
       <div class="hub-card-icon">&#x1F3AF;</div>
@@ -962,7 +962,7 @@ function renderMap(){
   SK.forEach(key=>{
     const def=SETS[key],data=p.sets[key]||{},pts=data.patties||0,ls=data.lightning||0;
     const c=document.createElement('div');c.className='set-card';
-    c.innerHTML=`<span class="set-em">${def.emoji}</span><div class="set-nm">${def.name}</div><div class="patties-row"><span class="patty${pts<1?' dim':''}">&#x{1F354}</span><span class="patty${pts<2?' dim':''}">&#x{1F354}</span><span class="patty${pts<3?' dim':''}">&#x{1F354}</span></div><div class="lt-info">${ls>0?'⚡ Best: '+ls+' words':'⚡ Not played yet'}</div>`;
+    c.innerHTML=`<span class="set-em">${def.emoji}</span><div class="set-nm">${def.name}</div><div class="patties-row"><span class="patty${pts<1?' dim':''}">\u{1F354}</span><span class="patty${pts<2?' dim':''}">\u{1F354}</span><span class="patty${pts<3?' dim':''}">\u{1F354}</span></div><div class="lt-info">${ls>0?'⚡ Best: '+ls+' words':'⚡ Not played yet'}</div>`;
     c.onclick=()=>{G.setKey=key;G.fromHub=false;go('modes')};
     grid.appendChild(c);
   });
