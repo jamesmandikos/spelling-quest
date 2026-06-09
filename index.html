@@ -979,7 +979,7 @@ function speak(text){
   const ss=window.speechSynthesis;if(!ss)return;
   ss.cancel();
   const u=new SpeechSynthesisUtterance(text);
-  u.lang='en-GB';u.rate=0.88;
+  u.lang='en-GB';u.rate=1.25;u.pitch=1.5;
   const vs=ss.getVoices();
   const v=vs.find(v=>v.lang==='en-GB'&&/female|google uk/i.test(v.name))||vs.find(v=>v.lang==='en-GB')||vs.find(v=>v.lang.startsWith('en'));
   if(v)u.voice=v;ss.speak(u);
