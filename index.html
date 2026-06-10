@@ -153,7 +153,16 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .print-group{background:var(--glass);backdrop-filter:blur(6px);border:1px solid var(--glass-b);border-radius:16px;padding:16px 18px}
 .print-group-title{color:#fff;font-weight:800;font-size:.88rem;padding-bottom:10px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.18);letter-spacing:.3px}
 .print-word-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px 10px}
-.print-word{color:rgba(255,255,255,.9);font-size:.85rem;font-weight:600;padding:5px 8px;background:rgba(255,255,255,.08);border-radius:7px;text-align:center;letter-spacing:.5px}
+.print-word{color:rgba(255,255,255,.9);font-size:.85rem;font-weight:600;padding:5px 8px;background:rgba(255,255,255,.08);border-radius:7px;text-align:center;letter-spacing:.5px;position:relative}
+.print-word.mastered{background:rgba(82,183,136,.22);border:1px solid #52B788;color:#a8eac8}
+.print-word.missed{background:rgba(255,107,107,.2);border:1px solid #FF6B6B;color:#ffb3b3}
+.prog-legend{display:flex;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+.prog-leg-item{display:flex;align-items:center;gap:6px;font-size:.75rem;color:rgba(255,255,255,.65)}
+.prog-leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.prog-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.prog-stat{background:var(--glass);backdrop-filter:blur(6px);border:1px solid var(--glass-b);border-radius:14px;padding:14px 10px;text-align:center}
+.prog-stat-n{color:#fff;font-size:1.6rem;font-weight:900;line-height:1}
+.prog-stat-l{color:rgba(255,255,255,.5);font-size:.68rem;margin-top:4px}
 .print-source{color:rgba(255,255,255,.35);font-size:.7rem;margin-top:16px;padding-top:10px;border-top:1px solid rgba(255,255,255,.12);line-height:1.5}
 @media(min-width:480px){.print-word-grid{grid-template-columns:repeat(5,1fr)}}
 .focus-badge{display:inline-block;background:var(--coral);color:#fff;font-size:.65rem;font-weight:700;border-radius:99px;padding:2px 8px;margin-top:4px}
@@ -294,7 +303,10 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
   .print-group{margin-bottom:24px;page-break-inside:avoid}
   .print-group-title{font-size:1rem;font-weight:800;color:#1A1A2E;border-bottom:2px solid #1A1A2E;padding-bottom:4px;margin-bottom:12px}
   .print-word-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px 16px}
-  .print-word{font-size:.85rem;padding:2px 0;color:#1A1A2E}
+  .print-word{font-size:.85rem;padding:2px 0;color:#1A1A2E;background:none!important;border:none!important}
+  .print-word.mastered::after{content:' ✓';color:#1a7a3a;font-weight:900}
+  .print-word.missed{color:#c0392b}
+  .prog-stats,.prog-legend{display:none!important}
   .print-source{font-size:.7rem;color:#888;margin-top:20px;padding-top:8px;border-top:1px solid #ddd}
 }
 </style>
@@ -355,6 +367,7 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
       <div class="hub-progress" id="hub-progress">0 &#x1F354; earned</div>
     </div>
     <div class="hub-header-btns">
+      <button class="icon-btn" title="Progress report" onclick="go('progress')">&#x1F4CA;</button>
       <button class="icon-btn" title="Save code" onclick="openSave(G.pid)">&#x1F4BE;</button>
       <button class="icon-btn" title="Switch player" onclick="go('home')">&#x21C4;</button>
     </div>
@@ -551,6 +564,15 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
     <div class="topbar-title">&#x1F3AF; Focus Words</div>
   </div>
   <div id="focus-detail-content"></div>
+</div>
+
+<!-- PROGRESS REPORT -->
+<div id="s-progress" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="go('hub')">&#x2190;</button>
+    <div class="topbar-title">&#x1F4CA; Progress Report</div>
+  </div>
+  <div id="progress-content"></div>
 </div>
 
 <!-- PRINT WORD LIST -->
@@ -848,7 +870,7 @@ const SKEY = 'spellingQuest.v1';
 const CPFX = 'SPQ1.';
 
 function blankSets(){const s={};SK.forEach(k=>{s[k]={lcwc:0,hear:0,sent:0,lightning:0,scramble:0,patties:0}});return s}
-function newProfile(name){return{id:'p'+Date.now(),name,sets:blankSets(),focusWords:[],rulesPlayed:{}}}
+function newProfile(name){return{id:'p'+Date.now(),name,sets:blankSets(),focusWords:[],rulesPlayed:{},wordStatus:{}}}
 
 function addFocusWord(p,item){
   if(!p.focusWords)p.focusWords=[];
@@ -893,6 +915,7 @@ function go(s){
   if(s==='rules')  renderRules();
   if(s==='focus-detail') renderFocusDetail();
   if(s==='print') renderPrint();
+  if(s==='progress') renderProgress();
 }
 function stopAll(){
   if(G.ltTimer){clearInterval(G.ltTimer);G.ltTimer=null}
@@ -1047,17 +1070,59 @@ function renderMap(){
 
 // ── PRINT ─────────────────────────────────────────────────────────────────
 function renderPrint(){
+  const p=getP(G.pid),ws=(p&&p.wordStatus)||{};
   const groups=SK.map(key=>{
     const def=SETS[key];
-    const words=def.words.map(w=>'<span class="print-word">'+w.w+'</span>').join('');
+    const words=def.words.map(w=>{
+      const st=ws[w.w];
+      const cls='print-word'+(st===true?' mastered':st===false?' missed':'');
+      return '<span class="'+cls+'">'+w.w+'</span>';
+    }).join('');
     return '<div class="print-group"><div class="print-group-title">'+def.emoji+' '+def.name+' — '+def.desc+'</div><div class="print-word-grid">'+words+'</div></div>';
   }).join('');
+  const attempted=Object.keys(ws).length;
+  const mastered=Object.values(ws).filter(v=>v).length;
   el('print-content').innerHTML=
     '<div class="print-header"><h1>&#x1F4DA; Spelling Quest — Word List</h1>'
-    +'<p>100 words from the UK National Curriculum Years 3 &amp; 4 statutory spelling list</p></div>'
+    +'<p>Green = got it right last attempt &nbsp;·&nbsp; Red = still working on it &nbsp;·&nbsp; Grey = not tried yet</p></div>'
+    +(attempted>0?'<div class="prog-legend"><span class="prog-leg-item"><span class="prog-leg-dot" style="background:#52B788"></span>Mastered ('+mastered+')</span><span class="prog-leg-item"><span class="prog-leg-dot" style="background:#FF6B6B"></span>Still working on ('+(attempted-mastered)+')</span><span class="prog-leg-item"><span class="prog-leg-dot" style="background:rgba(255,255,255,.15)"></span>Not tried yet ('+(100-attempted)+')</span></div>':'')
     +'<div class="print-groups">'+groups+'</div>'
     +'<p class="print-source">Source: UK National Curriculum for England — Years 3 &amp; 4 Statutory Spelling Word List (Department for Education, Appendix 1)</p>'
     +'<button class="btn btn-lg" style="margin-top:16px;background:rgba(255,255,255,.18);color:#fff;border:2px solid rgba(255,255,255,.4)" onclick="window.print()">&#x1F5A8;&#xFE0F; Print / Save as PDF</button>';
+}
+
+// ── PROGRESS REPORT ──────────────────────────────────────────────────────────
+function renderProgress(){
+  const p=getP(G.pid);if(!p){go('home');return;}
+  const ws=p.wordStatus||{};
+  const fw=getFocusWords(p);
+  const fwSet=new Set(fw.map(f=>f.w));
+  const allWords=SK.flatMap(k=>SETS[k].words.map(w=>w.w));
+  const mastered=allWords.filter(w=>ws[w]===true).length;
+  const struggling=allWords.filter(w=>ws[w]===false||fwSet.has(w)).length;
+  const notTried=allWords.filter(w=>ws[w]===undefined&&!fwSet.has(w)).length;
+  const totalSets=SK.length;
+  const patties3=SK.filter(k=>(p.sets[k]||{}).patties>=3).length;
+  const groups=SK.map(key=>{
+    const def=SETS[key];
+    const words=def.words.map(w=>{
+      const inFw=fwSet.has(w.w);
+      const st=ws[w.w];
+      const cls='print-word'+(st===true&&!inFw?' mastered':inFw||st===false?' missed':'');
+      return '<span class="'+cls+'">'+w.w+'</span>';
+    }).join('');
+    const pts=(p.sets[key]||{}).patties||0;
+    const ptHtml='\u{1F354}'.repeat(pts)+('<span style="opacity:.2">\u{1F354}</span>').repeat(3-pts);
+    return '<div class="print-group"><div class="print-group-title" style="display:flex;justify-content:space-between;align-items:center"><span>'+def.emoji+' '+def.name+'</span><span style="font-size:.9rem">'+ptHtml+'</span></div><div class="print-word-grid">'+words+'</div></div>';
+  }).join('');
+  el('progress-content').innerHTML=
+    '<div class="prog-stats">'
+    +'<div class="prog-stat"><div class="prog-stat-n" style="color:#52B788">'+mastered+'</div><div class="prog-stat-l">Words mastered</div></div>'
+    +'<div class="prog-stat"><div class="prog-stat-n" style="color:#FF6B6B">'+struggling+'</div><div class="prog-stat-l">Still working on</div></div>'
+    +'<div class="prog-stat"><div class="prog-stat-n">'+patties3+'/'+totalSets+'</div><div class="prog-stat-l">Sets complete</div></div>'
+    +'</div>'
+    +(fw.length>0?'<div class="print-group" style="margin-bottom:20px"><div class="print-group-title">🎯 Focus words right now</div><div class="print-word-grid">'+fw.map(f=>'<span class="print-word missed">'+f.w+(f.misses>1?' ×'+f.misses:'')+'</span>').join('')+'</div></div>':'')
+    +'<div class="print-groups">'+groups+'</div>';
 }
 
 // ── MODES ─────────────────────────────────────────────────────────────────
@@ -1206,11 +1271,13 @@ function check(){
   const ok=typed===item.w.toLowerCase();
   G.answered=true;G.attempted++;if(ok)G.correct++;
   el('answer').className='answer-field '+(ok?'ok':'wrong');
-  // update focus words
+  // update focus words + word status
   const all=loadAll(),p=all.find(x=>x.id===G.pid);
   if(p){
     if(!ok&&G.setKey!=='focus'&&!G.setKey.startsWith('rule:'))addFocusWord(p,item);
     else if(ok&&G.setKey==='focus')removeFocusWord(p,item.w);
+    if(!p.wordStatus)p.wordStatus={};
+    p.wordStatus[item.w]=ok;
     saveAll(all);
   }
   showReaction(ok);
