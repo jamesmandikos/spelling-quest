@@ -119,17 +119,14 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .card-wordsets{border-bottom-color:#52B788}
 @media(max-width:767px){.card-wordsets{grid-column:span 2;max-width:280px;justify-self:center;width:100%}}
 .hub-card.dim{opacity:.45;cursor:default;pointer-events:none}
-/* ── FOCUS WORDS TILE ── */
-.hub-fw-tile{background:#fff;border-radius:20px;padding:18px 20px;box-shadow:0 4px 14px rgba(0,0,0,.07);border-bottom:5px solid #FF6B6B;margin-bottom:14px}
-.hub-fw-head{display:flex;align-items:center;margin-bottom:12px;gap:8px}
-.hub-fw-title{color:#1A1A2E;font-weight:800;font-size:.95rem;flex:1}
-.hub-fw-count{color:#aaa;font-size:.78rem}
-.hub-fw-words{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-.hub-fw-chip{background:#FFF0F0;border:1.5px solid #FFCDD2;border-radius:99px;padding:5px 14px;color:#C62828;font-size:.85rem;font-weight:700;display:inline-flex;align-items:center;gap:4px}
-.hub-fw-misses{color:#E57373;font-size:.7rem;font-weight:600}
-.hub-fw-btn{background:#FF6B6B;color:#fff;border:none;border-radius:12px;padding:11px 18px;font-weight:700;font-size:.9rem;cursor:pointer;width:100%;transition:background .15s,transform .1s;box-shadow:0 3px 0 #C94040}
-.hub-fw-btn:hover{background:#e55a5a;transform:translateY(-1px)}
-.hub-fw-btn:active{transform:translateY(1px);box-shadow:0 1px 0 #C94040}
+/* ── FOCUS DETAIL SCREEN ── */
+.fw-list-item{display:flex;align-items:center;gap:14px;padding:13px 16px;background:var(--glass);backdrop-filter:blur(6px);border:1px solid var(--glass-b);border-radius:14px;margin-bottom:8px}
+.fw-num{color:rgba(255,255,255,.35);font-size:.82rem;min-width:22px;text-align:right;font-weight:700;flex-shrink:0}
+.fw-word{color:#fff;font-weight:800;font-size:1rem;flex:1;text-transform:uppercase;letter-spacing:1.5px}
+.fw-miss{background:var(--coral);color:#fff;font-size:.68rem;font-weight:700;border-radius:99px;padding:2px 8px;flex-shrink:0}
+.btn-coral{background:#FF6B6B;color:#fff;box-shadow:0 4px 0 #C94040}
+.btn-coral:hover{transform:translateY(-1px);box-shadow:0 5px 0 #C94040}
+.btn-coral:active{transform:translateY(2px);box-shadow:0 1px 0 #C94040}
 /* ── SETS GRID (word sets map) ── */
 .sets-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .set-card{background:var(--glass);backdrop-filter:blur(8px);border:2px solid var(--glass-b);border-radius:var(--r-xl);padding:14px 12px;cursor:pointer;text-align:center;transition:all .2s}
@@ -367,7 +364,7 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 
   <div class="sec-label">Learning Aids</div>
   <div class="hub-specials">
-    <div class="hub-card focus-special" id="focus-hub-btn" onclick="beginFocus()">
+    <div class="hub-card focus-special" id="focus-hub-btn" onclick="go('focus-detail')">
       <div class="hub-card-icon">&#x1F3AF;</div>
       <div class="hub-card-name">Focus Words</div>
       <div class="hub-card-desc">Practise your tricky words</div>
@@ -387,14 +384,6 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
     </div>
   </div>
 
-  <div id="hub-fw-tile" class="hub-fw-tile" style="display:none">
-    <div class="hub-fw-head">
-      <div class="hub-fw-title">&#x1F3AF; Words to practise</div>
-      <div class="hub-fw-count" id="hub-fw-count"></div>
-    </div>
-    <div class="hub-fw-words" id="hub-fw-words"></div>
-    <button class="hub-fw-btn" onclick="beginFocus()">Practise these words &#x2192;</button>
-  </div>
 </div>
 
 <!-- WORD SETS MAP -->
@@ -520,6 +509,16 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
     <div class="topbar-title" id="rule-detail-title">Rule</div>
   </div>
   <div id="rule-detail-content"></div>
+</div>
+
+
+<!-- FOCUS DETAIL -->
+<div id="s-focus-detail" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="go('hub')">&#x2190;</button>
+    <div class="topbar-title">&#x1F3AF; Focus Words</div>
+  </div>
+  <div id="focus-detail-content"></div>
 </div>
 
 <!-- MODAL: SAVE CODE -->
@@ -863,6 +862,7 @@ function go(s){
   if(s==='map')    renderMap();
   if(s==='modes')  renderModes();
   if(s==='rules')  renderRules();
+  if(s==='focus-detail') renderFocusDetail();
 }
 function stopAll(){
   if(G.ltTimer){clearInterval(G.ltTimer);G.ltTimer=null}
@@ -974,15 +974,26 @@ function renderHub(){
     el('focus-hub-sub').textContent='No mistakes recorded yet';
     focBtn.classList.add('dim');
   }
-  // focus words tile
-  const fwTile=el('hub-fw-tile');
-  if(fw.length>0){
-    fwTile.style.display='block';
-    el('hub-fw-count').textContent=fw.length+' word'+(fw.length!==1?'s':'');
-    el('hub-fw-words').innerHTML=fw.map(f=>'<span class="hub-fw-chip">'+f.w+(f.misses>1?'<span class="hub-fw-misses"> \xD7'+f.misses+'</span>':'')+'</span>').join('');
-  }else{
-    fwTile.style.display='none';
-  }
+
+}
+
+// ── FOCUS DETAIL ─────────────────────────────────────────────────────────────
+function renderFocusDetail(){
+  const p=getP(G.pid);
+  const fw=getFocusWords(p);
+  if(!fw.length){go('hub');return;}
+  const wordCount=fw.length+' word'+(fw.length!==1?'s':'')+' to practise';
+  const items=fw.map((f,i)=>
+    '<div class="fw-list-item">'
+    +'<span class="fw-num">'+(i+1)+'</span>'
+    +'<span class="fw-word">'+f.w+'</span>'
+    +(f.misses>1?'<span class="fw-miss">×'+f.misses+'</span>':'')
+    +'</div>'
+  ).join('');
+  el('focus-detail-content').innerHTML=
+    '<p style="color:rgba(255,255,255,.6);font-size:.82rem;margin-bottom:14px">'+wordCount+'</p>'
+    +'<div style="margin-bottom:16px">'+items+'</div>'
+    +'<button class="btn btn-lg btn-full btn-coral" onclick="beginFocus()">Practise these words →</button>';
 }
 
 // ── MAP (word sets) ────────────────────────────────────────────────────────
