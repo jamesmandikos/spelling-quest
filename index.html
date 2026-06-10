@@ -140,6 +140,12 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .lt-info{color:rgba(255,255,255,.55);font-size:.68rem}
 .set-card.focus-card{border-color:var(--coral);background:rgba(230,57,70,0.18)}
 .set-card.focus-card:hover{border-color:#ff9090;background:rgba(230,57,70,0.32)}
+.print-tile{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;text-align:left}
+.print-tile .set-em{font-size:1.8rem;flex-shrink:0}
+.print-tile-info{flex:1}
+.print-tile-name{color:#fff;font-weight:800;font-size:.95rem}
+.print-tile-sub{color:rgba(255,255,255,.55);font-size:.78rem;margin-top:2px}
+.print-tile-arrow{color:rgba(255,255,255,.5);font-size:1.2rem}
 .focus-badge{display:inline-block;background:var(--coral);color:#fff;font-size:.65rem;font-weight:700;border-radius:99px;padding:2px 8px;margin-top:4px}
 /* ── MODE CARDS ── */
 .mode-card{background:var(--glass);backdrop-filter:blur(8px);border:2px solid var(--glass-b);border-radius:var(--r-xl);padding:16px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all .2s}
@@ -266,6 +272,21 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
   .hear-btn{width:110px;height:110px;font-size:3rem}
 }
 @media(min-width:1200px){.screen{max-width:1120px}.sets-grid{grid-template-columns:repeat(4,1fr)}}
+@media print{
+  body{background:#fff!important;color:#000!important}
+  .screen{position:static!important;max-width:100%!important;padding:0!important}
+  .topbar,.back-btn,.btn{display:none!important}
+  #s-print.active{display:block!important}
+  .print-header{margin-bottom:20px}
+  .print-header h1{font-size:1.4rem;font-weight:900;color:#1A1A2E;margin-bottom:4px}
+  .print-header p{font-size:.78rem;color:#666}
+  .print-groups{display:block}
+  .print-group{margin-bottom:24px;page-break-inside:avoid}
+  .print-group-title{font-size:1rem;font-weight:800;color:#1A1A2E;border-bottom:2px solid #1A1A2E;padding-bottom:4px;margin-bottom:12px}
+  .print-word-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px 16px}
+  .print-word{font-size:.85rem;padding:2px 0;color:#1A1A2E}
+  .print-source{font-size:.7rem;color:#888;margin-top:20px;padding-top:8px;border-top:1px solid #ddd}
+}
 </style>
 </head>
 <body>
@@ -520,6 +541,15 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
     <div class="topbar-title">&#x1F3AF; Focus Words</div>
   </div>
   <div id="focus-detail-content"></div>
+</div>
+
+<!-- PRINT WORD LIST -->
+<div id="s-print" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="go('map')">&#x2190;</button>
+    <div class="topbar-title">&#x1F5A8;&#xFE0F; Print Word List</div>
+  </div>
+  <div id="print-content"></div>
 </div>
 
 <!-- MODAL: SAVE CODE -->
@@ -852,6 +882,7 @@ function go(s){
   if(s==='modes')  renderModes();
   if(s==='rules')  renderRules();
   if(s==='focus-detail') renderFocusDetail();
+  if(s==='print') renderPrint();
 }
 function stopAll(){
   if(G.ltTimer){clearInterval(G.ltTimer);G.ltTimer=null}
@@ -997,6 +1028,26 @@ function renderMap(){
     c.onclick=()=>{G.setKey=key;G.fromHub=false;go('modes')};
     grid.appendChild(c);
   });
+  // Print tile
+  const pt=document.createElement('div');pt.className='set-card print-tile';
+  pt.innerHTML='<span class="set-em">&#x1F5A8;&#xFE0F;</span><div class="print-tile-info"><div class="print-tile-name">Print Word List</div><div class="print-tile-sub">All 100 words grouped by difficulty</div></div><span class="print-tile-arrow">&#x2192;</span>';
+  pt.onclick=()=>go('print');
+  grid.appendChild(pt);
+}
+
+// ── PRINT ─────────────────────────────────────────────────────────────────
+function renderPrint(){
+  const groups=SK.map(key=>{
+    const def=SETS[key];
+    const words=def.words.map(w=>'<span class="print-word">'+w.w+'</span>').join('');
+    return '<div class="print-group"><div class="print-group-title">'+def.emoji+' '+def.name+' — '+def.desc+'</div><div class="print-word-grid">'+words+'</div></div>';
+  }).join('');
+  el('print-content').innerHTML=
+    '<div class="print-header"><h1>&#x1F4DA; Spelling Quest — Word List</h1>'
+    +'<p>100 words from the UK National Curriculum Years 3 &amp; 4 statutory spelling list</p></div>'
+    +'<div class="print-groups">'+groups+'</div>'
+    +'<p class="print-source">Source: UK National Curriculum for England — Years 3 &amp; 4 Statutory Spelling Word List (Department for Education, Appendix 1)</p>'
+    +'<button class="btn btn-lg" style="margin-top:16px;background:rgba(255,255,255,.18);color:#fff;border:2px solid rgba(255,255,255,.4)" onclick="window.print()">&#x1F5A8;&#xFE0F; Print / Save as PDF</button>';
 }
 
 // ── MODES ─────────────────────────────────────────────────────────────────
