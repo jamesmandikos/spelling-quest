@@ -132,7 +132,8 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .set-card{background:var(--glass);backdrop-filter:blur(8px);border:2px solid var(--glass-b);border-radius:var(--r-xl);padding:14px 12px;cursor:pointer;text-align:center;transition:all .2s}
 .set-card:hover{background:rgba(255,255,255,.24);border-color:var(--yellow);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.2)}
 .set-em{font-size:2.2rem;margin-bottom:6px;display:block}
-.set-nm{color:#fff;font-weight:700;font-size:.82rem;line-height:1.25;margin-bottom:8px}
+.set-nm{color:#fff;font-weight:700;font-size:.9rem;line-height:1.25;margin-bottom:4px}
+.set-desc{color:rgba(255,255,255,.55);font-size:.72rem;margin-bottom:10px;line-height:1.35}
 .patties-row{display:flex;gap:3px;justify-content:center;margin-bottom:3px}
 .patty{font-size:1.05rem}
 .patty.dim{opacity:.2}
@@ -240,7 +241,7 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .pop{animation:popIn .3s ease-out}
 .shake{animation:shake .38s ease-out}
 /* ── RESPONSIVE ── */
-@media(min-width:600px){.sets-grid{grid-template-columns:repeat(3,1fr)}.rules-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:600px){.sets-grid{grid-template-columns:repeat(4,1fr)}.rules-grid{grid-template-columns:repeat(3,1fr)}}
 @media(min-width:768px){
   .screen{max-width:860px;padding:18px 28px}
   .landing-card{max-width:660px}
@@ -264,7 +265,7 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
   .word-text{font-size:clamp(2.8rem,5vw,4.5rem)}
   .hear-btn{width:110px;height:110px;font-size:3rem}
 }
-@media(min-width:1200px){.screen{max-width:1120px}.sets-grid{grid-template-columns:repeat(5,1fr)}}
+@media(min-width:1200px){.screen{max-width:1120px}.sets-grid{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
@@ -560,124 +561,112 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 
 // ── WORD DATA ──────────────────────────────────────────────────────────────
 const SETS = {
-  krusty_krab:     {name:'Krusty Krab',       emoji:'\u{1F980}', words:[
+  starter:{name:'Starter',emoji:'\u{1F420}',desc:'Everyday words to get started',words:[
+    {w:'answer',    s:'Do you know the answer to the question?'},
+    {w:'build',     s:'We want to build a sandcastle.'},
+    {w:'complete',  s:'Can you complete this sentence?'},
+    {w:'decide',    s:'It is hard to decide which flavour to choose.'},
+    {w:'early',     s:'We have to leave early tomorrow.'},
+    {w:'earth',     s:'The earth travels around the sun.'},
+    {w:'enough',    s:'Have you eaten enough for dinner?'},
+    {w:'famous',    s:'She is famous for her paintings.'},
+    {w:'forward',   s:'Take one step forward, please.'},
+    {w:'fruit',     s:'An apple is a type of fruit.'},
+    {w:'group',     s:'Work in a group of four.'},
+    {w:'history',   s:'We learn about history at school.'},
+    {w:'important', s:'It is important to drink water every day.'},
+    {w:'learn',     s:'You learn something new every day.'},
+    {w:'minute',    s:'Wait just one minute, please.'},
+    {w:'natural',   s:'Honey is a natural sweetener.'},
+    {w:'notice',    s:'Did you notice the new painting on the wall?'},
+    {w:'often',     s:'How often do you go swimming?'},
+    {w:'promise',   s:'I promise to be back before dark.'},
+    {w:'question',  s:'Ask a question if you do not understand.'},
+    {w:'recent',    s:'Have you seen any recent films?'},
+    {w:'remember',  s:'Try to remember to bring your PE kit.'},
+    {w:'sentence',  s:'Write a sentence using the word carefully.'},
+    {w:'various',   s:'There were various colours to choose from.'},
+    {w:'woman',     s:'The woman waved from across the street.'}
+  ]},
+  explorer:{name:'Explorer',emoji:'\u{1F980}',desc:'Tricky sounds and silent letters',words:[
     {w:'accident',  s:'It was an accident when I spilled the juice.'},
     {w:'address',   s:'Write your address on the envelope.'},
-    {w:'answer',    s:'Do you know the answer to the question?'},
-    {w:'arrive',    s:'What time will you arrive at school?'},
     {w:'appear',    s:'Stars appear in the sky at night.'},
+    {w:'arrive',    s:'What time will you arrive at school?'},
     {w:'believe',   s:'I believe you can do it.'},
     {w:'bicycle',   s:'She rode her bicycle to the park.'},
     {w:'breath',    s:'Take a deep breath before you start.'},
     {w:'breathe',   s:'Remember to breathe slowly.'},
-    {w:'build',     s:'We want to build a sandcastle.'}
-  ]},
-  jellyfish_fields:{name:'Jellyfish Fields',   emoji:'\u{1FAB7}', words:[
     {w:'busy',      s:'The market was very busy on Saturday.'},
-    {w:'business',  s:'Dad started a new business this year.'},
-    {w:'calendar',  s:'Mark your birthday on the calendar.'},
     {w:'caught',    s:'She caught the ball with both hands.'},
-    {w:'centre',    s:'The library is in the centre of town.'},
-    {w:'century',   s:'A century is one hundred years.'},
     {w:'certain',   s:'Are you certain you locked the door?'},
     {w:'circle',    s:'Draw a circle around the right answer.'},
-    {w:'complete',  s:'Can you complete this sentence?'},
-    {w:'consider',  s:'Please consider how the other person feels.'}
-  ]},
-  sandy_treedome:  {name:"Sandy's Treedome",   emoji:'\u{1F335}', words:[
     {w:'continue',  s:'Please continue reading from page ten.'},
-    {w:'decide',    s:'It is hard to decide which flavour to choose.'},
-    {w:'describe',  s:'Describe what you can see outside.'},
     {w:'different', s:'Every snowflake is different.'},
-    {w:'difficult', s:'Maths can be difficult but fun.'},
-    {w:'disappear', s:'The magician made the rabbit disappear.'},
-    {w:'early',     s:'We have to leave early tomorrow.'},
-    {w:'earth',     s:'The earth travels around the sun.'},
     {w:'eight',     s:'There are eight legs on a spider.'},
-    {w:'enough',    s:'Have you eaten enough for dinner?'}
-  ]},
-  rock_bottom:     {name:'Rock Bottom',         emoji:'\u{1FAA8}', words:[
     {w:'exercise',  s:'Swimming is good exercise.'},
-    {w:'experience',s:'It was an amazing experience.'},
-    {w:'experiment',s:'We did an experiment with vinegar and baking soda.'},
-    {w:'extreme',   s:'The weather was extreme last winter.'},
-    {w:'famous',    s:'She is famous for her paintings.'},
-    {w:'favourite', s:'What is your favourite colour?'},
-    {w:'February',  s:'My birthday is in February.'},
-    {w:'forward',   s:'Take one step forward, please.'},
-    {w:'fruit',     s:'An apple is a type of fruit.'},
-    {w:'grammar',   s:'Good grammar helps people understand your writing.'}
-  ]},
-  goo_lagoon:      {name:'Goo Lagoon',           emoji:'\u{1F3D6}️', words:[
-    {w:'group',     s:'Work in a group of four.'},
     {w:'guard',     s:'A guard stood outside the palace.'},
     {w:'guide',     s:'The tour guide showed us around the museum.'},
     {w:'heard',     s:'I heard a strange noise last night.'},
     {w:'heart',     s:'Your heart pumps blood around your body.'},
+    {w:'mention',   s:'Did she mention when she is coming?'},
+    {w:'perhaps',   s:'Perhaps we can go to the park later.'},
+    {w:'purpose',   s:'What is the purpose of this machine?'},
+    {w:'quarter',   s:'Cut the apple into a quarter.'},
+    {w:'special',   s:'Today is a very special day.'}
+  ]},
+  champion:{name:'Champion',emoji:'⭐',desc:'Words that often trip people up',words:[
+    {w:'calendar',  s:'Mark your birthday on the calendar.'},
+    {w:'centre',    s:'The library is in the centre of town.'},
+    {w:'century',   s:'A century is one hundred years.'},
+    {w:'consider',  s:'Please consider how the other person feels.'},
+    {w:'describe',  s:'Describe what you can see outside.'},
+    {w:'difficult', s:'Maths can be difficult but fun.'},
+    {w:'disappear', s:'The magician made the rabbit disappear.'},
+    {w:'extreme',   s:'The weather was extreme last winter.'},
+    {w:'favourite', s:'What is your favourite colour?'},
+    {w:'grammar',   s:'Good grammar helps people understand your writing.'},
     {w:'height',    s:"The giraffe's height is amazing."},
-    {w:'history',   s:'We learn about history at school.'},
     {w:'imagine',   s:'Imagine you are on a desert island.'},
     {w:'increase',  s:'The price will increase next year.'},
-    {w:'important', s:'It is important to drink water every day.'}
-  ]},
-  patricks_rock:   {name:"Patrick's Rock",       emoji:'⭐', words:[
     {w:'interest',  s:'She has a great interest in science.'},
     {w:'island',    s:'The ship was near a small island.'},
-    {w:'knowledge', s:'Reading helps you build knowledge.'},
-    {w:'learn',     s:'You learn something new every day.'},
     {w:'length',    s:'Measure the length of the table.'},
     {w:'library',   s:'Borrow a book from the library.'},
     {w:'material',  s:'Cotton is a natural material.'},
     {w:'medicine',  s:'Take the medicine twice a day.'},
-    {w:'mention',   s:'Did she mention when she is coming?'},
-    {w:'minute',    s:'Wait just one minute, please.'}
-  ]},
-  chum_bucket:     {name:'The Chum Bucket',      emoji:'\u{1FAA3}', words:[
-    {w:'natural',   s:'Honey is a natural sweetener.'},
     {w:'naughty',   s:'The puppy was very naughty today.'},
-    {w:'notice',    s:'Did you notice the new painting on the wall?'},
-    {w:'occasion',  s:'A birthday is a special occasion.'},
-    {w:'often',     s:'How often do you go swimming?'},
     {w:'opposite',  s:'Cold is the opposite of hot.'},
     {w:'ordinary',  s:'It was just an ordinary Tuesday.'},
+    {w:'position',  s:'What position do you play in the team?'},
+    {w:'possible',  s:'Is it possible to finish by five?'},
+    {w:'strange',   s:'That is a very strange shape.'}
+  ]},
+  master:{name:'Master',emoji:'\u{1F9FD}',desc:'The 25 toughest spelling challenges',words:[
+    {w:'business',  s:'Dad started a new business this year.'},
+    {w:'experience',s:'It was an amazing experience.'},
+    {w:'experiment',s:'We did an experiment with vinegar and baking soda.'},
+    {w:'February',  s:'My birthday is in February.'},
+    {w:'knowledge', s:'Reading helps you build knowledge.'},
+    {w:'occasion',  s:'A birthday is a special occasion.'},
     {w:'particular',s:'Is there a particular book you would like?'},
     {w:'peculiar',  s:'That is a peculiar smell.'},
-    {w:'perhaps',   s:'Perhaps we can go to the park later.'}
-  ]},
-  boating_school:  {name:'Boating School',       emoji:'⛵', words:[
-    {w:'position',  s:'What position do you play in the team?'},
     {w:'possess',   s:'He does not possess a mobile phone.'},
-    {w:'possible',  s:'Is it possible to finish by five?'},
     {w:'potatoes',  s:'Mash the potatoes until they are smooth.'},
     {w:'pressure',  s:'The pressure inside the tyre was low.'},
     {w:'probably',  s:'We will probably have pasta for dinner.'},
-    {w:'promise',   s:'I promise to be back before dark.'},
-    {w:'purpose',   s:'What is the purpose of this machine?'},
-    {w:'quarter',   s:'Cut the apple into a quarter.'},
-    {w:'question',  s:'Ask a question if you do not understand.'}
-  ]},
-  larrys_gym:      {name:"Larry's Gym",           emoji:'\u{1F4AA}', words:[
-    {w:'recent',    s:'Have you seen any recent films?'},
-    {w:'regular',   s:'Brush your teeth at regular intervals.'},
     {w:'reign',     s:'The queen had a long reign.'},
-    {w:'remember',  s:'Try to remember to bring your PE kit.'},
-    {w:'sentence',  s:'Write a sentence using the word carefully.'},
+    {w:'regular',   s:'Brush your teeth at regular intervals.'},
     {w:'separate',  s:'Keep the red socks separate from the white ones.'},
-    {w:'special',   s:'Today is a very special day.'},
     {w:'straight',  s:'Draw a straight line with a ruler.'},
-    {w:'strange',   s:'That is a very strange shape.'},
-    {w:'strength',  s:'She showed great strength in the race.'}
-  ]},
-  bikini_bottom:   {name:'Bikini Bottom Town',    emoji:'\u{1F30A}', words:[
+    {w:'strength',  s:'She showed great strength in the race.'},
     {w:'suppose',   s:'I suppose we could try it.'},
     {w:'surprise',  s:'What a lovely surprise!'},
     {w:'therefore', s:'It was raining; therefore, we stayed inside.'},
     {w:'though',    s:'It was cold, though we had a good time.'},
     {w:'thought',   s:'She thought carefully before answering.'},
     {w:'through',   s:'The train goes through the tunnel.'},
-    {w:'various',   s:'There were various colours to choose from.'},
     {w:'weight',    s:'Lift the weight slowly and carefully.'},
-    {w:'woman',     s:'The woman waved from across the street.'},
     {w:'women',     s:"The women's team won the championship."}
   ]}
 };
@@ -956,7 +945,7 @@ function renderHub(){
   const p=getP(G.pid);if(!p){go('home');return}
   el('hub-name').textContent='Hey, '+p.name+'!';
   const tp=totalPat(p);
-  el('hub-progress').textContent=tp+' \u{1F354} earned • '+Math.round(tp/30*100)+'% complete';
+  el('hub-progress').textContent=tp+' \u{1F354} earned • '+Math.round(tp/12*100)+'% complete';
   // best scores on cards
   const modes=['lcwc','hear','sent','lightning','scramble'];
   modes.forEach(m=>{
@@ -1004,7 +993,7 @@ function renderMap(){
   SK.forEach(key=>{
     const def=SETS[key],data=p.sets[key]||{},pts=data.patties||0,ls=data.lightning||0;
     const c=document.createElement('div');c.className='set-card';
-    c.innerHTML=`<span class="set-em">${def.emoji}</span><div class="set-nm">${def.name}</div><div class="patties-row"><span class="patty${pts<1?' dim':''}">\u{1F354}</span><span class="patty${pts<2?' dim':''}">\u{1F354}</span><span class="patty${pts<3?' dim':''}">\u{1F354}</span></div><div class="lt-info">${ls>0?'⚡ Best: '+ls+' words':'⚡ Not played yet'}</div>`;
+    c.innerHTML=`<span class="set-em">${def.emoji}</span><div class="set-nm">${def.name}</div><div class="set-desc">${def.desc}</div><div class="patties-row"><span class="patty${pts<1?' dim':''}">\u{1F354}</span><span class="patty${pts<2?' dim':''}">\u{1F354}</span><span class="patty${pts<3?' dim':''}">\u{1F354}</span></div><div class="lt-info">${ls>0?'⚡ Best: '+ls+' words':'⚡ Not played yet'}</div>`;
     c.onclick=()=>{G.setKey=key;G.fromHub=false;go('modes')};
     grid.appendChild(c);
   });
