@@ -146,6 +146,16 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .print-tile-name{color:#fff;font-weight:800;font-size:.95rem}
 .print-tile-sub{color:rgba(255,255,255,.55);font-size:.78rem;margin-top:2px}
 .print-tile-arrow{color:rgba(255,255,255,.5);font-size:1.2rem}
+.print-header{margin-bottom:20px}
+.print-header h1{color:#fff;font-size:1.15rem;font-weight:900;margin-bottom:4px}
+.print-header p{color:rgba(255,255,255,.55);font-size:.78rem}
+.print-groups{display:flex;flex-direction:column;gap:20px}
+.print-group{background:var(--glass);backdrop-filter:blur(6px);border:1px solid var(--glass-b);border-radius:16px;padding:16px 18px}
+.print-group-title{color:#fff;font-weight:800;font-size:.88rem;padding-bottom:10px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.18);letter-spacing:.3px}
+.print-word-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px 10px}
+.print-word{color:rgba(255,255,255,.9);font-size:.85rem;font-weight:600;padding:5px 8px;background:rgba(255,255,255,.08);border-radius:7px;text-align:center;letter-spacing:.5px}
+.print-source{color:rgba(255,255,255,.35);font-size:.7rem;margin-top:16px;padding-top:10px;border-top:1px solid rgba(255,255,255,.12);line-height:1.5}
+@media(min-width:480px){.print-word-grid{grid-template-columns:repeat(5,1fr)}}
 .focus-badge{display:inline-block;background:var(--coral);color:#fff;font-size:.65rem;font-weight:700;border-radius:99px;padding:2px 8px;margin-top:4px}
 /* ── MODE CARDS ── */
 .mode-card{background:var(--glass);backdrop-filter:blur(8px);border:2px solid var(--glass-b);border-radius:var(--r-xl);padding:16px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all .2s}
