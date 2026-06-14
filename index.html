@@ -129,13 +129,11 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 .cw-cell{display:flex;align-items:center;justify-content:center;font-weight:800;text-transform:uppercase;position:relative;cursor:pointer;background:#fff;color:#1A1A2E;border-radius:2px;box-sizing:border-box;user-select:none;-webkit-user-select:none}
 .cw-cell.black{background:rgba(0,0,0,.6);cursor:default;pointer-events:none}
 .cw-cell.active{background:#FFD700;color:#1A1A2E}
+.cw-cell.cursor-cell{background:#FF9F1C;color:#1A1A2E;outline:2.5px solid #FF6B35;z-index:1}
 .cw-cell.correct{background:#52B788;color:#fff;cursor:default}
 .cw-num{position:absolute;top:1px;left:2px;font-size:.45rem;font-weight:700;color:#888;line-height:1;pointer-events:none}
 .cw-cell.correct .cw-num{color:rgba(255,255,255,.55)}
-.cw-active-clue{background:var(--glass);backdrop-filter:blur(6px);border:1px solid var(--glass-b);border-radius:12px;padding:12px 14px;margin-bottom:10px;color:#fff;font-size:.88rem;min-height:44px;line-height:1.5}
-.cw-input-row{display:flex;gap:8px;margin-bottom:14px;align-items:center}
-.cw-input{flex:1;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.3);border-radius:12px;color:#fff;font-size:1rem;font-weight:700;padding:10px 14px;letter-spacing:2px;min-width:0;text-transform:lowercase}
-.cw-check-btn{background:#52B788;color:#fff;border:none;border-radius:12px;padding:11px 16px;font-weight:700;font-size:.9rem;cursor:pointer;flex-shrink:0;box-shadow:0 3px 0 #2d6a4f}
+.cw-active-clue{background:var(--glass);backdrop-filter:blur(6px);border:1px solid var(--glass-b);border-radius:12px;padding:12px 14px;margin-bottom:10px;color:#fff;font-size:.88rem;min-height:44px;line-height:1.5;display:flex;align-items:flex-start;gap:8px}
 .cw-hint-btn{background:rgba(255,255,255,.1);color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:11px 12px;font-size:.85rem;cursor:pointer;flex-shrink:0}
 .cw-clues{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
 .cw-clue-col-title{color:rgba(255,255,255,.45);font-size:.7rem;font-weight:800;letter-spacing:1.5px;margin-bottom:8px;text-transform:uppercase}
@@ -603,16 +601,13 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
     <button class="back-btn" onclick="go('hub')">&#x2190;</button>
     <div class="topbar-title">&#x270F;&#xFE0F; Crossword</div>
   </div>
+  <!-- Hidden input captures keyboard on desktop and mobile -->
+  <input id="cw-hidden" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" style="opacity:0;position:fixed;top:-200px;left:0;width:1px;height:1px;font-size:16px" onkeydown="cwKey(event)" oninput="cwInput(event)" />
   <div class="cw-set-tabs" id="cw-set-tabs"></div>
   <div class="cw-grid-wrap">
     <div class="cw-grid" id="cw-grid"></div>
   </div>
-  <div class="cw-active-clue" id="cw-active-clue">Tap a clue below to start</div>
-  <div class="cw-input-row" id="cw-input-row" style="display:none">
-    <input class="cw-input" id="cw-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="type your answer&#x2026;" onkeydown="if(event.key==='Enter')checkCWAnswer()" />
-    <button class="cw-hint-btn" onclick="cwReveal()">Hint</button>
-    <button class="cw-check-btn" onclick="checkCWAnswer()">Check &#x2713;</button>
-  </div>
+  <div class="cw-active-clue" id="cw-active-clue"><span style="flex:1">Tap a cell or clue to start</span></div>
   <div class="cw-clues" id="cw-clues"></div>
 </div>
 
@@ -1120,7 +1115,7 @@ function renderMap(){
 }
 
 // ── CROSSWORD ─────────────────────────────────────────────────────────────
-let CWKEY='starter',CWS=null;
+let CWKEY='starter', CWS=null, _cwSkip=false;
 
 function cwClue(obj){
   return obj.s.replace(new RegExp(obj.w,'gi'),'_'.repeat(obj.w.length));
@@ -1229,17 +1224,35 @@ function generateCW(wordObjs){
   return{grid:tg,rows,cols,entries};
 }
 
+// ── helpers ──────────────────────────────────────────────────────────────────
+function cwE(nd){
+  const[ns,dir]=nd.split('_');
+  return CWS.entries.find(e=>e.num===parseInt(ns)&&e.dir===dir);
+}
+function cwPos(entry,idx){
+  return entry.dir==='h'?{r:entry.r,c:entry.c+idx}:{r:entry.r+idx,c:entry.c};
+}
+function cwLocked(r,c){
+  for(const nd of CWS.correct){
+    const e=cwE(nd);if(!e)continue;
+    if(e.dir==='h'&&e.r===r&&c>=e.c&&c<e.c+e.w.length)return e.w[c-e.c];
+    if(e.dir==='v'&&e.c===c&&r>=e.r&&r<e.r+e.w.length)return e.w[r-e.r];
+  }
+  return null;
+}
+
 function renderCrossword(setKey){
   CWKEY=setKey||CWKEY;
   el('cw-set-tabs').innerHTML=SK.map(k=>`<div class="cw-set-tab${k===CWKEY?' active':''}" onclick="renderCrossword('${k}')">${SETS[k].emoji} ${SETS[k].name}</div>`).join('');
   const cw=generateCW(SETS[CWKEY].words);
-  CWS={...cw,answered:{},active:null};
+  CWS={...cw,correct:new Set(),letters:{},active:null,cursor:0};
   const maxW=Math.min(window.innerWidth-36,440);
   const cs=Math.max(22,Math.floor(maxW/cw.cols));
   const fsz=Math.floor(cs*.42);
-  const numfsz=Math.max(7,Math.floor(cs*.3));
+  const nfsz=Math.max(7,Math.floor(cs*.3));
   const g=el('cw-grid');
   g.style.gridTemplateColumns=`repeat(${cw.cols},${cs}px)`;
+  g.dataset.cs=cs;
   g.innerHTML='';
   for(let r=0;r<cw.rows;r++){
     for(let c=0;c<cw.cols;c++){
@@ -1259,81 +1272,211 @@ function renderCrossword(setKey){
         const ne=cw.entries.find(e=>e.r===r&&e.c===c);
         if(ne){
           const ns=document.createElement('span');
-          ns.className='cw-num';ns.style.fontSize=numfsz+'px';
+          ns.className='cw-num';ns.style.fontSize=nfsz+'px';
           ns.textContent=ne.num;div.appendChild(ns);
         }
       }
       g.appendChild(div);
     }
   }
-  el('cw-active-clue').textContent='Tap a clue below to start';
-  el('cw-input-row').style.display='none';
+  el('cw-active-clue').innerHTML='<span style="flex:1">Tap a cell or clue to start</span>';
   renderCWClues();
 }
 
 function cwCellClick(r,c,eids){
   if(!eids.length)return;
+  // If tapping within the active word — move cursor or cycle direction
   if(CWS.active&&eids.includes(CWS.active)){
-    cwSelectEntry(eids[(eids.indexOf(CWS.active)+1)%eids.length]);
+    const e=cwE(CWS.active);
+    const idx=e.dir==='h'?c-e.c:r-e.r;
+    if(idx>=0&&idx<e.w.length&&!cwLocked(r,c)){
+      CWS.cursor=idx;cwHighlight();cwFocus();return;
+    }
+    // Cycle to perpendicular word at this cell
+    const other=eids.find(id=>id!==CWS.active);
+    if(other)cwSelectEntry(other);
   }else{
     cwSelectEntry(eids[0]);
+    // Then position cursor at clicked cell
+    const e=cwE(CWS.active);
+    if(e){const idx=e.dir==='h'?c-e.c:r-e.r;if(idx>=0)CWS.cursor=idx;}
+    cwHighlight();
   }
+  cwFocus();
 }
 
 function cwSelectEntry(nd){
-  const[ns,dir]=nd.split('_');
-  const entry=CWS.entries.find(e=>e.num===parseInt(ns)&&e.dir===dir);
-  if(!entry||CWS.answered[nd]===entry.w)return;
+  if(CWS.correct.has(nd))return;
+  const e=cwE(nd);if(!e)return;
   CWS.active=nd;
-  document.querySelectorAll('.cw-cell:not(.black):not(.correct)').forEach(cell=>{
-    const ids=(cell.dataset.eids||'').split(',');
-    cell.classList.toggle('active',ids.includes(nd));
-  });
-  el('cw-active-clue').innerHTML=`<strong>${entry.num} ${dir==='h'?'Across':'Down'}:</strong> ${entry.clue} <span style="opacity:.5">(${entry.w.length} letters)</span>`;
-  const inp=el('cw-input');
-  inp.maxLength=entry.w.length;inp.value=CWS.answered[nd]||'';
-  el('cw-input-row').style.display='flex';inp.focus();
-  document.querySelectorAll('.cw-clue-item').forEach(li=>li.classList.toggle('active',li.dataset.nd===nd));
+  // Start cursor at first empty unlocked cell
+  CWS.cursor=0;
+  for(let i=0;i<e.w.length;i++){
+    const{r,c}=cwPos(e,i);
+    if(!CWS.letters[r+'_'+c]&&!cwLocked(r,c)){CWS.cursor=i;break;}
+  }
+  cwHighlight();cwClueBar();cwFocus();
 }
 
-function checkCWAnswer(){
-  if(!CWS.active)return;
-  const typed=el('cw-input').value.trim().toLowerCase();if(!typed)return;
-  const[ns,dir]=CWS.active.split('_');
-  const entry=CWS.entries.find(e=>e.num===parseInt(ns)&&e.dir===dir);
-  if(!entry)return;
-  CWS.answered[CWS.active]=typed;
-  if(typed===entry.w){
-    const cs=parseInt(document.querySelector('.cw-cell').style.width);
-    const fsz=Math.floor(cs*.42);
-    document.querySelectorAll('.cw-cell:not(.black)').forEach(cell=>{
-      const ids=(cell.dataset.eids||'').split(',');
-      if(!ids.includes(CWS.active))return;
-      const r2=parseInt(cell.dataset.r),c2=parseInt(cell.dataset.c);
-      const idx=dir==='h'?c2-entry.c:r2-entry.r;
-      cell.classList.remove('active');cell.classList.add('correct');
-      cell.style.fontSize=fsz+'px';
-      const ns2=cell.querySelector('.cw-num');
-      cell.textContent=entry.w[idx].toUpperCase();
-      if(ns2)cell.prepend(ns2);
-    });
-    document.querySelectorAll('.cw-clue-item').forEach(li=>{if(li.dataset.nd===CWS.active)li.classList.add('solved');});
-    const solved=CWS.entries.filter(e=>CWS.answered[e.num+'_'+e.dir]===e.w).length;
-    el('cw-active-clue').innerHTML=solved===CWS.entries.length
-      ?'<strong>Amazing! You solved the whole crossword!</strong>'
-      :'<strong>Correct!</strong> Pick the next clue.';
-    el('cw-input-row').style.display='none';CWS.active=null;
-  }else{
-    el('cw-input').classList.add('shake');setTimeout(()=>el('cw-input').classList.remove('shake'),400);
-    el('cw-active-clue').innerHTML=`<strong>Not quite!</strong> Try again (${entry.w.length} letters).`;
+function cwClueBar(){
+  if(!CWS||!CWS.active){
+    el('cw-active-clue').innerHTML='<span style="flex:1">Tap a cell or clue to start</span>';
+    return;
   }
+  const e=cwE(CWS.active);if(!e)return;
+  el('cw-active-clue').innerHTML=
+    `<span style="flex:1"><strong>${e.num} ${e.dir==='h'?'Across':'Down'}:</strong> ${e.clue} <span style="opacity:.5">(${e.w.length} letters)</span></span>`+
+    `<button class="cw-hint-btn" onclick="cwReveal()">Hint</button>`;
+  document.querySelectorAll('.cw-clue-item').forEach(li=>li.classList.toggle('active',li.dataset.nd===CWS.active));
+}
+
+function cwHighlight(){
+  const e=CWS.active?cwE(CWS.active):null;
+  document.querySelectorAll('.cw-cell:not(.black)').forEach(cell=>{
+    const ids=(cell.dataset.eids||'').split(',').filter(Boolean);
+    if(ids.some(id=>CWS.correct.has(id)))return; // locked green — leave it
+    const r=parseInt(cell.dataset.r),c=parseInt(cell.dataset.c);
+    const inWord=e&&ids.includes(CWS.active);
+    const isCursor=inWord&&e&&(e.dir==='h'?c-e.c:r-e.r)===CWS.cursor;
+    cell.classList.remove('active','cursor-cell');
+    if(isCursor)cell.classList.add('cursor-cell');
+    else if(inWord)cell.classList.add('active');
+  });
+}
+
+function cwFocus(){const inp=el('cw-hidden');inp.value='';inp.focus();}
+
+function cwKey(e){
+  if(!CWS||!CWS.active)return;
+  if(/^[a-zA-Z]$/.test(e.key)){
+    e.preventDefault();_cwSkip=true;cwTypeChar(e.key.toLowerCase());
+  }else if(e.key==='Backspace'){
+    e.preventDefault();_cwSkip=true;cwBackspace();
+  }else if(e.key==='Tab'||e.key==='ArrowRight'||e.key==='ArrowDown'){
+    e.preventDefault();cwNextEntry();
+  }
+}
+
+function cwInput(e){
+  const val=e.target.value;e.target.value='';
+  if(_cwSkip){_cwSkip=false;return;}
+  if(!CWS||!CWS.active||!val)return;
+  const ch=val.slice(-1).toLowerCase();
+  if(/[a-z]/.test(ch))cwTypeChar(ch);
+}
+
+function cwTypeChar(ch){
+  const e=cwE(CWS.active);if(!e)return;
+  // Advance cursor past any locked cells
+  let cur=CWS.cursor;
+  while(cur<e.w.length){const{r,c}=cwPos(e,cur);if(!cwLocked(r,c))break;cur++;}
+  if(cur>=e.w.length){cwCheckActive();return;}
+  CWS.cursor=cur;
+  const{r,c}=cwPos(e,cur);
+  CWS.letters[r+'_'+c]=ch;
+  cwRefreshCell(r,c);
+  // Find next unlocked cell
+  let next=cur+1;
+  while(next<e.w.length){const{r:nr,c:nc}=cwPos(e,next);if(!cwLocked(nr,nc))break;next++;}
+  if(next<e.w.length){CWS.cursor=next;cwHighlight();}
+  else{cwCheckActive();}
+}
+
+function cwBackspace(){
+  const e=cwE(CWS.active);if(!e)return;
+  const{r,c}=cwPos(e,CWS.cursor);
+  if(CWS.letters[r+'_'+c]&&!cwLocked(r,c)){
+    delete CWS.letters[r+'_'+c];cwRefreshCell(r,c);
+  }else{
+    let prev=CWS.cursor-1;
+    while(prev>=0){const{r:pr,c:pc}=cwPos(e,prev);if(!cwLocked(pr,pc))break;prev--;}
+    if(prev<0)return;
+    CWS.cursor=prev;
+    const{r:pr,c:pc}=cwPos(e,prev);
+    delete CWS.letters[pr+'_'+pc];
+    cwRefreshCell(pr,pc);cwHighlight();
+  }
+}
+
+function cwCheckActive(){
+  const e=cwE(CWS.active);if(!e)return;
+  // Must be fully filled
+  for(let i=0;i<e.w.length;i++){
+    const{r,c}=cwPos(e,i);
+    if(!CWS.letters[r+'_'+c]&&!cwLocked(r,c))return;
+  }
+  // Check correctness
+  for(let i=0;i<e.w.length;i++){
+    const{r,c}=cwPos(e,i);
+    const letter=CWS.letters[r+'_'+c]||cwLocked(r,c);
+    if(letter!==e.w[i]){
+      // Wrong — shake active cells
+      document.querySelectorAll('.cw-cell.active,.cw-cell.cursor-cell').forEach(cell=>{
+        cell.classList.add('shake');setTimeout(()=>cell.classList.remove('shake'),400);
+      });
+      el('cw-active-clue').innerHTML=
+        `<span style="flex:1"><strong>Not quite!</strong> ${e.clue} <span style="opacity:.5">(${e.w.length} letters)</span></span>`+
+        `<button class="cw-hint-btn" onclick="cwReveal()">Hint</button>`;
+      CWS.cursor=0;cwHighlight();
+      return;
+    }
+  }
+  // Correct!
+  const nd=CWS.active;
+  CWS.correct.add(nd);
+  for(let i=0;i<e.w.length;i++){
+    const{r,c}=cwPos(e,i);
+    CWS.letters[r+'_'+c]=e.w[i];
+    cwRefreshCell(r,c);
+  }
+  document.querySelectorAll('.cw-clue-item').forEach(li=>{if(li.dataset.nd===nd)li.classList.add('solved');});
+  CWS.active=null;
+  if(CWS.correct.size===CWS.entries.length){
+    el('cw-active-clue').innerHTML='<span style="flex:1"><strong>Amazing! You solved the whole crossword!</strong></span>';
+  }else{
+    el('cw-active-clue').innerHTML='<span style="flex:1"><strong>Correct!</strong> Pick the next clue.</span>';
+    cwNextEntry();
+  }
+}
+
+function cwNextEntry(){
+  const unsolved=CWS.entries.filter(e=>!CWS.correct.has(e.num+'_'+e.dir));
+  if(!unsolved.length)return;
+  const curIdx=CWS.active?unsolved.findIndex(e=>e.num+'_'+e.dir===CWS.active):-1;
+  const nextE=unsolved[(curIdx+1)%unsolved.length];
+  cwSelectEntry(nextE.num+'_'+nextE.dir);
+}
+
+function cwRefreshCell(r,c){
+  const cell=document.querySelector(`.cw-cell[data-r="${r}"][data-c="${c}"]`);
+  if(!cell)return;
+  const letter=CWS.letters[r+'_'+c];
+  const ids=(cell.dataset.eids||'').split(',').filter(Boolean);
+  const isCorrect=ids.some(id=>CWS.correct.has(id));
+  const ns=cell.querySelector('.cw-num');
+  cell.textContent=letter?letter.toUpperCase():'';
+  if(ns)cell.prepend(ns);
+  if(isCorrect){cell.classList.add('correct');cell.classList.remove('active','cursor-cell');}
 }
 
 function cwReveal(){
   if(!CWS.active)return;
-  const[ns,dir]=CWS.active.split('_');
-  const entry=CWS.entries.find(e=>e.num===parseInt(ns)&&e.dir===dir);
-  if(entry)el('cw-input').value=entry.w;
+  const e=cwE(CWS.active);if(!e)return;
+  // Reveal the first unfilled cell in the word
+  for(let i=0;i<e.w.length;i++){
+    const{r,c}=cwPos(e,i);
+    if(!CWS.letters[r+'_'+c]&&!cwLocked(r,c)){
+      CWS.letters[r+'_'+c]=e.w[i];
+      cwRefreshCell(r,c);
+      let next=i+1;
+      while(next<e.w.length){const{r:nr,c:nc}=cwPos(e,next);if(!cwLocked(nr,nc))break;next++;}
+      if(next<e.w.length){CWS.cursor=next;cwHighlight();cwFocus();}
+      else{cwCheckActive();}
+      return;
+    }
+  }
+  // All cells filled — just check
+  cwCheckActive();
 }
 
 function renderCWClues(){
@@ -1341,7 +1484,7 @@ function renderCWClues(){
   const down=CWS.entries.filter(e=>e.dir==='v').sort((a,b)=>a.num-b.num);
   function cItem(e){
     const nd=e.num+'_'+e.dir;
-    const solved=CWS.answered[nd]===e.w;
+    const solved=CWS.correct.has(nd);
     return `<div class="cw-clue-item${solved?' solved':''}" data-nd="${nd}" onclick="cwSelectEntry('${nd}')"><span class="cw-clue-num">${e.num}.</span> ${e.clue}</div>`;
   }
   el('cw-clues').innerHTML=
