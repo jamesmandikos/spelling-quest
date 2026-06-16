@@ -91,6 +91,11 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 #s-hub .sec-label{color:#fff;font-size:1rem;font-weight:900;letter-spacing:2px;margin-bottom:16px;margin-top:12px;text-shadow:0 2px 8px rgba(0,0,0,.4);display:flex;align-items:center;gap:10px}
 #s-hub .sec-label::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--yellow);flex-shrink:0;box-shadow:0 0 8px rgba(255,215,0,.6)}
 #s-hub .sec-label::after{content:'';flex:1;height:1.5px;background:rgba(255,255,255,.18);border-radius:1px}
+
+.year-tabs{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+.year-tab{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.22);color:rgba(255,255,255,.75);border-radius:20px;padding:7px 18px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit}
+.year-tab.active{background:#FF9F1C;border-color:#FF9F1C;color:#1A1A2E}
+.year-tab:hover:not(.active){background:rgba(255,255,255,.22);color:#fff}
 .hub-header{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:20px;background:#fff;border-radius:20px;padding:14px 18px;box-shadow:0 6px 20px rgba(0,0,0,.22);position:relative}
 .hub-sb{width:60px;height:60px;background:linear-gradient(135deg,#FFD700,#F4A030);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(255,165,0,.3)}
 .hub-info{min-width:0;text-align:center}
@@ -390,10 +395,16 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
       <div class="hub-progress" id="hub-progress">0 &#x1F354; earned</div>
     </div>
     <div class="hub-header-btns">
+      <button class="icon-btn" title="DfE Spelling Document" onclick="window.open('https://assets.publishing.service.gov.uk/media/5a7ccc06ed915d63cc65ce61/English_Appendix_1_-_Spelling.pdf','_blank')">&#x1F4D6;</button>
       <button class="icon-btn" title="Progress report" onclick="go('progress')">&#x1F4CA;</button>
       <button class="icon-btn" title="Save code" onclick="openSave(G.pid)">&#x1F4BE;</button>
       <button class="icon-btn" title="Switch player" onclick="go('home')">&#x21C4;</button>
     </div>
+  </div>
+  <div class="year-tabs" id="year-tabs">
+    <button class="year-tab" id="yt-y12" onclick="switchYear('y12')">Years 1–2</button>
+    <button class="year-tab active" id="yt-y34" onclick="switchYear('y34')">Years 3–4</button>
+    <button class="year-tab" id="yt-y56" onclick="switchYear('y56')">Years 5–6</button>
   </div>
 
   <div class="sec-label">Choose a game</div>
@@ -667,238 +678,622 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
 'use strict';
 
 // ── WORD DATA ──────────────────────────────────────────────────────────────
-const SETS = {
+const ALL_YEAR_SETS = {
+
+// ── YEARS 1–2: Common Exception Words (DfE Appendix 1) ─────────────────────
+y12:{
+  pufferfish:{name:'Pufferfish',emoji:'\u{1F421}',desc:'Key Year 1 exception words',words:[
+    {w:'said',      s:'She said she would meet us at the park.'},
+    {w:'love',      s:'I love eating chips by the seaside.'},
+    {w:'come',      s:'Please come and join us for tea.'},
+    {w:'some',      s:'Would you like some more juice?'},
+    {w:'once',      s:'Once upon a time, a princess lived in a castle.'},
+    {w:'friend',    s:'My best friend lives next door to me.'},
+    {w:'school',    s:'We walk to school together every morning.'},
+    {w:'push',      s:'You need to push the door to open it.'},
+    {w:'pull',      s:'Pull the curtains closed before it gets dark.'},
+    {w:'full',      s:'The basket was full of fresh strawberries.'},
+    {w:'house',     s:'Our house has a garden with a big oak tree.'},
+    {w:'your',      s:'Is this your pencil case on the floor?'},
+    {w:'they',      s:'They went to the beach on a sunny day.'},
+    {w:'there',     s:'Put your coat over there on the hook.'},
+    {w:'where',     s:'Do you know where the library is?'},
+    {w:'here',      s:'Come over here and sit next to me.'}
+  ]},
+  squid:{name:'Squid',emoji:'\u{1F991}',desc:'More Year 1–2 tricky words',words:[
+    {w:'because',   s:'I stayed inside because it was raining.'},
+    {w:'could',     s:'She could run faster than anyone in the class.'},
+    {w:'should',    s:'You should always look both ways before you cross.'},
+    {w:'would',     s:'I would love to visit the science museum.'},
+    {w:'kind',      s:'It was very kind of you to share your snack.'},
+    {w:'find',      s:'Can you find my reading book anywhere?'},
+    {w:'mind',      s:'Do you mind if I sit here next to you?'},
+    {w:'door',      s:'Please shut the door quietly behind you.'},
+    {w:'floor',     s:'The books fell off the shelf and onto the floor.'},
+    {w:'poor',      s:'The poor little cat was out in the rain.'},
+    {w:'child',     s:'Every child got a sticker for trying hard.'},
+    {w:'climb',     s:'She loved to climb to the top of the climbing frame.'},
+    {w:'cold',      s:'It was so cold outside that the puddles froze over.'},
+    {w:'hold',      s:'Please hold my hand when we cross the road.'},
+    {w:'told',      s:'He told us a funny story at bedtime.'},
+    {w:'water',     s:'Drink plenty of water when you exercise.'}
+  ]},
+  dolphin:{name:'Dolphin',emoji:'\u{1F42C}',desc:'Trickier Year 2 exception words',words:[
+    {w:'people',    s:'Lots of people came to watch the school show.'},
+    {w:'every',     s:'She practises her spellings every single evening.'},
+    {w:'whole',     s:'He ate the whole apple in one go.'},
+    {w:'beautiful', s:'The butterfly had beautiful yellow and blue wings.'},
+    {w:'pretty',    s:'She wore a pretty red dress to the party.'},
+    {w:'great',     s:'What a great idea — let us try it!'},
+    {w:'break',     s:'Be careful not to break the glass.'},
+    {w:'steak',     s:'Dad cooked a steak on the barbeque.'},
+    {w:'sure',      s:'Are you sure you locked the front door?'},
+    {w:'sugar',     s:'She added a small spoonful of sugar to her tea.'},
+    {w:'again',     s:'Can we please do that again?'},
+    {w:'half',      s:'She cut the orange in half and shared it.'},
+    {w:'money',     s:'He saved his pocket money all month.'},
+    {w:'clothes',   s:'Please hang your clothes up neatly.'},
+    {w:'parents',   s:'Her parents came to watch the school play.'},
+    {w:'father',    s:'Her father taught her how to ride her bike.'}
+  ]},
+  shark:{name:'Shark',emoji:'\u{1F988}',desc:'The toughest Year 2 words',words:[
+    {w:'plant',     s:'We planted a sunflower seed in a little pot.'},
+    {w:'path',      s:'Follow the path through the woods to the pond.'},
+    {w:'bath',      s:'She had a warm bath before going to bed.'},
+    {w:'pass',      s:'Can you pass the scissors, please?'},
+    {w:'class',     s:'The whole class went on a trip to the museum.'},
+    {w:'grass',     s:'The grass was wet with dew in the morning.'},
+    {w:'fast',      s:'The cheetah is one of the fastest animals in the world.'},
+    {w:'last',      s:'This is the last biscuit — who wants it?'},
+    {w:'past',      s:'We walked past the baker\'s and smelled fresh bread.'},
+    {w:'hour',      s:'The film is about one hour long.'},
+    {w:'move',      s:'Could you move your bag so I can sit down?'},
+    {w:'prove',     s:'Can you prove that your answer is right?'},
+    {w:'improve',   s:'She practised every day to improve her swimming.'},
+    {w:'busy',      s:'The market was very busy on Saturday morning.'},
+    {w:'behind',    s:'He hid the present behind his back.'},
+    {w:'children',  s:'All the children cheered when the bell rang.'}
+  ]}
+},
+
+// ── YEARS 3–4: Statutory Word List (DfE Appendix 1) ────────────────────────
+y34:{
   starter:{name:'Starter',emoji:'\u{1F420}',desc:'Everyday words to get started',words:[
     {w:'answer',    s:'Do you know the answer to the question?'},
     {w:'build',     s:'We want to build a sandcastle.'},
     {w:'complete',  s:'Can you complete this sentence?'},
     {w:'decide',    s:'It is hard to decide which flavour to choose.'},
-    {w:'early',     s:'We have to leave early tomorrow.'},
+    {w:'early',     s:'We left early to beat the traffic.'},
     {w:'earth',     s:'The earth travels around the sun.'},
-    {w:'enough',    s:'Have you eaten enough for dinner?'},
-    {w:'famous',    s:'She is famous for her paintings.'},
+    {w:'enough',    s:'Have you had enough to eat?'},
+    {w:'famous',    s:'She is a famous author of children\'s books.'},
     {w:'forward',   s:'Take one step forward, please.'},
     {w:'fruit',     s:'An apple is a type of fruit.'},
     {w:'group',     s:'Work in a group of four.'},
-    {w:'history',   s:'We learn about history at school.'},
+    {w:'history',   s:'History is the study of the past.'},
     {w:'important', s:'It is important to drink water every day.'},
-    {w:'learn',     s:'You learn something new every day.'},
+    {w:'learn',     s:'We learn something new every day.'},
     {w:'minute',    s:'Wait just one minute, please.'},
     {w:'natural',   s:'Honey is a natural sweetener.'},
     {w:'notice',    s:'Did you notice the new painting on the wall?'},
-    {w:'often',     s:'How often do you go swimming?'},
-    {w:'promise',   s:'I promise to be back before dark.'},
-    {w:'question',  s:'Ask a question if you do not understand.'},
+    {w:'often',     s:'She often reads before bed.'},
+    {w:'promise',   s:'I promise I will be on time.'},
+    {w:'question',  s:'Put your hand up if you have a question.'},
     {w:'recent',    s:'Have you seen any recent films?'},
-    {w:'remember',  s:'Try to remember to bring your PE kit.'},
-    {w:'sentence',  s:'Write a sentence using the word carefully.'},
-    {w:'various',   s:'There were various colours to choose from.'},
-    {w:'woman',     s:'The woman waved from across the street.'}
+    {w:'remember',  s:'Remember to bring your PE kit tomorrow.'},
+    {w:'sentence',  s:'Write this sentence in your book.'},
+    {w:'various',   s:'There are various ways to solve this problem.'},
+    {w:'woman',     s:'The woman waved from the other side of the street.'}
   ]},
-  explorer:{name:'Explorer',emoji:'\u{1F980}',desc:'Tricky sounds and silent letters',words:[
-    {w:'accident',  s:'It was an accident when I spilled the juice.'},
-    {w:'address',   s:'Write your address on the envelope.'},
-    {w:'appear',    s:'Stars appear in the sky at night.'},
-    {w:'arrive',    s:'What time will you arrive at school?'},
-    {w:'believe',   s:'I believe you can do it.'},
-    {w:'bicycle',   s:'She rode her bicycle to the park.'},
-    {w:'breath',    s:'Take a deep breath before you start.'},
-    {w:'breathe',   s:'Remember to breathe slowly.'},
-    {w:'busy',      s:'The market was very busy on Saturday.'},
-    {w:'caught',    s:'She caught the ball with both hands.'},
-    {w:'certain',   s:'Are you certain you locked the door?'},
-    {w:'circle',    s:'Draw a circle around the right answer.'},
-    {w:'continue',  s:'Please continue reading from page ten.'},
-    {w:'different', s:'Every snowflake is different.'},
-    {w:'eight',     s:'There are eight legs on a spider.'},
-    {w:'exercise',  s:'Swimming is good exercise.'},
-    {w:'guard',     s:'A guard stood outside the palace.'},
-    {w:'guide',     s:'The tour guide showed us around the museum.'},
-    {w:'heard',     s:'I heard a strange noise last night.'},
+  explorer:{name:'Explorer',emoji:'\u{1F980}',desc:'Words that need a closer look',words:[
+    {w:'accident',  s:'It was an accident — I did not mean to do it.'},
+    {w:'address',   s:'Write your home address at the top of the letter.'},
+    {w:'appear',    s:'The sun began to appear from behind the clouds.'},
+    {w:'arrive',    s:'What time will the train arrive?'},
+    {w:'believe',   s:'I believe you can do it if you try.'},
+    {w:'bicycle',   s:'She rode her bicycle to school every day.'},
+    {w:'breath',    s:'Take a deep breath and count to ten.'},
+    {w:'breathe',   s:'It is easier to breathe fresh mountain air.'},
+    {w:'busy',      s:'The high street was very busy on Saturday.'},
+    {w:'caught',    s:'She caught the ball with one hand.'},
+    {w:'certain',   s:'Are you certain that is the right answer?'},
+    {w:'circle',    s:'Draw a circle around the correct answer.'},
+    {w:'continue',  s:'Please continue reading from where you stopped.'},
+    {w:'different', s:'These two shapes are different sizes.'},
+    {w:'eight',     s:'An octopus has eight arms.'},
+    {w:'exercise',  s:'Daily exercise keeps you fit and healthy.'},
+    {w:'guard',     s:'The guard stood by the entrance all night.'},
+    {w:'guide',     s:'The tour guide showed us around the castle.'},
+    {w:'heard',     s:'I heard a strange noise outside.'},
     {w:'heart',     s:'Your heart pumps blood around your body.'},
-    {w:'mention',   s:'Did she mention when she is coming?'},
-    {w:'perhaps',   s:'Perhaps we can go to the park later.'},
-    {w:'purpose',   s:'What is the purpose of this machine?'},
-    {w:'quarter',   s:'Cut the apple into a quarter.'},
+    {w:'mention',   s:'Did she mention when she would arrive?'},
+    {w:'perhaps',   s:'Perhaps we should leave a little earlier.'},
+    {w:'purpose',   s:'What is the purpose of this experiment?'},
+    {w:'quarter',   s:'A quarter of the pie is left.'},
     {w:'special',   s:'Today is a very special day.'}
   ]},
-  champion:{name:'Champion',emoji:'⭐',desc:'Words that often trip people up',words:[
-    {w:'calendar',  s:'Mark your birthday on the calendar.'},
-    {w:'centre',    s:'The library is in the centre of town.'},
+  champion:{name:'Champion',emoji:'\u{2B50}',desc:'25 trickier spelling challenges',words:[
+    {w:'calendar',  s:'Check the calendar to see what day it is.'},
+    {w:'centre',    s:'Meet me in the centre of town.'},
     {w:'century',   s:'A century is one hundred years.'},
-    {w:'consider',  s:'Please consider how the other person feels.'},
-    {w:'describe',  s:'Describe what you can see outside.'},
-    {w:'difficult', s:'Maths can be difficult but fun.'},
+    {w:'consider',  s:'Please consider all the options carefully.'},
+    {w:'describe',  s:'Can you describe what the creature looked like?'},
+    {w:'difficult', s:'The maths problem was very difficult.'},
     {w:'disappear', s:'The magician made the rabbit disappear.'},
-    {w:'extreme',   s:'The weather was extreme last winter.'},
-    {w:'favourite', s:'What is your favourite colour?'},
-    {w:'grammar',   s:'Good grammar helps people understand your writing.'},
-    {w:'height',    s:"The giraffe's height is amazing."},
+    {w:'extreme',   s:'She performs extreme sports for fun.'},
+    {w:'favourite', s:'Chocolate is my absolute favourite flavour.'},
+    {w:'grammar',   s:'Good grammar helps you write clearly.'},
+    {w:'height',    s:'What is the height of the tallest building?'},
     {w:'imagine',   s:'Imagine you are on a desert island.'},
-    {w:'increase',  s:'The price will increase next year.'},
-    {w:'interest',  s:'She has a great interest in science.'},
-    {w:'island',    s:'The ship was near a small island.'},
-    {w:'length',    s:'Measure the length of the table.'},
-    {w:'library',   s:'Borrow a book from the library.'},
-    {w:'material',  s:'Cotton is a natural material.'},
-    {w:'medicine',  s:'Take the medicine twice a day.'},
+    {w:'increase',  s:'Exercise can increase your energy levels.'},
+    {w:'interest',  s:'She has a great interest in astronomy.'},
+    {w:'island',    s:'The ship drifted near a small rocky island.'},
+    {w:'length',    s:'Measure the length of the table in centimetres.'},
+    {w:'library',   s:'Borrow a book from the local library.'},
+    {w:'material',  s:'Cotton is a natural, breathable material.'},
+    {w:'medicine',  s:'Take the medicine twice a day with food.'},
     {w:'naughty',   s:'The puppy was very naughty today.'},
-    {w:'opposite',  s:'Cold is the opposite of hot.'},
-    {w:'ordinary',  s:'It was just an ordinary Tuesday.'},
+    {w:'opposite',  s:'Hot is the opposite of cold.'},
+    {w:'ordinary',  s:'It was just an ordinary Tuesday afternoon.'},
     {w:'position',  s:'What position do you play in the team?'},
-    {w:'possible',  s:'Is it possible to finish by five?'},
-    {w:'strange',   s:'That is a very strange shape.'}
+    {w:'possible',  s:'Is it possible to finish by five o\'clock?'},
+    {w:'strange',   s:'That is a very strange shape indeed.'}
   ]},
-  master:{name:'Master',emoji:'\u{1F9FD}',desc:'The 25 toughest spelling challenges',words:[
+  master:{name:'Master',emoji:'\u{1F9FD}',desc:'The 25 toughest Year 3–4 challenges',words:[
     {w:'business',  s:'Dad started a new business this year.'},
-    {w:'experience',s:'It was an amazing experience.'},
+    {w:'experience',s:'It was an amazing experience for everyone.'},
     {w:'experiment',s:'We did an experiment with vinegar and baking soda.'},
     {w:'February',  s:'My birthday is in February.'},
     {w:'knowledge', s:'Reading helps you build knowledge.'},
-    {w:'occasion',  s:'A birthday is a special occasion.'},
+    {w:'occasion',  s:'A birthday is a very special occasion.'},
     {w:'particular',s:'Is there a particular book you would like?'},
-    {w:'peculiar',  s:'That is a peculiar smell.'},
+    {w:'peculiar',  s:'That is a rather peculiar smell.'},
     {w:'possess',   s:'He does not possess a mobile phone.'},
     {w:'potatoes',  s:'Mash the potatoes until they are smooth.'},
-    {w:'pressure',  s:'The pressure inside the tyre was low.'},
+    {w:'pressure',  s:'The pressure inside the tyre was too low.'},
     {w:'probably',  s:'We will probably have pasta for dinner.'},
-    {w:'reign',     s:'The queen had a long reign.'},
+    {w:'reign',     s:'The queen had a long and peaceful reign.'},
     {w:'regular',   s:'Brush your teeth at regular intervals.'},
     {w:'separate',  s:'Keep the red socks separate from the white ones.'},
     {w:'straight',  s:'Draw a straight line with a ruler.'},
-    {w:'strength',  s:'She showed great strength in the race.'},
-    {w:'suppose',   s:'I suppose we could try it.'},
+    {w:'strength',  s:'She showed great strength throughout the race.'},
+    {w:'suppose',   s:'I suppose we could give it a try.'},
     {w:'surprise',  s:'What a lovely surprise!'},
     {w:'therefore', s:'It was raining; therefore, we stayed inside.'},
-    {w:'though',    s:'It was cold, though we had a good time.'},
+    {w:'though',    s:'It was cold, though we had a wonderful time.'},
     {w:'thought',   s:'She thought carefully before answering.'},
-    {w:'through',   s:'The train goes through the tunnel.'},
+    {w:'through',   s:'The train goes through a long tunnel.'},
     {w:'weight',    s:'Lift the weight slowly and carefully.'},
     {w:'women',     s:"The women's team won the championship."}
   ]}
-};
-const SK = Object.keys(SETS);
+},
 
-// ── SPELLING RULES ────────────────────────────────────────────────────────
+// ── YEARS 5–6: Statutory Word List (DfE Appendix 1) ────────────────────────
+y56:{
+  trailblazer:{name:'Trailblazer',emoji:'\u{1F680}',desc:'The most common Year 5–6 words',words:[
+    {w:'achieve',      s:'It takes hard work to achieve your goals.'},
+    {w:'ancient',      s:'The ancient castle was built over one thousand years ago.'},
+    {w:'available',    s:'Is there a seat available at the back of the theatre?'},
+    {w:'average',      s:'The average temperature in London in July is about twenty degrees.'},
+    {w:'develop',      s:'Scientists need time to develop new medicines.'},
+    {w:'environment',  s:'We should all do our part to protect the environment.'},
+    {w:'excellent',    s:'She gave an excellent performance in the school play.'},
+    {w:'familiar',     s:'That tune sounds familiar — have I heard it before?'},
+    {w:'foreign',      s:'She speaks three foreign languages fluently.'},
+    {w:'forty',        s:'There were forty children in the year group.'},
+    {w:'frequently',   s:'He frequently forgot to bring his PE kit.'},
+    {w:'government',   s:'The government decided to build new schools across the country.'},
+    {w:'individual',   s:'Each individual is responsible for their own behaviour.'},
+    {w:'language',     s:'She found it difficult to learn a new language.'},
+    {w:'leisure',      s:'Reading is her favourite leisure activity.'},
+    {w:'lightning',    s:'The old oak tree was struck by lightning in the storm.'},
+    {w:'neighbour',    s:'Our neighbour helped us when we moved into the house.'},
+    {w:'necessary',    s:'It is necessary to eat well to stay healthy.'},
+    {w:'occupy',       s:'Three families used to occupy that old house.'},
+    {w:'occur',        s:'Earthquakes occur most often along fault lines.'},
+    {w:'physical',     s:'Physical exercise is good for both body and mind.'},
+    {w:'queue',        s:'We had to queue for an hour to get tickets.'},
+    {w:'recognise',    s:'I did not recognise her with her new haircut.'},
+    {w:'variety',      s:'The market sold a wide variety of fruit and vegetables.'},
+    {w:'vegetable',    s:'Broccoli is a healthy green vegetable.'}
+  ]},
+  voyager:{name:'Voyager',emoji:'\u{1F31F}',desc:'Year 5–6 words worth exploring',words:[
+    {w:'accompany',    s:'Would you like me to accompany you to the concert?'},
+    {w:'according',    s:'According to the forecast, it will rain on Thursday.'},
+    {w:'aggressive',   s:'The dog became aggressive when it felt threatened.'},
+    {w:'apparent',     s:'It was apparent from her face that she was upset.'},
+    {w:'appreciate',   s:'I really appreciate all the help you have given me.'},
+    {w:'bargain',      s:'She found a real bargain at the charity shop.'},
+    {w:'category',     s:'Which category does this book belong to?'},
+    {w:'community',    s:'The whole community came together to tidy up the park.'},
+    {w:'competition',  s:'There were fifty entries in the poetry competition.'},
+    {w:'definite',     s:'There is no definite answer to that question yet.'},
+    {w:'determined',   s:'She was determined to finish the race no matter what.'},
+    {w:'dictionary',   s:'If you do not know the word, look it up in a dictionary.'},
+    {w:'existence',    s:'Scientists have proved the existence of black holes.'},
+    {w:'explanation',  s:'He gave a clear explanation of how engines work.'},
+    {w:'identity',     s:'The police were trying to establish the caller\'s identity.'},
+    {w:'immediate',    s:'She needed immediate help after the accident.'},
+    {w:'interfere',    s:'Please do not interfere with the science experiment.'},
+    {w:'interrupt',    s:'It is rude to interrupt someone when they are speaking.'},
+    {w:'marvellous',   s:'We had a marvellous time at the theme park.'},
+    {w:'nuisance',     s:'The roadworks outside were a real nuisance.'},
+    {w:'opportunity',  s:'She took the opportunity to travel abroad in the summer.'},
+    {w:'persuade',     s:'Can you persuade your parents to let you stay longer?'},
+    {w:'recommend',    s:'I would strongly recommend this book to adventure lovers.'},
+    {w:'relevant',     s:'Please make sure your answer is relevant to the question.'},
+    {w:'restaurant',   s:'We booked a table at a lovely Italian restaurant.'}
+  ]},
+  challenger:{name:'Challenger',emoji:'\u{1F3C6}',desc:'Harder Year 5–6 words to master',words:[
+    {w:'accommodate',  s:'The hotel could accommodate up to two hundred guests.'},
+    {w:'amateur',      s:'He is an amateur photographer but his pictures are stunning.'},
+    {w:'attached',     s:'Please find the document attached to this email.'},
+    {w:'bruise',       s:'She got a bruise on her knee when she fell off her bike.'},
+    {w:'cemetery',     s:'The old cemetery had graves dating back to the 1800s.'},
+    {w:'communicate',  s:'It is important to communicate clearly when working in a team.'},
+    {w:'correspond',   s:'The two schools decided to correspond by writing letters.'},
+    {w:'criticise',    s:'It is easy to criticise but harder to suggest improvements.'},
+    {w:'curiosity',    s:'Curiosity led her to open the mysterious old box.'},
+    {w:'desperate',    s:'He was desperate to find his missing cat.'},
+    {w:'disastrous',   s:'The flood had a disastrous effect on the whole town.'},
+    {w:'embarrass',    s:'Singing in public used to embarrass her greatly.'},
+    {w:'equip',        s:'The school decided to equip every classroom with computers.'},
+    {w:'exaggerate',   s:'He tends to exaggerate — it was not that scary really.'},
+    {w:'guarantee',    s:'I cannot guarantee that the parcel will arrive by Friday.'},
+    {w:'hindrance',    s:'The noise from outside was a real hindrance to her concentration.'},
+    {w:'mischievous',  s:'The mischievous puppy had chewed through the furniture again.'},
+    {w:'muscle',       s:'She stretched every muscle carefully before the race.'},
+    {w:'parliament',   s:'Laws are debated and passed in parliament.'},
+    {w:'prejudice',    s:'We should judge people on their actions, not on prejudice.'},
+    {w:'privilege',    s:'It is a privilege to perform at the Royal Albert Hall.'},
+    {w:'profession',   s:'Teaching is a demanding but very rewarding profession.'},
+    {w:'sacrifice',    s:'Her parents made a great sacrifice to give her a good education.'},
+    {w:'stomach',      s:'She had butterflies in her stomach before the audition.'},
+    {w:'thorough',     s:'The inspector made a thorough check of the whole building.'}
+  ]},
+  legend:{name:'Legend',emoji:'\u{1F48E}',desc:'The toughest Year 5–6 words',words:[
+    {w:'awkward',      s:'There was an awkward silence after the announcement.'},
+    {w:'committee',    s:'The committee met every Monday to discuss new ideas.'},
+    {w:'conscience',   s:'His conscience would not let him keep the money he had found.'},
+    {w:'conscious',    s:'She was conscious of every sound in the silent hall.'},
+    {w:'controversy',  s:'The new law caused a great deal of controversy.'},
+    {w:'convenience',  s:'The shop was open all day for customers\' convenience.'},
+    {w:'especially',   s:'She loved all kinds of music, especially jazz.'},
+    {w:'harass',       s:'It is wrong to harass someone or make them feel threatened.'},
+    {w:'programme',    s:'The school programme of events was full for the autumn term.'},
+    {w:'pronunciation',s:'The pronunciation of some English words is very tricky.'},
+    {w:'rhyme',        s:'Can you think of a word that rhymes with orange?'},
+    {w:'rhythm',       s:'She clapped her hands to the rhythm of the music.'},
+    {w:'secretary',    s:'The secretary typed up the minutes of the meeting.'},
+    {w:'shoulder',     s:'He carried the heavy rucksack over one shoulder.'},
+    {w:'signature',    s:'The letter was signed with a neat signature at the bottom.'},
+    {w:'sincere',      s:'Please accept my sincere apologies for the long delay.'},
+    {w:'soldier',      s:'The soldier marched proudly in the Remembrance parade.'},
+    {w:'sufficient',   s:'There was just sufficient food for everyone at the party.'},
+    {w:'suggest',      s:'Can you suggest a good book for someone who enjoys mystery?'},
+    {w:'symbol',       s:'The dove is a well-known symbol of peace.'},
+    {w:'system',       s:'The new system made it much easier to track deliveries.'},
+    {w:'temperature',  s:'The temperature dropped sharply overnight as the frost set in.'},
+    {w:'twelfth',      s:'She came twelfth in the cross-country race.'},
+    {w:'vehicle',      s:'The vehicle broke down on the motorway near Birmingham.'},
+    {w:'yacht',        s:'They sailed around the island on a beautiful white yacht.'}
+  ]}
+}
+
+}; // end ALL_YEAR_SETS
+
+let YEAR = 'y34';
+let SETS = ALL_YEAR_SETS[YEAR];
+let SK   = Object.keys(SETS);
+
+function setYearData(y){YEAR=y;SETS=ALL_YEAR_SETS[y];SK=Object.keys(SETS);}
+function switchYear(y){
+  const all=loadAll();
+  const pr=all.find(x=>x.id===G.pid);
+  if(pr){pr.yearGroup=y;saveAll(all);}
+  setYearData(y);
+  updateYearTabs();
+  renderHub();
+}
+function updateYearTabs(){
+  ['y12','y34','y56'].forEach(y=>{
+    const btn=document.getElementById('yt-'+y);
+    if(btn)btn.classList.toggle('active',y===YEAR);
+  });
+}
+
+// ── SPELLING RULES (DfE English Appendix 1) ──────────────────────────────
+// Each rule has a 'years' field: which year groups it appears in.
 const RULES = [
-  { id:'ie_ei', name:'i before e', emoji:'\u{1F4DD}',
-    rule:'Write i before e, except after c (when the sound is "ee")',
-    tip:'"i before e, except after c" — so believe, piece, field use ie. After c, swap to ei: receive, ceiling.',
-    examples:['believe','piece','field','receive','ceiling'],
+  // ── YEARS 1–2 RULES ──────────────────────────────────────────────────────
+  { id:'double_letters', name:'Double Letters (ff ll ss zz ck)', emoji:'\u{270C}️',
+    years:['y12'],
+    rule:'The sounds /f/, /l/, /s/, /z/ and /k/ are usually spelt as ff, ll, ss, zz and ck when they come straight after a single vowel letter in short words.',
+    tip:'Short vowel + /f/l/s/z/k/? Double it! off, well, miss, buzz, back. Exceptions: if, pal, us, bus.',
+    examples:['off','well','miss','buzz','back'],
     words:[
-      {w:'believe',  s:'I believe you can do anything you try.'},
-      {w:'piece',    s:'Can I have a piece of cake please?'},
-      {w:'field',    s:'The cows grazed in the field.'},
-      {w:'receive',  s:'Did you receive my letter?'},
-      {w:'ceiling',  s:'She painted the ceiling blue.'}
+      {w:'full',   s:'The basket was full of strawberries.'},
+      {w:'pull',   s:'Pull the door open, please.'},
+      {w:'pass',   s:'Can you pass the scissors?'},
+      {w:'class',  s:'The whole class went on a trip.'},
+      {w:'grass',  s:'The grass was wet with dew.'}
     ]
   },
-  { id:'double_consonant', name:'Double the Consonant', emoji:'✌️',
-    rule:'Double the final consonant before adding -ing, -ed, -er when the word ends in a short vowel + single consonant',
-    tip:'Short vowel + single consonant at end? Double it! run→running, stop→stopped, big→bigger.',
-    examples:['running','stopped','bigger','sitting','dropped'],
+  { id:'soft_c', name:'Soft c — the /s/ sound', emoji:'\u{1F408}',
+    years:['y12','y34'],
+    rule:'The letter c makes an /s/ sound (soft c) when it is followed by e, i, or y.',
+    tip:'c + e/i/y = /s/ sound: circle, city, cycle. c + a/o/u = /k/ sound: cat, cod, cup.',
+    examples:['circle','city','cycle','centre','century'],
     words:[
-      {w:'running',  s:'She was running very fast.'},
-      {w:'stopped',  s:'The car stopped at the red light.'},
-      {w:'bigger',   s:'The elephant is bigger than the horse.'},
-      {w:'sitting',  s:'He was sitting on the bench.'},
-      {w:'dropped',  s:'She dropped her bag on the floor.'}
+      {w:'circle',  s:'Draw a circle on the paper.'},
+      {w:'city',    s:'London is a very large city.'},
+      {w:'cycle',   s:'She likes to cycle to school.'},
+      {w:'centre',  s:'Meet me in the centre of town.'},
+      {w:'century', s:'A century is one hundred years.'}
     ]
   },
   { id:'drop_e', name:'Drop the Silent e', emoji:'\u{1F6AB}',
-    rule:'Drop the silent e at the end of a word before adding a suffix that starts with a vowel (-ing, -ed, -er)',
-    tip:'make→making (drop e), bake→baked (drop e), nice→nicer (drop e). Keep e before consonant suffixes: hope→hopeful.',
+    years:['y12','y34'],
+    rule:'Drop the silent e at the end of a word before adding a suffix that starts with a vowel (-ing, -ed, -er, -est, -y).',
+    tip:'make→making (drop e), bake→baked (drop e), nice→nicer. Keep e before consonant suffixes: hope→hopeful.',
     examples:['making','baked','nicer','smiling','loved'],
     words:[
-      {w:'making',   s:'She is making a birthday cake.'},
-      {w:'baked',    s:'Mum baked fresh bread this morning.'},
-      {w:'nicer',    s:'That is a much nicer colour.'},
-      {w:'smiling',  s:'She was smiling at the joke.'},
-      {w:'loved',    s:'He loved playing football.'}
+      {w:'making',  s:'She is making a birthday cake.'},
+      {w:'baked',   s:'Mum baked fresh bread this morning.'},
+      {w:'nicer',   s:'That is a much nicer colour.'},
+      {w:'smiling', s:'She was smiling at the joke.'},
+      {w:'loved',   s:'He loved playing football.'}
     ]
   },
   { id:'y_to_i', name:'Change y to i', emoji:'\u{1F504}',
-    rule:'Change y to i before adding a suffix, when y follows a consonant',
-    tip:'cry→cried, happy→happier, carry→carried. But keep y before -ing: cry→crying (not criing!).',
+    years:['y12','y34'],
+    rule:'Change y to i before adding a suffix, when y follows a consonant — but keep y before -ing.',
+    tip:'cry→cried, happy→happier, carry→carried. Keep y before -ing: cry→crying (not criing!).',
     examples:['cried','happier','carried','stories','easiest'],
     words:[
       {w:'cried',    s:'The baby cried all night.'},
       {w:'happier',  s:'I am happier when the sun shines.'},
-      {w:'carried',  s:'She carried the heavy bags.'},
-      {w:'stories',  s:'He told us funny stories.'},
-      {w:'easiest',  s:'That was the easiest question.'}
+      {w:'carried',  s:'She carried the heavy bags home.'},
+      {w:'stories',  s:'He told us funny stories at bedtime.'},
+      {w:'easiest',  s:'That was the easiest question on the paper.'}
     ]
   },
-  { id:'silent_letters', name:'Silent Letters', emoji:'\u{1F910}',
-    rule:'Some words have silent letters — letters that are written but not spoken',
-    tip:'Silent k: know, knee, knock. Silent w: write, wrong, wrap. Silent g: gnome. Silent b: lamb, climb.',
-    examples:['knock','write','gnome','lamb','wrong'],
-    words:[
-      {w:'knock',    s:'Please knock before you come in.'},
-      {w:'write',    s:'Write your name at the top of the page.'},
-      {w:'gnome',    s:'There is a gnome in the garden.'},
-      {w:'lamb',     s:'The lamb was soft and fluffy.'},
-      {w:'wrong',    s:'That answer is wrong — try again.'}
-    ]
-  },
-  { id:'tion_sion', name:'-tion and -sion', emoji:'\u{1F4E2}',
-    rule:'The "shun" sound at the end of a word is usually spelled -tion or -sion',
-    tip:'-tion is most common: station, action, nation. -sion often follows a vowel: vision, confusion, television.',
-    examples:['station','action','vision','mission','question'],
-    words:[
-      {w:'station',  s:'We caught the train from the station.'},
-      {w:'action',   s:"Let's take action right now!"},
-      {w:'vision',   s:'Eagles have excellent vision.'},
-      {w:'mission',  s:'Our mission is to spell every word.'},
-      {w:'question', s:'Ask a question if you are unsure.'}
-    ]
-  },
-  { id:'soft_c', name:'Soft c (the /s/ sound)', emoji:'\u{1F408}',
-    rule:'The letter c makes an /s/ sound (soft c) when it is followed by e, i, or y',
-    tip:'c + e/i/y = /s/ sound: circle, city, cycle. c + a/o/u = /k/ sound: cat, cod, cup.',
-    examples:['circle','city','cycle','centre','century'],
-    words:[
-      {w:'circle',   s:'Draw a circle on the paper.'},
-      {w:'city',     s:'London is a very large city.'},
-      {w:'cycle',    s:'She likes to cycle to school.'},
-      {w:'centre',   s:'Meet me in the centre of town.'},
-      {w:'century',  s:'A century is one hundred years.'}
-    ]
-  },
-  { id:'prefixes', name:'Prefixes', emoji:'\u{1F527}',
-    rule:'A prefix is a group of letters added to the start of a word to change its meaning',
-    tip:'un- = not (unhappy). dis- = not/opposite (disagree). re- = again (replay). mis- = wrongly (mistake). im-/in- = not (impossible).',
-    examples:['unhappy','disagree','replay','mistake','impossible'],
-    words:[
-      {w:'unhappy',    s:'She was unhappy about the result.'},
-      {w:'disagree',   s:'It is fine to disagree politely.'},
-      {w:'replay',     s:'Can we replay that video?'},
-      {w:'mistake',    s:'Everyone makes a mistake sometimes.'},
-      {w:'impossible', s:'Nothing is impossible if you try.'}
-    ]
-  },
-  { id:'suffixes', name:'Suffixes -ful, -less, -ness', emoji:'\u{1F3F7}️',
-    rule:'Suffixes are added to the end of a word to change its meaning or word type',
-    tip:'-ful means "full of": careful. -less means "without": careless. -ness makes a noun: kindness.',
+  { id:'suffixes', name:'Suffixes — -ful, -less, -ness', emoji:'\u{1F3F7}️',
+    years:['y12','y34'],
+    rule:'Suffixes are added to the end of a word to change its meaning or word type.',
+    tip:'-ful means “full of”: careful. -less means “without”: careless. -ness makes a noun: kindness. If the root ends in y, change y to i first: happy→happiness.',
     examples:['careful','careless','kindness','hopeful','darkness'],
     words:[
       {w:'careful',   s:'Be careful crossing the road.'},
       {w:'careless',  s:'A careless mistake cost us the match.'},
       {w:'kindness',  s:'Her kindness made everyone smile.'},
-      {w:'hopeful',   s:'I am hopeful we will win.'},
+      {w:'hopeful',   s:'I am hopeful we will win today.'},
       {w:'darkness',  s:'The darkness made it hard to see.'}
     ]
   },
-  { id:'homophones', name:'Homophones', emoji:'\u{1F46F}',
-    rule:'Homophones are words that sound the same but have different spellings and different meanings',
-    tip:'there = place, their = belonging to them. hear = use your ears, here = this place. wear = clothing, where = location.',
-    examples:['there','their','hear','here','wear'],
+  { id:'homophones12', name:'Homophones — Years 1–2', emoji:'\u{1F46F}',
+    years:['y12'],
+    rule:'Homophones are words that sound the same but have different spellings and different meanings.',
+    tip:'there = place. their = belonging to them. they’re = they are. here = this place. hear = use your ears.',
+    examples:['there','their','here','hear','see'],
     words:[
       {w:'there',  s:'Put it over there on the table.'},
       {w:'their',  s:'It is their turn to play.'},
-      {w:'hear',   s:'Can you hear that music?'},
       {w:'here',   s:'Come over here please.'},
-      {w:'wear',   s:'What will you wear to the party?'}
+      {w:'hear',   s:'Can you hear that music?'},
+      {w:'see',    s:'Can you see the bird in the tree?'}
+    ]
+  },
+
+  // ── YEARS 3–4 RULES ──────────────────────────────────────────────────────
+  { id:'double_consonant', name:'Double the Consonant', emoji:'✌️',
+    years:['y34'],
+    rule:'If the last syllable of a multi-syllable word is stressed and ends with one consonant after one vowel, double the consonant before a vowel suffix.',
+    tip:'forGET→forgetting (stressed, double t). LIMit→limiting (unstressed, no double). Single-syllable: run→running, stop→stopped.',
+    examples:['forgetting','beginning','preferred','limiting','gardening'],
+    words:[
+      {w:'forgetting', s:'I keep forgetting where I put my keys.'},
+      {w:'beginning',  s:'The film was good from the beginning.'},
+      {w:'preferred',  s:'She preferred reading to watching TV.'},
+      {w:'limiting',   s:'The rain was limiting what we could do outside.'},
+      {w:'running',    s:'She was running very fast to catch the bus.'}
+    ]
+  },
+  { id:'prefixes', name:'Prefixes', emoji:'\u{1F527}',
+    years:['y12','y34'],
+    rule:'A prefix is a group of letters added to the start of a word to change its meaning. Most prefixes are added without changing the spelling of the root word.',
+    tip:'un-=not (unhappy). dis-=not/opposite (disagree). mis-=wrongly (mistake). re-=again (replay). in-/im-/il-/ir-=not. sub-, inter-, super-, anti-, auto-.',
+    examples:['disappear','mislead','inactive','impossible','illegal'],
+    words:[
+      {w:'disappear',  s:'The magician made the rabbit disappear.'},
+      {w:'mislead',    s:'Do not mislead people with wrong information.'},
+      {w:'inactive',   s:'The volcano has been inactive for many years.'},
+      {w:'impossible', s:'Nothing is impossible if you try hard enough.'},
+      {w:'irregular',  s:'The irregular verb does not follow the usual pattern.'}
+    ]
+  },
+  { id:'ation_suffix', name:'The Suffix -ation', emoji:'\u{1F9EA}',
+    years:['y34'],
+    rule:'The suffix -ation is added to verbs to form nouns. The normal rules for adding suffixes still apply.',
+    tip:'inform→information, prepare→preparation (drop e), admire→admiration (drop e), sense→sensation.',
+    examples:['information','preparation','admiration','sensation','imagination'],
+    words:[
+      {w:'information', s:'The leaflet contains useful information about the visit.'},
+      {w:'preparation', s:'A lot of preparation went into the school play.'},
+      {w:'admiration',  s:'She looked at the painting with great admiration.'},
+      {w:'sensation',   s:'There was a strange tingling sensation in her fingers.'},
+      {w:'imagination', s:'Use your imagination to write a creative story.'}
+    ]
+  },
+  { id:'ly_suffix', name:'The Suffix -ly', emoji:'\u{1F4AC}',
+    years:['y34'],
+    rule:'The suffix -ly is added to an adjective to form an adverb. If the root word ends in -le, change -le to -ly. If it ends in -ic, add -ally. If -y (consonant before it), change y to i.',
+    tip:'sad→sadly. gentle→gently (-le→-ly). basic→basically (-ic→-ally). happy→happily (y→i). Exceptions: truly, duly, wholly.',
+    examples:['sadly','gently','basically','happily','usually'],
+    words:[
+      {w:'sadly',      s:'She waved sadly as the train pulled away.'},
+      {w:'gently',     s:'She gently picked up the injured bird.'},
+      {w:'basically',  s:'The recipe is basically the same as mine.'},
+      {w:'happily',    s:'The children played happily in the garden.'},
+      {w:'usually',    s:'She usually walks to school, but today she got the bus.'}
+    ]
+  },
+  { id:'sure_ture', name:'Endings -sure and -ture', emoji:'\u{1F3AF}',
+    years:['y34'],
+    rule:'The ending that sounds like /zhə/ is always spelt -sure. The ending that sounds like /tʃə/ is often spelt -ture.',
+    tip:'-sure sounds like “zhuh”: treasure, measure, pleasure. -ture sounds like “chuh”: nature, picture, creature, adventure.',
+    examples:['treasure','measure','pleasure','picture','creature'],
+    words:[
+      {w:'treasure',  s:'The pirates searched for buried treasure.'},
+      {w:'measure',   s:'Use a ruler to measure the length.'},
+      {w:'pleasure',  s:'It was a great pleasure to meet you.'},
+      {w:'picture',   s:'She painted a picture of the countryside.'},
+      {w:'creature',  s:'A strange creature appeared from the lake.'}
+    ]
+  },
+  { id:'tion_sion', name:'Endings -tion, -sion, -ssion, -cian', emoji:'\u{1F4E2}',
+    years:['y34'],
+    rule:'The "shun" sound at the end of a word is usually spelt -tion, -sion, -ssion or -cian, depending on the root word.',
+    tip:'-tion is most common (action, station). -ssion after ss/mit (permission, admission). -sion after d/se (division, extension). -cian for people (musician, magician).',
+    examples:['station','permission','division','musician','invention'],
+    words:[
+      {w:'station',    s:'We caught the train from the station.'},
+      {w:'permission', s:'You need permission to leave early.'},
+      {w:'division',   s:'Division is the opposite of multiplication.'},
+      {w:'musician',   s:'She is a very talented musician.'},
+      {w:'invention',  s:'The telephone was a remarkable invention.'}
+    ]
+  },
+  { id:'ous_suffix', name:'The Suffix -ous', emoji:'\u{1F31F}',
+    years:['y34'],
+    rule:'The suffix -ous turns nouns into adjectives. Sometimes the root word is obvious; sometimes -our changes to -or before -ous; sometimes e is kept to preserve a soft g sound.',
+    tip:'poison→poisonous, danger→dangerous. humour→humorous (-our→-or). courage→courageous (keep e). various, famous, enormous.',
+    examples:['dangerous','humorous','courageous','various','famous'],
+    words:[
+      {w:'dangerous',  s:'It is dangerous to run near a swimming pool.'},
+      {w:'humorous',   s:'He wrote a humorous story that made everyone laugh.'},
+      {w:'courageous', s:'It was courageous of her to speak up.'},
+      {w:'various',    s:'There are various ways to solve this problem.'},
+      {w:'famous',     s:'She is a famous author of children\'s books.'}
+    ]
+  },
+  { id:'homophones34', name:'Homophones — Years 3–4', emoji:'\u{1F575}️',
+    years:['y34'],
+    rule:'Homophones are words that sound the same but have different spellings and meanings. Near-homophones sound very similar but not identical.',
+    tip:'accept=receive, except=not including. affect=verb (the rain affects us), effect=noun (the effect of rain). brake=stop, break=smash.',
+    examples:['accept','except','affect','effect','brake'],
+    words:[
+      {w:'accept',  s:'Please accept my apologies for being late.'},
+      {w:'except',  s:'Everyone was there except for Tom.'},
+      {w:'affect',  s:'The cold weather can affect your mood.'},
+      {w:'effect',  s:'What effect does exercise have on the heart?'},
+      {w:'brake',   s:'She pressed the brake and the car stopped.'}
+    ]
+  },
+
+  // ── YEARS 5–6 RULES ──────────────────────────────────────────────────────
+  { id:'cious_tious', name:'Endings -cious and -tious', emoji:'\u{1F4A5}',
+    years:['y56'],
+    rule:'The ending that sounds like /ʃəs/ is usually spelt -cious or -tious. If the root word ends in -ce, the /ʃ/ sound is usually spelt c (e.g. vice→vicious).',
+    tip:'-cious: vicious, precious, conscious, malicious. -tious: ambitious, cautious, nutritious, fictitious.',
+    examples:['vicious','precious','conscious','ambitious','nutritious'],
+    words:[
+      {w:'conscious',   s:'She was conscious of every sound in the silent hall.'},
+      {w:'suspicious',  s:'The dog gave the stranger a suspicious look.'},
+      {w:'ambitious',   s:'He was ambitious and worked very hard to succeed.'},
+      {w:'cautious',    s:'Be cautious when crossing a busy road.'},
+      {w:'infectious',  s:'Laughter is infectious — it spreads quickly!'}
+    ]
+  },
+  { id:'cial_tial', name:'Endings -cial and -tial', emoji:'\u{1F4CB}',
+    years:['y56'],
+    rule:'The ending that sounds like /ʃəl/ is usually spelt -cial after a vowel letter and -tial after a consonant letter.',
+    tip:'-cial (after vowel): official, special, artificial. -tial (after consonant): partial, confidential, essential. Exceptions: initial, financial.',
+    examples:['official','special','partial','confidential','essential'],
+    words:[
+      {w:'official',      s:'The official results were announced on Monday.'},
+      {w:'artificial',    s:'Artificial flowers need no watering.'},
+      {w:'essential',     s:'Water is essential for all living things.'},
+      {w:'confidential',  s:'Please keep this information confidential.'},
+      {w:'potential',     s:'She showed great potential from a young age.'}
+    ]
+  },
+  { id:'ant_ent', name:'Endings -ant/-ance and -ent/-ence', emoji:'\u{2696}️',
+    years:['y56'],
+    rule:'Use -ant/-ance/-ancy if there is a related word with an /æ/ or /eɪ/ sound. Use -ent/-ence/-ency after soft c or g, or qu. Many words just have to be learnt.',
+    tip:'observant (observation→-ant). innocent, decent, frequent (-ent after soft c/qu). assistant, relevant — just learn these.',
+    examples:['observant','innocent','frequent','relevant','sufficient'],
+    words:[
+      {w:'relevant',    s:'Please make sure your answer is relevant to the question.'},
+      {w:'sufficient',  s:'There was just sufficient food for everyone at the party.'},
+      {w:'parliament',  s:'Laws are debated and passed in parliament.'},
+      {w:'government',  s:'The government decided to build new schools.'},
+      {w:'environment', s:'We should all do our part to protect the environment.'}
+    ]
+  },
+  { id:'able_ible', name:'Endings -able and -ible', emoji:'\u{1F9E9}',
+    years:['y56'],
+    rule:'-able/-ably is far more common than -ible/-ibly. Use -able if there is a related -ation form, or if a complete root word can be heard. Use -ible if a complete root word cannot be heard.',
+    tip:'-able: adorable (adoration), dependable, reliable. -ible: possible, horrible, terrible, incredible. Keep e before -able after c or g: noticeable, changeable.',
+    examples:['adorable','dependable','possible','horrible','noticeable'],
+    words:[
+      {w:'possible',     s:'Is it possible to finish by five o\'clock?'},
+      {w:'incredible',   s:'The view from the top was incredible.'},
+      {w:'comfortable',  s:'Sit in a comfortable position to read.'},
+      {w:'noticeable',   s:'There was a noticeable improvement in her spelling.'},
+      {w:'responsible',  s:'Each person is responsible for their own choices.'}
+    ]
+  },
+  { id:'ie_ei', name:'i before e, except after c', emoji:'\u{1F4DD}',
+    years:['y56'],
+    rule:'Write i before e when the sound is /i:/, except after c, when you write e before i. Exceptions: protein, caffeine, seize.',
+    tip:'"i before e except after c — when the sound is ee." believe, piece, field (ie). But after c: receive, deceive, ceiling (ei). Exceptions: seize, protein.',
+    examples:['believe','piece','receive','ceiling','deceive'],
+    words:[
+      {w:'receive',   s:'Did you receive my letter?'},
+      {w:'ceiling',   s:'She painted the ceiling blue.'},
+      {w:'perceive',  s:'We perceive the world through our senses.'},
+      {w:'conceive',  s:'She could not conceive of a better plan.'},
+      {w:'deceive',   s:'It is wrong to deceive people.'}
+    ]
+  },
+  { id:'ough_string', name:'Words Containing -ough', emoji:'\u{1F300}',
+    years:['y56'],
+    rule:'The letter-string ough can represent many different sounds. It is one of the trickiest patterns in English.',
+    tip:'ough as /ɔ:t/: ought, thought, bought. As /ʌ/: rough, tough, enough. As /əʊ/: though, although. As /u:/: through. As /ə/: thorough.',
+    examples:['thought','through','though','rough','thorough'],
+    words:[
+      {w:'thought',   s:'She thought carefully before answering.'},
+      {w:'through',   s:'The train goes through a long tunnel.'},
+      {w:'though',    s:'It was cold, though we had a wonderful time.'},
+      {w:'thorough',  s:'The inspector made a thorough check of the building.'},
+      {w:'enough',    s:'Have you had enough to eat tonight?'}
+    ]
+  },
+  { id:'silent_letters', name:'Silent Letters', emoji:'\u{1F910}',
+    years:['y56'],
+    rule:'Some words have letters that are written but not spoken. These used to be pronounced hundreds of years ago.',
+    tip:'Silent b: doubt, lamb. Silent c: scene, science. Silent g: gnome, sign. Silent k: knight, knot. Silent t: thistle. Silent d: island.',
+    examples:['doubt','science','knight','island','solemn'],
+    words:[
+      {w:'doubt',    s:'I have no doubt that she will win.'},
+      {w:'island',   s:'The ship was near a small rocky island.'},
+      {w:'solemn',   s:'The ceremony was quiet and solemn.'},
+      {w:'muscle',   s:'She stretched every muscle before the race.'},
+      {w:'rhythm',   s:'She clapped her hands to the rhythm of the music.'}
+    ]
+  },
+  { id:'homophones56', name:'Homophones — Years 5–6', emoji:'\u{1F9D0}',
+    years:['y56'],
+    rule:'Many words cause confusion because they sound similar or identical. Nouns often end in -ce and verbs in -se (advice/advise, practice/practise).',
+    tip:'advice (noun)/advise (verb). practice (noun)/practise (verb). stationary (not moving)/stationery (paper). desert (barren land)/dessert (sweet course).',
+    examples:['advice','advise','stationary','stationery','principal'],
+    words:[
+      {w:'advice',      s:'She gave me some very useful advice.'},
+      {w:'practice',    s:'Piano practice takes place every Thursday.'},
+      {w:'prejudice',   s:'Judge people on their actions, not on prejudice.'},
+      {w:'privilege',   s:'It is a privilege to perform at the Albert Hall.'},
+      {w:'conscience',  s:'His conscience would not let him keep the money.'}
     ]
   }
 ];
@@ -1053,6 +1448,9 @@ function createProfile(){
 // ── HUB ───────────────────────────────────────────────────────────────────
 function renderHub(){
   const p=getP(G.pid);if(!p){go('home');return}
+  const yg=p.yearGroup||'y34';
+  if(yg!==YEAR)setYearData(yg);
+  updateYearTabs();
   el('hub-name').textContent='Hey, '+p.name+'!';
   const tp=totalPat(p);
   el('hub-progress').textContent=tp+' \u{1F354} earned • '+Math.round(tp/12*100)+'% complete';
@@ -1109,13 +1507,14 @@ function renderMap(){
   });
   // Print tile
   const pt=document.createElement('div');pt.className='set-card print-tile';
-  pt.innerHTML='<span class="set-em">&#x1F5A8;&#xFE0F;</span><div class="print-tile-info"><div class="print-tile-name">Print Word List</div><div class="print-tile-sub">All 100 words grouped by difficulty</div></div><span class="print-tile-arrow">&#x2192;</span>';
+  const yearLabel={'y12':'Years 1–2','y34':'Years 3–4','y56':'Years 5–6'}[YEAR]||'Years 3–4';
+  pt.innerHTML='<span class="set-em">&#x1F5A8;&#xFE0F;</span><div class="print-tile-info"><div class="print-tile-name">Print Word List</div><div class="print-tile-sub">'+yearLabel+' words grouped by tier</div></div><span class="print-tile-arrow">&#x2192;</span>';
   pt.onclick=()=>go('print');
   grid.appendChild(pt);
 }
 
 // ── CROSSWORD ─────────────────────────────────────────────────────────────
-let CWKEY='starter', CWS=null, _cwSkip=false;
+let CWKEY=null, CWS=null, _cwSkip=false;
 
 function cwClue(obj){
   return obj.s.replace(new RegExp(obj.w,'gi'),'_'.repeat(obj.w.length));
@@ -1242,7 +1641,8 @@ function cwLocked(r,c){
 }
 
 function renderCrossword(setKey){
-  CWKEY=setKey||CWKEY;
+  if(!setKey||!SK.includes(setKey))setKey=SK[0];
+  CWKEY=setKey;
   el('cw-set-tabs').innerHTML=SK.map(k=>`<div class="cw-set-tab${k===CWKEY?' active':''}" onclick="renderCrossword('${k}')">${SETS[k].emoji} ${SETS[k].name}</div>`).join('');
   const cw=generateCW(SETS[CWKEY].words);
   CWS={...cw,correct:new Set(),letters:{},active:null,cursor:0};
@@ -1518,6 +1918,8 @@ function renderPrint(){
 // ── PROGRESS REPORT ──────────────────────────────────────────────────────────
 function renderProgress(){
   const p=getP(G.pid);if(!p){go('home');return;}
+  const yg=p.yearGroup||'y34';
+  if(yg!==YEAR)setYearData(yg);
   const ws=p.wordStatus||{};
   const fw=getFocusWords(p);
   const fwSet=new Set(fw.map(f=>f.w));
@@ -1806,7 +2208,8 @@ function renderResults(){
 function renderRules(){
   const p=getP(G.pid);
   const grid=el('rules-grid');grid.innerHTML='';
-  RULES.forEach(rule=>{
+  const activeRules=RULES.filter(r=>!r.years||r.years.includes(YEAR));
+  activeRules.forEach(rule=>{
     const played=p&&p.rulesPlayed&&p.rulesPlayed[rule.id]?p.rulesPlayed[rule.id]:0;
     const c=document.createElement('div');c.className='rule-card';
     c.innerHTML=`<div class="rule-card-icon">${rule.emoji}</div><div class="rule-card-name">${rule.name}</div><div class="rule-card-done">${played>0?'✓ Practised '+played+' time'+(played!==1?'s':''):'Tap to learn'}</div>`;
