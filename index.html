@@ -370,6 +370,7 @@ body{min-height:100%;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;bac
     <div class="lc-mascot sb-character"><svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="28" width="60" height="58" rx="10" fill="#FFD700"/><rect x="18" y="68" width="60" height="18" rx="6" fill="#8B4513"/><rect x="18" y="64" width="60" height="6" fill="#5C3317"/><rect x="44" y="61" width="8" height="12" rx="2" fill="#C0A030"/><rect x="30" y="55" width="36" height="14" rx="3" fill="#fff"/><polygon points="36,55 48,65 60,55" fill="#fff"/><polygon points="44,56 52,56 50,70 48,72 46,70" fill="#FF4444"/><ellipse cx="36" cy="42" rx="8" ry="9" fill="#fff"/><ellipse cx="60" cy="42" rx="8" ry="9" fill="#fff"/><circle cx="37" cy="43" r="4" fill="#6699CC"/><circle cx="61" cy="43" r="4" fill="#6699CC"/><circle cx="38" cy="42" r="2" fill="#000"/><circle cx="62" cy="42" r="2" fill="#000"/><circle cx="39" cy="41" r="1" fill="#fff"/><circle cx="63" cy="41" r="1" fill="#fff"/><line x1="28" y1="34" x2="30" y2="37" stroke="#000" stroke-width="1.5"/><line x1="33" y1="32" x2="34" y2="35" stroke="#000" stroke-width="1.5"/><line x1="38" y1="32" x2="38" y2="35" stroke="#000" stroke-width="1.5"/><line x1="58" y1="32" x2="58" y2="35" stroke="#000" stroke-width="1.5"/><line x1="63" y1="32" x2="62" y2="35" stroke="#000" stroke-width="1.5"/><line x1="68" y1="34" x2="66" y2="37" stroke="#000" stroke-width="1.5"/><ellipse cx="48" cy="50" rx="3" ry="2" fill="#E8A000"/><path d="M34 56 Q48 68 62 56" stroke="#000" stroke-width="2" fill="none"/><rect x="40" y="56" width="7" height="6" rx="1" fill="#fff" stroke="#ccc" stroke-width=".5"/><rect x="48" y="56" width="7" height="6" rx="1" fill="#fff" stroke="#ccc" stroke-width=".5"/><circle cx="26" cy="54" r="5" fill="rgba(255,100,100,0.25)"/><circle cx="70" cy="54" r="5" fill="rgba(255,100,100,0.25)"/><circle cx="28" cy="38" r="2" fill="rgba(0,0,0,0.08)"/><circle cx="52" cy="32" r="1.5" fill="rgba(0,0,0,0.08)"/><circle cx="68" cy="40" r="2" fill="rgba(0,0,0,0.08)"/><rect x="4" y="45" width="14" height="7" rx="4" fill="#FFD700" transform="rotate(-20,4,45)"/><rect x="78" y="45" width="14" height="7" rx="4" fill="#FFD700" transform="rotate(20,92,45)"/><rect x="24" y="84" width="16" height="8" rx="3" fill="#1A1A1A"/><rect x="56" y="84" width="16" height="8" rx="3" fill="#1A1A1A"/></svg></div>
     <div class="lc-title">Spelling Quest</div>
     <div class="lc-sub">BIKINI BOTTOM ADVENTURE</div>
+    <div id="spq-streak" style="display:none;margin:8px auto 0;background:#fff3c4;color:#a05a00;border:2px solid #f0c040;border-radius:20px;padding:6px 16px;font-weight:800;font-size:15px;width:fit-content;">🔥 <span id="spq-streak-n">0</span> day spelling streak!</div>
     <p class="lc-desc">Join <strong>SpongeBob</strong> on a quest through Bikini Bottom! Spell words, earn <strong>Krabby Patties &#x1F354;</strong>, and become a champion speller!</p>
     <div id="profiles-section"></div>
     <div class="name-row" id="name-row">
@@ -2137,6 +2138,7 @@ function updTimer(){
   G.ltLeft<=10?r.classList.add('urgent'):r.classList.remove('urgent');
 }
 function endLt(){
+  if(G.correct>0 && window.markSpellingPractice) window.markSpellingPractice();
   if(window.speechSynthesis)window.speechSynthesis.cancel();
   const all=loadAll(),p=all.find(x=>x.id===G.pid);
   if(p&&!isSpecialSet()){
@@ -2158,6 +2160,7 @@ function endLt(){
 
 // ── END ROUND ─────────────────────────────────────────────────────────────
 function endRound(){
+  if(G.correct>0 && window.markSpellingPractice) window.markSpellingPractice();
   if(window.speechSynthesis)window.speechSynthesis.cancel();
   const all=loadAll(),p=all.find(x=>x.id===G.pid);
   if(p&&!isSpecialSet()){
@@ -2317,6 +2320,50 @@ function showReaction(ok){
 // ── BOOT ──────────────────────────────────────────────────────────────────
 go('home');
 
+</script>
+
+<!-- Reports practice days to Ava's Emerald Quest (shared Firebase) and shows a streak -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyCj6b5urSwURBNJHrKDuHkcK2HLuZW1fck",
+  authDomain: "ava-rewards.firebaseapp.com",
+  projectId: "ava-rewards",
+  storageBucket: "ava-rewards.firebasestorage.app",
+  messagingSenderId: "15713321429",
+  appId: "1:15713321429:web:679f2fa271e70f7a7a3d5c"
+};
+const db = getFirestore(initializeApp(firebaseConfig));
+const PROFILE = doc(db, "profiles", "ava");     // shared with the Emerald Quest rewards app
+const dstr = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function computeStreak(days){
+  if(!days.length) return 0;
+  const set = new Set(days);
+  let cur = new Date(days.slice().sort().slice(-1)[0]+"T00:00:00"), n=0;
+  while(set.has(dstr(cur))){ n++; cur.setDate(cur.getDate()-1); }
+  return n;
+}
+function renderStreak(days){
+  const n = computeStreak(days);
+  const box = document.getElementById("spq-streak"), num = document.getElementById("spq-streak-n");
+  if(box && num){ num.textContent = n; box.style.display = n>0 ? "block" : "none"; }
+}
+// Called from endRound()/endLt() when Ava finishes a round with at least one correct.
+// Merges today's date into the shared profile (preserves emeralds etc.), so the
+// rewards app gives her an emerald and both apps show the streak. No rules change.
+window.markSpellingPractice = async function(){
+  const today = dstr(new Date());
+  if(localStorage.getItem("spq_lastReport") === today) return;   // once per day per device
+  try{
+    await setDoc(PROFILE, { spellingDays: { [today]: true }, spellingLastPlayed: today }, { merge:true });
+    localStorage.setItem("spq_lastReport", today);
+  }catch(e){}
+};
+onSnapshot(PROFILE, snap=>{
+  const data = snap.exists() ? snap.data() : {};
+  renderStreak(Object.keys(data.spellingDays||{}).filter(d=>data.spellingDays[d]));
+}, ()=>{});
 </script>
 </body>
 </html>
