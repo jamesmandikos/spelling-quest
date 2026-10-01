@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1f2a1f">
+<title>Times Table Miner</title>
+<style>
+  :root {
+    --bg: #1f2a1f; --panel: #2e3b2e; --panel2: #3a4a3a; --text: #f3f6ef; --muted: #b7c4b0;
+    --grass: #5fae3c; --emerald: #17dd62; --wrong: #e5533d; --gold: #f2c230; --edge: #121812;
+    --key: #6b6b6b; --keyhi: #8a8a8a;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: "Trebuchet MS", system-ui, -apple-system, sans-serif;
+    display: flex; justify-content: center; overflow-x: hidden;
+  }
+  #app { width: 100%; max-width: 560px; padding: 16px; padding-bottom: 32px; }
+  h1 { font-size: 26px; margin: 4px 0 2px; letter-spacing: .5px; }
+  h2 { font-size: 20px; margin: 18px 0 8px; }
+  .sub { color: var(--muted); font-size: 14px; margin: 0 0 12px; }
+  .row { display: flex; gap: 10px; align-items: center; }
+  .spread { justify-content: space-between; }
+  .pill { background: var(--panel); border: 2px solid var(--edge); padding: 6px 10px; font-weight: bold; font-size: 15px; }
+  .btn {
+    display: block; width: 100%; border: 3px solid var(--edge); background: var(--grass); color: #fff;
+    font: inherit; font-weight: bold; font-size: 19px; padding: 14px; margin: 8px 0; cursor: pointer;
+    box-shadow: inset -4px -4px 0 rgba(0,0,0,.25), inset 4px 4px 0 rgba(255,255,255,.18);
+    text-shadow: 2px 2px 0 rgba(0,0,0,.35);
+  }
+  .btn small { display: block; font-size: 13px; font-weight: normal; opacity: .9; text-shadow: none; }
+  .btn.grey { background: #6d6d6d; }
+  .btn.blue { background: #3a7bd5; }
+  .btn.gold { background: #c8961c; }
+  .btn:active { transform: translateY(2px); }
+  .ores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .ore {
+    border: 3px solid var(--edge); background: #777; padding: 10px 6px; text-align: center; cursor: pointer;
+    box-shadow: inset -4px -4px 0 rgba(0,0,0,.25), inset 4px 4px 0 rgba(255,255,255,.15); position: relative;
+  }
+  .ore .t { font-size: 24px; font-weight: bold; text-shadow: 2px 2px 0 rgba(0,0,0,.4); }
+  .ore .n { font-size: 12px; }
+  .ore .bar { height: 8px; background: rgba(0,0,0,.4); margin-top: 6px; }
+  .ore .bar i { display: block; height: 100%; background: var(--emerald); }
+  .ore.off { opacity: .35; }
+  .ore .tick { position: absolute; top: 2px; right: 6px; font-size: 14px; }
+  /* Game */
+  .hud { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
+  .timer { font-size: 22px; font-weight: bold; font-variant-numeric: tabular-nums; }
+  .timebar { height: 10px; background: var(--panel); border: 2px solid var(--edge); margin-bottom: 10px; }
+  .timebar i { display: block; height: 100%; background: var(--gold); transition: width .25s linear; }
+  .q {
+    background: var(--panel); border: 3px solid var(--edge); text-align: center; padding: 18px 8px;
+    font-size: 52px; font-weight: bold; font-variant-numeric: tabular-nums; min-height: 110px;
+  }
+  .q.right { background: #24653a; } .q.wrong { background: #7a2c22; }
+  .ans {
+    background: #0e130e; border: 3px solid var(--edge); text-align: center; font-size: 44px; height: 70px;
+    line-height: 62px; margin: 10px 0; font-variant-numeric: tabular-nums; color: var(--gold);
+  }
+  .hint { text-align: center; color: var(--muted); min-height: 22px; font-size: 16px; }
+  .pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .pad button {
+    font: inherit; font-size: 30px; font-weight: bold; padding: 14px 0; border: 3px solid var(--edge);
+    background: var(--key); color: #fff; cursor: pointer; touch-action: manipulation;
+    box-shadow: inset -4px -4px 0 rgba(0,0,0,.25), inset 4px 4px 0 rgba(255,255,255,.18);
+  }
+  .pad button:active { background: var(--keyhi); }
+  .pad .ok { background: var(--grass); } .pad .del { background: #8a5a2b; }
+  /* Results / grid */
+  .card { background: var(--panel); border: 3px solid var(--edge); padding: 14px; margin: 10px 0; }
+  .big { font-size: 40px; font-weight: bold; }
+  .grid { display: grid; grid-template-columns: 28px repeat(12, 1fr); gap: 2px; font-size: 11px; }
+  .grid div { text-align: center; padding: 5px 0; }
+  .grid .h { color: var(--muted); font-weight: bold; }
+  .c0 { background: #3b3b3b; } .c1 { background: #a33a2c; } .c2 { background: #c7742a; }
+  .c3 { background: #c9b12a; color: #222; } .c4 { background: #4f9e3b; } .c5 { background: #17b955; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; margin-top: 8px; }
+  .legend span { padding: 2px 6px; }
+  .toggle { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--panel2); }
+  .toggle input { width: 26px; height: 26px; }
+  .missed { display: flex; flex-wrap: wrap; gap: 6px; }
+  .missed span { background: #7a2c22; padding: 4px 8px; font-weight: bold; }
+  .burst { position: fixed; pointer-events: none; font-size: 28px; animation: up 900ms ease-out forwards; z-index: 9; }
+  @keyframes up { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(-120px) scale(1.4); } }
+  .hidden { display: none !important; }
+  a { color: var(--gold); }
+  .tiny { font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ---------- Config ----------
+// Ores follow James's TTRS plan order: quick wins first, hardest (7s) last.
+const ORES = [
+  { t: 11, name: 'Coal',     color: '#3c3c3c' },
+  { t: 12, name: 'Copper',   color: '#b0643a' },
+  { t: 9,  name: 'Iron',     color: '#a8968a' },
+  { t: 6,  name: 'Redstone', color: '#b3241c' },
+  { t: 8,  name: 'Lapis',    color: '#2a52be' },
+  { t: 7,  name: 'Diamond',  color: '#2fb8b0' },
+  { t: 3,  name: 'Dirt',     color: '#7a5230' },
+  { t: 4,  name: 'Stone',    color: '#7d7d7d' },
+  { t: 2,  name: 'Sand',     color: '#c9b46a' },
+  { t: 5,  name: 'Oak',      color: '#9c7a45' },
+  { t: 10, name: 'Gravel',   color: '#8b8580' },
+  { t: 1,  name: 'Grass',    color: '#5fae3c' },
+];
+const FAST_MS = 3000;           // under 3s = real recall, same bar as TTRS Studio
+const HOMEWORK_SECS = 600;      // the school's 10 minutes
+const QUICK_SECS = 60;
+const STORE = 'ttMiner.v1';
+const RANKS = [ // average seconds per correct answer in a speed test
+  [1.5, 'Netherite', '#4a3f45'], [2, 'Diamond', '#2fb8b0'], [3, 'Gold', '#c8961c'],
+  [4, 'Iron', '#a8968a'], [6, 'Stone', '#7d7d7d'], [Infinity, 'Wood', '#9c7a45'],
+];
+
+// ---------- State ----------
+function freshState() {
+  return { name: '', tables: [11, 12], division: false, sound: true,
+           facts: {}, emeralds: 0, days: {}, bestSpeed: null, sessions: [] };
+}
+let S = load();
+function load() {
+  try { const raw = localStorage.getItem(STORE); if (raw) return Object.assign(freshState(), JSON.parse(raw)); }
+  catch (e) {}
+  return freshState();
+}
+function save() { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} }
+
+// A fact key is the table plus the other number: m:7:8 is "7 x 8" (asked either way round),
+// d:7:8 is "56 ÷ 7 = 8". Box is a Leitner box 0-5 (0 = never seen).
+function fact(k) { return S.facts[k] || (S.facts[k] = { box: 0, right: 0, wrong: 0, ms: [] }); }
+function factsFor(tables, division) {
+  const out = [];
+  for (const t of tables) for (let n = 1; n <= 12; n++) {
+    out.push('m:' + t + ':' + n);
+    if (division) out.push('d:' + t + ':' + n);
+  }
+  return out;
+}
+function mastery(t) {
+  const ks = factsFor([t], false);
+  return ks.filter(k => (S.facts[k] || {}).box >= 4).length / ks.length;
+}
+function today() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function streak() {
+  let n = 0; const d = new Date();
+  if (!S.days[today()]) d.setDate(d.getDate() - 1); // today not done yet doesn't break the streak
+  for (;;) {
+    const k = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    if (!S.days[k]) return n; n++; d.setDate(d.getDate() - 1);
+  }
+}
+
+// ---------- Picking questions ----------
+// Weak facts come up most; mastered ones still appear now and then so they stay mastered.
+const WEIGHT = [4, 9, 6, 3, 1.2, 0.5];
+function pick(pool, recent) {
+  const cands = pool.filter(k => !recent.includes(k));
+  const list = cands.length ? cands : pool;
+  let total = 0; const w = list.map(k => { const x = WEIGHT[(S.facts[k] || {}).box || 0]; total += x; return x; });
+  let r = Math.random() * total;
+  for (let i = 0; i < list.length; i++) { r -= w[i]; if (r <= 0) return list[i]; }
+  return list[list.length - 1];
+}
+function render(k) {
+  const [type, a, b] = [k[0], +k.split(':')[1], +k.split(':')[2]];
+  if (type === 'd') return { text: (a*b) + ' ÷ ' + a, answer: b };
+  return Math.random() < .5 ? { text: a + ' × ' + b, answer: a*b } : { text: b + ' × ' + a, answer: a*b };
+}
+
+// ---------- Sound ----------
+let ac;
+function beep(f, dur, type) {
+  if (!S.sound) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = type || 'square'; o.frequency.value = f; g.gain.value = .06;
+    o.connect(g); g.connect(ac.destination); o.start();
+    g.gain.exponentialRampToValueAtTime(.0001, ac.currentTime + dur); o.stop(ac.currentTime + dur);
+  } catch (e) {}
+}
+function burst(x, y, ch) {
+  const el = document.createElement('div'); el.className = 'burst'; el.textContent = ch;
+  el.style.left = (x - 14) + 'px'; el.style.top = (y - 14) + 'px';
+  document.body.appendChild(el); setTimeout(() => el.remove(), 950);
+}
+
+// ---------- Screens ----------
+const app = document.getElementById('app');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+
+function home() {
+  stopGame();
+  const st = streak();
+  app.innerHTML = `
+    <div class="row spread">
+      <div><h1>⛏️ Times Table Miner</h1><p class="sub">Hi ${esc(S.name || 'Miner')}! Pick your ores, then start mining.</p></div>
+    </div>
+    <div class="row" style="margin-bottom:12px">
+      <span class="pill">💚 ${S.emeralds}</span>
+      <span class="pill">🔥 ${st} day${st === 1 ? '' : 's'}</span>
+      ${S.bestSpeed ? `<span class="pill">⚡ ${S.bestSpeed.toFixed(1)}s</span>` : ''}
+    </div>
+    <div class="ores">${ORES.map(o => {
+      const on = S.tables.includes(o.t), m = Math.round(mastery(o.t) * 100);
+      return `<div class="ore ${on ? '' : 'off'}" style="background:${o.color}" data-t="${o.t}">
+        ${on ? '<span class="tick">✔</span>' : ''}
+        <div class="t">${o.t}s</div><div class="n">${o.name}</div>
+        <div class="bar"><i style="width:${m}%"></i></div></div>`;
+    }).join('')}</div>
+    <p class="tiny">Tap an ore to add it or take it away. The green bar is how much of that table you know in under 3 seconds.</p>
+    <button class="btn" id="hw">⏱️ 10-minute homework<small>The school's 10 minutes. Your weakest facts come up most.</small></button>
+    <button class="btn blue" id="quick">⛏️ Quick dig (1 minute)<small>Good for the car or before dinner</small></button>
+    <button class="btn gold" id="speed">⚡ Speed test<small>1 minute, all your ores. How fast can you go?</small></button>
+    <div class="row"><button class="btn grey" id="prog">📊 Progress</button><button class="btn grey" id="set">⚙️ Settings</button></div>`;
+  app.querySelectorAll('.ore').forEach(el => el.onclick = () => {
+    const t = +el.dataset.t;
+    if (S.tables.includes(t)) { if (S.tables.length > 1) S.tables = S.tables.filter(x => x !== t); }
+    else S.tables.push(t);
+    save(); home();
+  });
+  document.getElementById('hw').onclick = () => startGame('homework');
+  document.getElementById('quick').onclick = () => startGame('quick');
+  document.getElementById('speed').onclick = () => startGame('speed');
+  document.getElementById('prog').onclick = progress;
+  document.getElementById('set').onclick = settings;
+}
+
+// ---------- Game ----------
+let G = null;
+function stopGame() { if (G && G.tick) clearInterval(G.tick); G = null; document.onkeydown = null; }
+
+function startGame(mode) {
+  stopGame();
+  const secs = mode === 'homework' ? HOMEWORK_SECS : QUICK_SECS;
+  G = { mode, secs, left: secs, pool: factsFor(S.tables, S.division), recent: [], retry: [],
+        input: '', q: null, qStart: 0, right: 0, wrong: 0, fastMs: [], missed: {}, earned: 0,
+        paused: false, locked: false, started: Date.now() };
+  app.innerHTML = `
+    <div class="hud">
+      <button class="btn grey" id="quit" style="width:auto;margin:0;padding:8px 12px;font-size:15px">✖ Stop</button>
+      <span class="pill" id="score">✔ 0</span>
+      ${mode === 'homework' ? '<button class="btn grey" id="pause" style="width:auto;margin:0;padding:8px 12px;font-size:15px">⏸</button>' : ''}
+      <span class="timer" id="timer"></span>
+    </div>
+    <div class="timebar"><i id="tb" style="width:100%"></i></div>
+    <div class="q" id="q"></div>
+    <div class="ans" id="ans"></div>
+    <div class="hint" id="hint"></div>
+    <div class="pad">${[1,2,3,4,5,6,7,8,9].map(n => `<button data-n="${n}">${n}</button>`).join('')}
+      <button class="del" data-n="del">⌫</button><button data-n="0">0</button><button class="ok" data-n="ok">✔</button></div>`;
+  app.querySelectorAll('.pad button').forEach(b => b.addEventListener('pointerdown', e => { e.preventDefault(); press(b.dataset.n); }));
+  document.onkeydown = e => {
+    if (/^[0-9]$/.test(e.key)) press(e.key);
+    else if (e.key === 'Backspace') press('del');
+    else if (e.key === 'Enter') press('ok');
+  };
+  document.getElementById('quit').onclick = () => finish(true);
+  const p = document.getElementById('pause');
+  if (p) p.onclick = () => { G.paused = !G.paused; p.textContent = G.paused ? '▶' : '⏸';
+    document.getElementById('q').textContent = G.paused ? 'Paused' : G.q.text; if (!G.paused) G.qStart = Date.now(); };
+  G.tick = setInterval(() => {
+    if (!G || G.paused) return;
+    G.left--; drawTimer();
+    if (G.left <= 0) finish(false);
+  }, 1000);
+  drawTimer(); next();
+}
+function drawTimer() {
+  const m = Math.floor(G.left / 60), s = G.left % 60;
+  document.getElementById('timer').textContent = m + ':' + String(s).padStart(2, '0');
+  document.getElementById('tb').style.width = (100 * G.left / G.secs) + '%';
+}
+function next() {
+  let k;
+  // A missed fact comes back two questions later, so it is practised while it is fresh.
+  if (G.retry.length && G.retry[0].due <= 0) k = G.retry.shift().k;
+  else k = pick(G.pool, G.recent);
+  G.retry.forEach(r => r.due--);
+  G.recent = [k].concat(G.recent).slice(0, Math.min(3, G.pool.length - 1));
+  G.key = k; G.q = render(k); G.input = ''; G.qStart = Date.now(); G.locked = false;
+  const q = document.getElementById('q'); q.className = 'q'; q.textContent = G.q.text;
+  document.getElementById('ans').textContent = ''; document.getElementById('hint').textContent = '';
+}
+function press(n) {
+  if (!G || G.locked || G.paused) return;
+  if (n === 'del') G.input = G.input.slice(0, -1);
+  else if (n === 'ok') { if (G.input) check(); return; }
+  else if (G.input.length < 3) G.input += n;
+  document.getElementById('ans').textContent = G.input;
+  // Submit as soon as she has typed enough digits, like TTRS, so speed is not lost reaching for Enter.
+  if (G.input.length >= String(G.q.answer).length) check();
+}
+function check() {
+  G.locked = true;
+  const ms = Date.now() - G.qStart, ok = +G.input === G.q.answer, f = fact(G.key);
+  const q = document.getElementById('q');
+  if (ok) {
+    G.right++; f.right++; f.ms = [ms].concat(f.ms).slice(0, 5);
+    // Boxes: 1 wrong · 2 right but slow · 3 one fast answer · 4 fast twice (counts as known) · 5 mastered
+    if (ms < FAST_MS) { f.box = Math.min(5, Math.max(f.box, 2) + 1); G.fastMs.push(ms); }
+    else f.box = Math.max(f.box, 2);
+    const gain = ms < FAST_MS ? 2 : 1; G.earned += gain;
+    q.className = 'q right'; beep(ms < FAST_MS ? 880 : 660, .12);
+    const r = q.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + 20, gain === 2 ? '💚💚' : '💚');
+    document.getElementById('score').textContent = '✔ ' + G.right;
+    setTimeout(next, 280);
+  } else {
+    G.wrong++; f.wrong++; f.box = 1;
+    G.missed[G.q.text.replace(/\s/g,'') + '=' + G.q.answer] = 1;
+    G.retry.push({ k: G.key, due: 2 });
+    q.className = 'q wrong'; beep(160, .25, 'sawtooth');
+    document.getElementById('hint').textContent = G.q.text + ' = ' + G.q.answer;
+    setTimeout(next, G.mode === 'speed' ? 900 : 1800);
+  }
+  save();
+}
+function finish(early) {
+  if (!G) return;
+  const g = G; stopGame();
+  const secs = Math.round((Date.now() - g.started) / 1000);
+  S.emeralds += g.earned;
+  if (g.right + g.wrong > 0) {
+    S.days[today()] = (S.days[today()] || 0) + secs;
+    S.sessions = [{ d: today(), mode: g.mode, right: g.right, wrong: g.wrong, secs }].concat(S.sessions).slice(0, 60);
+  }
+  let rankHtml = '';
+  if (g.mode === 'speed' && !early && g.right > 0) {
+    const avg = Math.min(secs, g.secs) / g.right;
+    const rank = RANKS.find(r => avg < r[0]);
+    const best = !S.bestSpeed || avg < S.bestSpeed; if (best) S.bestSpeed = avg;
+    rankHtml = `<div class="card" style="background:${rank[2]}"><div>Rank</div><div class="big">${rank[1]}</div>
+      <div>${avg.toFixed(1)} seconds per answer${best ? ' · NEW BEST! 🎉' : ''}</div></div>`;
+    if (best) for (let i = 0; i < 8; i++) setTimeout(() => burst(Math.random() * innerWidth, innerHeight * .6, '⭐'), i * 120);
+  }
+  save();
+  const missed = Object.keys(g.missed);
+  app.innerHTML = `
+    <h1>${early ? 'Stopped' : g.mode === 'homework' ? '⏱️ 10 minutes done!' : 'Time!'}</h1>
+    ${rankHtml}
+    <div class="card row spread">
+      <div><div class="tiny">Right</div><div class="big">${g.right}</div></div>
+      <div><div class="tiny">Wrong</div><div class="big">${g.wrong}</div></div>
+      <div><div class="tiny">Emeralds</div><div class="big">+${g.earned}</div></div>
+    </div>
+    ${missed.length ? `<h2>Practise these</h2><div class="missed">${missed.map(m => `<span>${esc(m)}</span>`).join('')}</div>` : (g.right ? '<p>No mistakes. Brilliant mining! 💎</p>' : '')}
+    <button class="btn" id="again">Go again</button>
+    <button class="btn grey" id="back">Home</button>`;
+  document.getElementById('again').onclick = () => startGame(g.mode);
+  document.getElementById('back').onclick = home;
+}
+
+// ---------- Progress (parent view) ----------
+function progress() {
+  stopGame();
+  const cell = (a, b) => Math.max((S.facts['m:' + a + ':' + b] || {}).box || 0, (S.facts['m:' + b + ':' + a] || {}).box || 0);
+  let grid = '<div class="h">×</div>' + [...Array(12)].map((_, i) => `<div class="h">${i+1}</div>`).join('');
+  for (let a = 1; a <= 12; a++) {
+    grid += `<div class="h">${a}</div>`;
+    for (let b = 1; b <= 12; b++) { const bx = cell(a, b); grid += `<div class="c${bx}">${a*b}</div>`; }
+  }
+  const slow = Object.entries(S.facts).filter(([k, f]) => f.right + f.wrong > 0)
+    .map(([k, f]) => ({ k, f, avg: f.ms.length ? f.ms.reduce((x, y) => x + y, 0) / f.ms.length : 99999 }))
+    .sort((x, y) => (x.f.box - y.f.box) || (y.avg - x.avg)).slice(0, 10);
+  const label = k => { const [t, a, b] = k.split(':'); return t === 'd' ? (a*b) + '÷' + a : a + '×' + b; };
+  const week = Object.entries(S.days).filter(([d]) => (Date.now() - new Date(d)) / 864e5 < 7).reduce((s, [, v]) => s + v, 0);
+  app.innerHTML = `
+    <h1>📊 Progress</h1>
+    <div class="card row spread">
+      <div><div class="tiny">This week</div><div class="big">${Math.round(week / 60)}m</div></div>
+      <div><div class="tiny">Streak</div><div class="big">${streak()}</div></div>
+      <div><div class="tiny">Best speed</div><div class="big">${S.bestSpeed ? S.bestSpeed.toFixed(1) + 's' : '–'}</div></div>
+    </div>
+    <h2>Times table grid</h2>
+    <div class="grid">${grid}</div>
+    <div class="legend"><span class="c0">not tried</span><span class="c1">getting wrong</span><span class="c2">right but slow</span>
+      <span class="c3">getting there</span><span class="c4">fast</span><span class="c5">mastered</span></div>
+    <p class="tiny">"Fast" means right in under 3 seconds twice. A mistake drops a fact back to red. Green on the bars counts "fast" and "mastered".</p>
+    <h2>Trickiest facts</h2>
+    ${slow.length ? `<div class="missed">${slow.map(s => `<span style="background:${s.f.box <= 1 ? '#7a2c22' : '#7a5a22'}">${label(s.k)} · ${s.avg < 99999 ? (s.avg / 1000).toFixed(1) + 's' : '✖'}</span>`).join('')}</div>` : '<p class="sub">Nothing yet. Do a dig first.</p>'}
+    <h2>Ore mastery</h2>
+    ${ORES.filter(o => Object.keys(S.facts).some(k => k.split(':')[1] == o.t)).map(o => `<div class="row spread"><span>${o.t}s · ${o.name}</span><span>${Math.round(mastery(o.t) * 100)}%</span></div>`).join('') || '<p class="sub">–</p>'}
+    <button class="btn grey" id="back">Home</button>`;
+  document.getElementById('back').onclick = home;
+}
+
+// ---------- Settings ----------
+function settings() {
+  stopGame();
+  app.innerHTML = `
+    <h1>⚙️ Settings</h1>
+    <div class="toggle"><span>Name</span><input id="nm" value="${esc(S.name)}" style="width:140px;font:inherit;font-size:16px;padding:6px"></div>
+    <div class="toggle"><span>Division facts too<br><span class="tiny">56 ÷ 7 — the same facts backwards</span></span><input type="checkbox" id="div" ${S.division ? 'checked' : ''}></div>
+    <div class="toggle"><span>Sound</span><input type="checkbox" id="snd" ${S.sound ? 'checked' : ''}></div>
+    <p class="tiny">Progress is saved on this device only. Use the same tablet or phone each time.</p>
+    <button class="btn grey" id="back">Save</button>
+    <button class="btn" style="background:#7a2c22" id="reset">Reset all progress</button>`;
+  document.getElementById('back').onclick = () => {
+    S.name = document.getElementById('nm').value.trim();
+    S.division = document.getElementById('div').checked; S.sound = document.getElementById('snd').checked;
+    save(); home();
+  };
+  document.getElementById('reset').onclick = () => {
+    if (confirm('Wipe all progress and emeralds?')) { const n = S.name; S = freshState(); S.name = n; save(); home(); }
+  };
+}
+
+home();
+</script>
+</body>
+</html>
