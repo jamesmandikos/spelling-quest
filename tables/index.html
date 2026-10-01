@@ -115,6 +115,7 @@ const FAST_MS = 3000;           // under 3s = real recall, same bar as TTRS Stud
 const HOMEWORK_SECS = 600;      // the school's 10 minutes
 const QUICK_SECS = 60;
 const STORE = 'ttMiner.v1';
+const DAY_SECS = 600;          // 10 minutes in a day earns one real emerald in Emerald Quest
 const RANKS = [ // average seconds per correct answer in a speed test
   [1.5, 'Netherite', '#4a3f45'], [2, 'Diamond', '#2fb8b0'], [3, 'Gold', '#c8961c'],
   [4, 'Iron', '#a8968a'], [6, 'Stone', '#7d7d7d'], [Infinity, 'Wood', '#9c7a45'],
@@ -123,7 +124,7 @@ const RANKS = [ // average seconds per correct answer in a speed test
 // ---------- State ----------
 function freshState() {
   return { name: '', tables: [11, 12], division: false, sound: true,
-           facts: {}, emeralds: 0, days: {}, bestSpeed: null, sessions: [] };
+           facts: {}, xp: 0, days: {}, bestSpeed: null, sessions: [] };
 }
 let S = load();
 function load() {
@@ -131,7 +132,47 @@ function load() {
   catch (e) {}
   return freshState();
 }
-function save() { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} }
+function save() {
+  S.updatedAt = Date.now();
+  try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {}
+  if (window.ttPush) window.ttPush();
+}
+function dayDone(d) { return (S.days[d || today()] || 0) >= DAY_SECS; }
+function dayLine() {
+  if (dayDone()) return '💚 Today done';
+  return '💚 ' + Math.floor((S.days[today()] || 0) / 60) + '/' + (DAY_SECS / 60) + ' min';
+}
+
+// ---------- Sync ----------
+// Each device keeps its own copy and merges with the shared one, so practice done
+// offline on the iPad and online on a phone both count. A reset wins outright.
+function merge(a, b) {
+  if ((a.resetAt || 0) !== (b.resetAt || 0)) return (a.resetAt || 0) > (b.resetAt || 0) ? a : b;
+  const newer = (a.updatedAt || 0) >= (b.updatedAt || 0) ? a : b;
+  const out = Object.assign(freshState(), newer);  // settings follow whichever changed last
+  out.facts = Object.assign({}, b.facts);
+  for (const [k, f] of Object.entries(a.facts || {})) {
+    const o = out.facts[k];
+    if (!o || f.right + f.wrong >= o.right + o.wrong) out.facts[k] = f;
+  }
+  out.xp = Math.max(a.xp || 0, b.xp || 0);
+  out.days = Object.assign({}, b.days);
+  for (const [d, v] of Object.entries(a.days || {})) out.days[d] = Math.max(v, out.days[d] || 0);
+  const sp = [a.bestSpeed, b.bestSpeed].filter(x => x); out.bestSpeed = sp.length ? Math.min(...sp) : null;
+  const seen = new Set();
+  out.sessions = (a.sessions || []).concat(b.sessions || [])
+    .filter(x => { const k = [x.d, x.mode, x.right, x.wrong, x.secs].join(); return seen.has(k) ? false : seen.add(k); })
+    .sort((x, y) => (x.d < y.d ? 1 : -1)).slice(0, 60);
+  out.updatedAt = Math.max(a.updatedAt || 0, b.updatedAt || 0);
+  return out;
+}
+window.ttState = () => S;
+window.ttDaysDone = () => Object.keys(S.days).filter(d => dayDone(d));
+window.ttApplyRemote = function (remote) {
+  S = merge(S, remote);
+  try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {}
+  if (!G && document.querySelector('.ores')) home();   // never redraw mid-game
+};
 
 // A fact key is the table plus the other number: m:7:8 is "7 x 8" (asked either way round),
 // d:7:8 is "56 ÷ 7 = 8". Box is a Leitner box 0-5 (0 = never seen).
@@ -205,7 +246,8 @@ function home() {
       <div><h1>⛏️ Times Table Miner</h1><p class="sub">Hi ${esc(S.name || 'Miner')}! Pick your ores, then start mining.</p></div>
     </div>
     <div class="row" style="margin-bottom:12px">
-      <span class="pill">💚 ${S.emeralds}</span>
+      <span class="pill">✨ ${S.xp} XP</span>
+      <span class="pill" title="Emerald Quest">${dayLine()}</span>
       <span class="pill">🔥 ${st} day${st === 1 ? '' : 's'}</span>
       ${S.bestSpeed ? `<span class="pill">⚡ ${S.bestSpeed.toFixed(1)}s</span>` : ''}
     </div>
@@ -310,7 +352,7 @@ function check() {
     else f.box = Math.max(f.box, 2);
     const gain = ms < FAST_MS ? 2 : 1; G.earned += gain;
     q.className = 'q right'; beep(ms < FAST_MS ? 880 : 660, .12);
-    const r = q.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + 20, gain === 2 ? '💚💚' : '💚');
+    const r = q.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + 20, gain === 2 ? '✨✨' : '✨');
     document.getElementById('score').textContent = '✔ ' + G.right;
     setTimeout(next, 280);
   } else {
@@ -327,7 +369,8 @@ function finish(early) {
   if (!G) return;
   const g = G; stopGame();
   const secs = Math.round((Date.now() - g.started) / 1000);
-  S.emeralds += g.earned;
+  S.xp += g.earned;
+  const wasDone = dayDone();
   if (g.right + g.wrong > 0) {
     S.days[today()] = (S.days[today()] || 0) + secs;
     S.sessions = [{ d: today(), mode: g.mode, right: g.right, wrong: g.wrong, secs }].concat(S.sessions).slice(0, 60);
@@ -342,14 +385,18 @@ function finish(early) {
     if (best) for (let i = 0; i < 8; i++) setTimeout(() => burst(Math.random() * innerWidth, innerHeight * .6, '⭐'), i * 120);
   }
   save();
+  const emerald = !wasDone && dayDone()
+    ? '<div class="card" style="background:#17803f"><div class="big">💚 +1 emerald!</div><div>10 minutes done today. It is waiting in Emerald Quest.</div></div>'
+    : (!dayDone() ? `<p class="sub">${Math.ceil((DAY_SECS - (S.days[today()] || 0)) / 60)} more minutes today for an emerald.</p>` : '');
   const missed = Object.keys(g.missed);
   app.innerHTML = `
     <h1>${early ? 'Stopped' : g.mode === 'homework' ? '⏱️ 10 minutes done!' : 'Time!'}</h1>
+    ${emerald}
     ${rankHtml}
     <div class="card row spread">
       <div><div class="tiny">Right</div><div class="big">${g.right}</div></div>
       <div><div class="tiny">Wrong</div><div class="big">${g.wrong}</div></div>
-      <div><div class="tiny">Emeralds</div><div class="big">+${g.earned}</div></div>
+      <div><div class="tiny">XP</div><div class="big">+${g.earned}</div></div>
     </div>
     ${missed.length ? `<h2>Practise these</h2><div class="missed">${missed.map(m => `<span>${esc(m)}</span>`).join('')}</div>` : (g.right ? '<p>No mistakes. Brilliant mining! 💎</p>' : '')}
     <button class="btn" id="again">Go again</button>
@@ -400,7 +447,7 @@ function settings() {
     <div class="toggle"><span>Name</span><input id="nm" value="${esc(S.name)}" style="width:140px;font:inherit;font-size:16px;padding:6px"></div>
     <div class="toggle"><span>Division facts too<br><span class="tiny">56 ÷ 7 — the same facts backwards</span></span><input type="checkbox" id="div" ${S.division ? 'checked' : ''}></div>
     <div class="toggle"><span>Sound</span><input type="checkbox" id="snd" ${S.sound ? 'checked' : ''}></div>
-    <p class="tiny">Progress is saved on this device only. Use the same tablet or phone each time.</p>
+    <p class="tiny">Progress syncs across devices through Emerald Quest: <b id="syncst">${window.ttSyncStatus || "connecting…"}</b>. It also works offline and catches up later.</p>
     <button class="btn grey" id="back">Save</button>
     <button class="btn" style="background:#7a2c22" id="reset">Reset all progress</button>`;
   document.getElementById('back').onclick = () => {
@@ -409,11 +456,44 @@ function settings() {
     save(); home();
   };
   document.getElementById('reset').onclick = () => {
-    if (confirm('Wipe all progress and emeralds?')) { const n = S.name; S = freshState(); S.name = n; save(); home(); }
+    if (confirm('Wipe all times tables progress on every device? (Emerald Quest emeralds are not touched.)')) { const n = S.name; S = freshState(); S.name = n; S.resetAt = Date.now(); save(); home(); }
   };
 }
 
 home();
+</script>
+<!-- Sync + rewards: shares progress through Ava's Emerald Quest profile (same Firebase as
+     Spelling Quest). Writes only two fields with mergeFields, so emeralds, quests and the
+     rest of her profile are never touched. Emerald Quest turns tablesDays into emeralds. -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot, setDoc, FieldPath } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const db = getFirestore(initializeApp({
+  apiKey: "AIzaSyCj6b5urSwURBNJHrKDuHkcK2HLuZW1fck",
+  authDomain: "ava-rewards.firebaseapp.com",
+  projectId: "ava-rewards",
+  storageBucket: "ava-rewards.firebasestorage.app",
+  messagingSenderId: "15713321429",
+  appId: "1:15713321429:web:679f2fa271e70f7a7a3d5c"
+}));
+const PROFILE = doc(db, "profiles", "ava");
+const status = t => { window.ttSyncStatus = t; const el = document.getElementById("syncst"); if (el) el.textContent = t; };
+let timer = null, first = true;
+window.ttPush = function () {
+  clearTimeout(timer);
+  timer = setTimeout(async () => {
+    const data = { ttMiner: window.ttState(), tablesDays: {} }, fields = [new FieldPath("ttMiner")];
+    for (const d of window.ttDaysDone()) { data.tablesDays[d] = true; fields.push(new FieldPath("tablesDays", d)); }
+    try { await setDoc(PROFILE, data, { mergeFields: fields }); status("synced"); }
+    catch (e) { status("offline, will retry"); console.error(e); }
+  }, 1200);
+};
+onSnapshot(PROFILE, snap => {
+  const r = snap.exists() ? snap.data().ttMiner : null;
+  if (r) window.ttApplyRemote(r);
+  status("synced");
+  if (first) { first = false; window.ttPush(); }   // upload anything done offline before this load
+}, e => { status("offline"); console.error(e); });
 </script>
 </body>
 </html>
