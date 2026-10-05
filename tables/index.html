@@ -123,7 +123,7 @@ const RANKS = [ // average seconds per correct answer in a speed test
 
 // ---------- State ----------
 function freshState() {
-  return { name: '', tables: [11, 12], division: false, sound: true,
+  return { name: '', tables: [11, 12], division: false, sound: true, duck: { date: '', secs: 0, best: 0 },
            facts: {}, xp: 0, days: {}, bestSpeed: null, sessions: [] };
 }
 let S = load();
@@ -156,6 +156,11 @@ function merge(a, b) {
     if (!o || f.right + f.wrong >= o.right + o.wrong) out.facts[k] = f;
   }
   out.xp = Math.max(a.xp || 0, b.xp || 0);
+  const da = a.duck || {}, db = b.duck || {};
+  out.duck = { best: Math.max(da.best || 0, db.best || 0),
+               date: (da.date || '') > (db.date || '') ? da.date : db.date || '',
+               secs: da.date === db.date ? Math.max(da.secs || 0, db.secs || 0)
+                     : ((da.date || '') > (db.date || '') ? da.secs : db.secs) || 0 };
   out.days = Object.assign({}, b.days);
   for (const [d, v] of Object.entries(a.days || {})) out.days[d] = Math.max(v, out.days[d] || 0);
   const sp = [a.bestSpeed, b.bestSpeed].filter(x => x); out.bestSpeed = sp.length ? Math.min(...sp) : null;
@@ -262,6 +267,7 @@ function home() {
     <button class="btn" id="hw">⏱️ 10-minute homework<small>The school's 10 minutes. Your weakest facts come up most.</small></button>
     <button class="btn blue" id="quick">⛏️ Quick dig (1 minute)<small>Good for the car or before dinner</small></button>
     <button class="btn gold" id="speed">⚡ Speed test<small>1 minute, all your ores. How fast can you go?</small></button>
+    ${duckButton()}
     <div class="row"><button class="btn grey" id="prog">📊 Progress</button><button class="btn grey" id="set">⚙️ Settings</button></div>`;
   app.querySelectorAll('.ore').forEach(el => el.onclick = () => {
     const t = +el.dataset.t;
@@ -273,12 +279,13 @@ function home() {
   document.getElementById('quick').onclick = () => startGame('quick');
   document.getElementById('speed').onclick = () => startGame('speed');
   document.getElementById('prog').onclick = progress;
+  const dk = document.getElementById('duck'); if (dk && duckLeft() > 0 && duckUnlocked()) dk.onclick = duckGame;
   document.getElementById('set').onclick = settings;
 }
 
 // ---------- Game ----------
 let G = null;
-function stopGame() { if (G && G.tick) clearInterval(G.tick); G = null; document.onkeydown = null; }
+function stopGame() { if (G && G.tick) clearInterval(G.tick); G = null; document.onkeydown = null; stopDuck(); }
 
 function startGame(mode) {
   stopGame();
@@ -458,6 +465,199 @@ function settings() {
   document.getElementById('reset').onclick = () => {
     if (confirm('Wipe all times tables progress on every device? (Emerald Quest emeralds are not touched.)')) { const n = S.name; S = freshState(); S.name = n; S.resetAt = Date.now(); save(); home(); }
   };
+}
+
+// ---------- Duck Drop: the reward game ----------
+// Unlocks once today's 10 minutes of times tables are done, then gives DUCK_SECS of play
+// for the rest of the day (James, 5 Oct 2026: 10 minutes, and only after the work).
+const DUCK_SECS = 600;
+// One-off unlock days that skip the times-tables requirement (James's request).
+const DUCK_FREE_DAYS = ['2026-10-05'];
+const duckUnlocked = () => dayDone() || DUCK_FREE_DAYS.includes(today());
+function duckToday() { if (!S.duck || S.duck.secs === undefined) S.duck = { date: '', secs: 0, best: (S.duck || {}).best || 0 };
+  return S.duck.date === today() ? S.duck.secs : 0; }
+function duckLeft() { const l = DUCK_SECS - duckToday(); return l < 1 ? 0 : l; }
+const mmss = t => Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0');
+function addDuckTime(sec) { S.duck.secs = duckToday() + sec; S.duck.date = today(); }
+function duckButton() {
+  if (!duckUnlocked()) {
+    const left = Math.ceil((DAY_SECS - (S.days[today()] || 0)) / 60);
+    return `<button class="btn grey" id="duck" style="opacity:.8">🔒 🦆 Duck Drop<small>Do ${left} more minute${left === 1 ? '' : 's'} of times tables today to unlock</small></button>`;
+  }
+  if (!duckLeft()) return `<button class="btn grey" id="duck">🦆 Duck Drop<small>Your 10 minutes of duck time are used up. Back tomorrow!</small></button>`;
+  return `<button class="btn" id="duck" style="background:#e0a21b">🦆 Duck Drop!<small>Unlocked! ${mmss(duckLeft())} of duck time left today${S.duck.best ? ' · best ' + S.duck.best : ''}</small></button>`;
+}
+
+// 1 = palette index; '.' = transparent. Minecraft-style 12x12 pixel sprites.
+const SPR = {
+  duck: { pal: { y: '#f7d83b', Y: '#e0b81f', o: '#f08a1c', k: '#1b1b1b', w: '#ffffff' }, rows: [
+    '....yyyy....',
+    '...yyyyyy...',
+    '...ywkyyyoo.',
+    '...yyyyyyooo',
+    '....yyyyy...',
+    '.....yyy....',
+    'y...yyyyyy..',
+    'yyyyYYYyyyy.',
+    'yyyYYYYYyyy.',
+    '.yyyYYYyyy..',
+    '..yyyyyyy...',
+    '....o..o....'] },
+  emerald: { pal: { g: '#17dd62', G: '#0b9c43', l: '#9cffc3' }, rows: [
+    '.....gg.....', '....gllg....', '...glggGg...', '..glgggggG..', '.glgggggGGg.', 'gggggggGGGGg',
+    'gGggggGGGGGg', '.gGgggGGGGg.', '..gGGGGGGg..', '...gGGGGg...', '....gGGg....', '.....gg.....'] },
+  diamond: { pal: { c: '#5ef1e5', C: '#1fa9a0', l: '#e6fffd' }, rows: [
+    '............', '..cccccccc..', '.clllcccccC.', 'cllcccccccCC', 'ccccccccCCCC', '.cccccccCCC.',
+    '..ccccccCC..', '...cccccC...', '....cccC....', '.....cC.....', '............', '............'] },
+  egg: { pal: { e: '#fff3c4', E: '#e8c84a', s: '#c49a1a' }, rows: [
+    '....eeee....', '...eeeeee...', '..eeeeeeee..', '..eeeeseee..', '.eeeeeeeeee.', '.eeseeeeeee.',
+    '.eeeeeeeseE.', '.eeeeeeeeeE.', '..eeeeeeeE..', '..EeeeeeeE..', '...EEEEEE...', '............'] },
+  tnt: { pal: { r: '#d1301f', R: '#8e1d12', w: '#f2f2f2', k: '#222222' }, rows: [
+    '.....kk.....', 'rrRrrRrrRrrR', 'rrRrrRrrRrrR', 'rrRrrRrrRrrR', 'wwwwwwwwwwww', 'wkkkwkwkwkkk',
+    'wwkwwkkkwwkw', 'wwkwwkwkwwkw', 'wwwwwwwwwwww', 'rrRrrRrrRrrR', 'rrRrrRrrRrrR', 'rrRrrRrrRrrR'] },
+  creeper: { pal: { g: '#5cbf3a', G: '#3e8e26', k: '#111111', d: '#7fd65a' }, rows: [
+    'gdgGgdgGgdgg', 'gGgdgGgdgGgd', 'gkkkgdgkkkgG', 'gkkkgGgkkkgd', 'gkkkgdgkkkgg', 'gGgdkkkkgGgd',
+    'gdgkkkkkkdgG', 'gGgkkkkkkGgd', 'gdgkkGgkkdgg', 'gGgdgdgGgdgG', 'gdgGgGgdgGgd', 'gGgdgdgGgdgg'] },
+  heart: { pal: { r: '#e5332a', w: '#ff9c96' }, rows: [
+    '............', '.rrr...rrr..', 'rwwrr.rrrrr.', 'rwrrrrrrrrr.', 'rrrrrrrrrrr.', '.rrrrrrrrr..',
+    '..rrrrrrr...', '...rrrrr....', '....rrr.....', '.....r......', '............', '............'] },
+};
+const SPRITE_CACHE = {};
+function sprite(name, size) {
+  const key = name + size; if (SPRITE_CACHE[key]) return SPRITE_CACHE[key];
+  const sp = SPR[name], c = document.createElement('canvas'), px = size / 12;
+  c.width = c.height = Math.ceil(size); const x = c.getContext('2d');
+  sp.rows.forEach((row, j) => [...row].forEach((ch, i) => {
+    if (ch === '.') return; x.fillStyle = sp.pal[ch]; x.fillRect(Math.floor(i * px), Math.floor(j * px), Math.ceil(px), Math.ceil(px));
+  }));
+  return (SPRITE_CACHE[key] = c);
+}
+const DROPS = [ // what falls, how often, and what it does
+  { name: 'emerald', w: 52, pts: 1 }, { name: 'diamond', w: 14, pts: 3 }, { name: 'egg', w: 6, pts: 0, egg: true },
+  { name: 'tnt', w: 16, hurt: true }, { name: 'creeper', w: 12, hurt: true },
+];
+
+let D = null;
+function stopDuck() { if (D) { cancelAnimationFrame(D.raf); D.alive = false; } D = null; }
+
+function duckGame() {
+  stopGame();
+  if (!duckUnlocked() || duckLeft() <= 0) return home();
+  duckToday();
+  app.innerHTML = `
+    <div class="hud">
+      <button class="btn grey" id="dquit" style="width:auto;margin:0;padding:8px 12px;font-size:15px">✖ Stop</button>
+      <span class="pill" id="dscore">💚 0</span><span id="dhearts"></span><span class="timer" id="dtime"></span>
+    </div>
+    <canvas id="dc" style="width:100%;display:block;border:3px solid var(--edge);touch-action:none;background:#7ec0ee"></canvas>
+    <p class="tiny" style="text-align:center">Slide your finger to move the duck. Catch 💚 and 💎. Golden eggs give you a duckling! Dodge TNT and creepers.</p>`;
+  const cv = document.getElementById('dc'), W = cv.clientWidth, H = Math.min(Math.round(innerHeight * .62), Math.round(W * 1.45));
+  const dpr = window.devicePixelRatio || 1; cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + 'px';
+  const ctx = cv.getContext('2d'); ctx.scale(dpr, dpr); ctx.imageSmoothingEnabled = false;
+  const U = Math.max(28, Math.round(W / 9));           // one "block"
+  const ground = H - U;
+  D = { alive: true, t: 0, x: W / 2, target: W / 2, score: 0, hearts: 3, items: [], spawn: 0, ducklings: 0,
+        hurtT: 0, pops: [], banked: 0, left: duckLeft(), clouds: [...Array(4)].map((_, i) => ({ x: Math.random() * W, y: 20 + i * 38, w: 2 + (i % 3) })) };
+  const setX = cx => { const r = cv.getBoundingClientRect(); D.target = Math.max(U / 2, Math.min(W - U / 2, cx - r.left)); };
+  cv.addEventListener('pointerdown', e => { e.preventDefault(); setX(e.clientX); });
+  cv.addEventListener('pointermove', e => { e.preventDefault(); setX(e.clientX); });
+  document.onkeydown = e => { if (e.key === 'ArrowLeft') D && (D.target = Math.max(U / 2, D.target - U)); if (e.key === 'ArrowRight') D && (D.target = Math.min(W - U / 2, D.target + U)); };
+  document.getElementById('dquit').onclick = () => duckOver(true);
+  drawHearts();
+  let last = performance.now();
+  const step = now => {
+    if (!D || !D.alive) return;
+    const dt = Math.min(.05, (now - last) / 1000); last = now; D.t += dt;
+    update(dt); if (!D) return;
+    // Duck time: counted down on screen, banked every 5 seconds so closing the app still uses it up.
+    D.left -= dt; D.banked += dt;
+    if (D.banked >= 5) { addDuckTime(D.banked); D.banked = 0; save(); }
+    const tEl = document.getElementById('dtime'); if (tEl) tEl.textContent = mmss(Math.max(0, D.left));
+    if (D.left <= 0) return duckOver(false, true);
+    draw(); D.raf = requestAnimationFrame(step);
+  };
+  function drawHearts() { document.getElementById('dhearts').textContent = '❤️'.repeat(D.hearts) + '🖤'.repeat(3 - D.hearts); }
+  function update(dt) {
+    D.x += (D.target - D.x) * Math.min(1, dt * 14);
+    const level = Math.min(1, D.t / 90);             // ramps up over 90 seconds
+    D.spawn -= dt;
+    if (D.spawn <= 0) {
+      D.spawn = 0.85 - level * 0.5;
+      let r = Math.random() * DROPS.reduce((a, d) => a + d.w, 0), pick = DROPS[0];
+      for (const d of DROPS) { r -= d.w; if (r <= 0) { pick = d; break; } }
+      D.items.push({ d: pick, x: U / 2 + Math.random() * (W - U), y: -U, v: (U * 3.2) + level * U * 4 + Math.random() * U });
+    }
+    D.clouds.forEach(c => { c.x += dt * 12; if (c.x > W + 80) c.x = -c.w * 20; });
+    const dx = D.x, dy = ground - U * .95, reach = U * (0.75 + D.ducklings * 0.12);
+    for (const it of D.items) {
+      it.y += it.v * dt;
+      if (!it.done && it.y > dy - U * .5 && it.y < dy + U * .6 && Math.abs(it.x - dx) < reach) {
+        it.done = true;
+        if (it.d.hurt) {
+          if (D.ducklings) { D.ducklings--; pop(it.x, it.y, 'Duckling saved you!', '#fff'); beep(300, .15); }
+          else { D.hearts--; D.hurtT = .5; drawHearts(); beep(140, .3, 'sawtooth'); if (navigator.vibrate) navigator.vibrate(120); }
+          if (D.hearts <= 0) return duckOver(false);
+        } else if (it.d.egg) {
+          D.ducklings = Math.min(3, D.ducklings + 1); pop(it.x, it.y, '+ duckling!', '#ffe36b'); beep(990, .1); setTimeout(() => beep(1320, .12), 90);
+        } else {
+          const pts = it.d.pts * (1 + D.ducklings); D.score += pts; pop(it.x, it.y, '+' + pts, it.d.name === 'diamond' ? '#5ef1e5' : '#9cffc3');
+          beep(it.d.name === 'diamond' ? 1046 : 784, .08); document.getElementById('dscore').textContent = '💚 ' + D.score;
+        }
+      }
+    }
+    D.items = D.items.filter(it => !it.done && it.y < H + U);
+    D.pops.forEach(p => { p.t -= dt; p.y -= dt * 40; }); D.pops = D.pops.filter(p => p.t > 0);
+    D.hurtT = Math.max(0, D.hurtT - dt);
+  }
+  function pop(x, y, txt, col) { D.pops.push({ x, y, txt, col, t: .8 }); }
+  function draw() {
+    ctx.save();
+    if (D.hurtT) ctx.translate((Math.random() - .5) * 8 * D.hurtT, 0);
+    ctx.fillStyle = '#7ec0ee'; ctx.fillRect(-10, 0, W + 20, H);
+    ctx.fillStyle = '#ffffff';
+    D.clouds.forEach(c => ctx.fillRect(Math.round(c.x), c.y, c.w * 20, 14));
+    // pond + grass blocks
+    for (let i = 0; i * U < W + U; i++) {
+      const x = i * U;
+      ctx.fillStyle = '#866043'; ctx.fillRect(x, ground, U, U);
+      ctx.fillStyle = '#5fae3c'; ctx.fillRect(x, ground, U, U * .28);
+      ctx.fillStyle = '#4c9a2c'; ctx.fillRect(x + U * .15, ground + U * .28, U * .14, U * .12); ctx.fillRect(x + U * .6, ground + U * .28, U * .14, U * .18);
+      ctx.fillStyle = '#6b4a32'; ctx.fillRect(x + U * .3, ground + U * .6, U * .14, U * .14); ctx.fillRect(x + U * .7, ground + U * .75, U * .12, U * .12);
+    }
+    for (const it of D.items) ctx.drawImage(sprite(it.d.name, U * .9), Math.round(it.x - U * .45), Math.round(it.y - U * .45));
+    // ducklings waddle behind the duck
+    for (let i = 0; i < D.ducklings; i++) {
+      const bx = D.x - (i + 1) * U * .55 * (D.target >= D.x ? 1 : -1), by = ground - U * .55 + Math.sin(D.t * 10 + i) * 2;
+      ctx.drawImage(sprite('duck', U * .5), Math.round(bx - U * .25), Math.round(by));
+    }
+    const flip = D.target < D.x - 2, bob = Math.sin(D.t * 8) * 2;
+    ctx.save(); ctx.translate(Math.round(D.x), Math.round(ground - U * 1.05 + bob)); if (flip) ctx.scale(-1, 1);
+    if (!D.hurtT || Math.floor(D.t * 20) % 2) ctx.drawImage(sprite('duck', U * 1.1), -U * .55, 0);
+    ctx.restore();
+    ctx.font = `bold ${Math.round(U * .45)}px Trebuchet MS, sans-serif`; ctx.textAlign = 'center';
+    for (const p of D.pops) { ctx.fillStyle = '#000'; ctx.fillText(p.txt, p.x + 2, p.y + 2); ctx.fillStyle = p.col; ctx.fillText(p.txt, p.x, p.y); }
+    ctx.restore();
+  }
+  D.raf = requestAnimationFrame(step);
+}
+
+function duckOver(quit, timeUp) {
+  if (!D) return;
+  const score = D.score; addDuckTime(D.banked); stopDuck(); document.onkeydown = null;
+  const best = score > (S.duck.best || 0); if (best) S.duck.best = score; save();
+  if (best && score) for (let i = 0; i < 10; i++) setTimeout(() => burst(Math.random() * innerWidth, innerHeight * .5, '🦆'), i * 110);
+  app.innerHTML = `
+    <h1>${timeUp ? '⏰ Duck time is up!' : quit ? 'Stopped' : '💥 Game over!'}</h1>
+    <div class="card row spread">
+      <div><div class="tiny">Score</div><div class="big">${score}</div></div>
+      <div><div class="tiny">Best</div><div class="big">${S.duck.best || 0}</div></div>
+      <div><div class="tiny">Time left</div><div class="big">${mmss(duckLeft())}</div></div>
+    </div>
+    ${best && score ? '<p>🎉 New best score!</p>' : ''}
+    ${duckLeft() ? '<button class="btn" id="again" style="background:#e0a21b">🦆 Play again</button>' : '<p class="sub">That was all your duck time for today. More tomorrow after your 10 minutes of times tables!</p>'}
+    <button class="btn grey" id="back">Home</button>`;
+  const a = document.getElementById('again'); if (a) a.onclick = duckGame;
+  document.getElementById('back').onclick = home;
 }
 
 home();
