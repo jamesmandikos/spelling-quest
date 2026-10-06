@@ -2322,6 +2322,31 @@ go('home');
 
 </script>
 
+<!-- Counts minutes of spelling practice per day. 5 minutes (plus the 10 minutes of times
+     tables) raises the daily play time in Duck Drop and Block World from 10 to 20 minutes.
+     Only counts while a practice screen is open, the page is visible and Ava has touched
+     or typed in the last 45 seconds, so leaving it open does not run the clock. -->
+<script>
+(function(){
+  const KEY='spq_secs', ACTIVE=['s-practice','s-crossword','s-rule-detail','s-focus-detail'];
+  let lastInput=0;
+  ['pointerdown','keydown','input'].forEach(ev=>document.addEventListener(ev,()=>{lastInput=Date.now()},true));
+  const day=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  window.spqSecs=function(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}};
+  window.spqSaveSecs=function(s){
+    const cut=new Date(); cut.setDate(cut.getDate()-14); const c=day(cut);
+    for(const k of Object.keys(s)) if(k<c) delete s[k];
+    try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
+  };
+  setInterval(()=>{
+    if(document.hidden||Date.now()-lastInput>45000) return;
+    if(!ACTIVE.some(id=>{const e=document.getElementById(id);return e&&e.classList.contains('active')})) return;
+    const s=spqSecs(), d=day(new Date()); s[d]=(s[d]||0)+1; spqSaveSecs(s);
+    if(s[d]%30===0 && window.spqPushSecs) window.spqPushSecs(d,s[d]);
+  },1000);
+})();
+</script>
+
 <!-- Reports practice days to Ava's Emerald Quest (shared Firebase) and shows a streak -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -2360,8 +2385,17 @@ window.markSpellingPractice = async function(){
     localStorage.setItem("spq_lastReport", today);
   }catch(e){}
 };
+// Spelling minutes go to the shared profile too, so Duck Drop and Block World on another
+// device can see them. merge:true leaves every other field alone.
+window.spqPushSecs = function(d, secs){
+  setDoc(PROFILE, { spellingSecs: { [d]: secs } }, { merge:true }).catch(()=>{});
+};
 onSnapshot(PROFILE, snap=>{
   const data = snap.exists() ? snap.data() : {};
+  const remote = data.spellingSecs || {}, local = window.spqSecs ? window.spqSecs() : {};
+  let changed = false;
+  for(const [d,v] of Object.entries(remote)) if(v > (local[d]||0)){ local[d] = v; changed = true; }
+  if(changed && window.spqSaveSecs) window.spqSaveSecs(local);
   renderStreak(Object.keys(data.spellingDays||{}).filter(d=>data.spellingDays[d]));
 }, ()=>{});
 </script>

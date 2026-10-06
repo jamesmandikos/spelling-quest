@@ -268,6 +268,7 @@ function home() {
     <button class="btn blue" id="quick">⛏️ Quick dig (1 minute)<small>Good for the car or before dinner</small></button>
     <button class="btn gold" id="speed">⚡ Speed test<small>1 minute, all your ores. How fast can you go?</small></button>
     ${duckButton()}
+    ${blockButton()}
     <div class="row"><button class="btn grey" id="prog">📊 Progress</button><button class="btn grey" id="set">⚙️ Settings</button></div>`;
   app.querySelectorAll('.ore').forEach(el => el.onclick = () => {
     const t = +el.dataset.t;
@@ -280,6 +281,7 @@ function home() {
   document.getElementById('speed').onclick = () => startGame('speed');
   document.getElementById('prog').onclick = progress;
   const dk = document.getElementById('duck'); if (dk && duckLeft() > 0 && duckUnlocked()) dk.onclick = duckGame;
+  const bk = document.getElementById('blocks'); if (bk && duckLeft() > 0 && duckUnlocked()) bk.onclick = () => { location.href = '../blocks/'; };
   document.getElementById('set').onclick = settings;
 }
 
@@ -470,13 +472,19 @@ function settings() {
 // ---------- Duck Drop: the reward game ----------
 // Unlocks once today's 10 minutes of times tables are done, then gives DUCK_SECS of play
 // for the rest of the day (James, 5 Oct 2026: 10 minutes, and only after the work).
-const DUCK_SECS = 600;
+// 5 minutes of Spelling Quest on top raises it to DUCK_BONUS_SECS (James, 6 Oct 2026).
+// The play time is shared with Block World (../blocks/), which reads the same S.duck.
+const DUCK_SECS = 600, DUCK_BONUS_SECS = 1200, SPELL_SECS = 300;
+// Spelling Quest counts its minutes in localStorage 'spq_secs' (same site), and the sync
+// below copies in minutes done on other devices.
+function spellToday() { try { return (JSON.parse(localStorage.getItem('spq_secs')) || {})[today()] || 0; } catch (e) { return 0; } }
+const playAllowance = () => spellToday() >= SPELL_SECS ? DUCK_BONUS_SECS : DUCK_SECS;
 // One-off unlock days that skip the times-tables requirement (James's request).
 const DUCK_FREE_DAYS = ['2026-10-05'];
 const duckUnlocked = () => dayDone() || DUCK_FREE_DAYS.includes(today());
 function duckToday() { if (!S.duck || S.duck.secs === undefined) S.duck = { date: '', secs: 0, best: (S.duck || {}).best || 0 };
   return S.duck.date === today() ? S.duck.secs : 0; }
-function duckLeft() { const l = DUCK_SECS - duckToday(); return l < 1 ? 0 : l; }
+function duckLeft() { const l = playAllowance() - duckToday(); return l < 1 ? 0 : l; }
 const mmss = t => Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0');
 function addDuckTime(sec) { S.duck.secs = duckToday() + sec; S.duck.date = today(); }
 function duckButton() {
@@ -484,8 +492,18 @@ function duckButton() {
     const left = Math.ceil((DAY_SECS - (S.days[today()] || 0)) / 60);
     return `<button class="btn grey" id="duck" style="opacity:.8">🔒 🦆 Duck Drop<small>Do ${left} more minute${left === 1 ? '' : 's'} of times tables today to unlock</small></button>`;
   }
-  if (!duckLeft()) return `<button class="btn grey" id="duck">🦆 Duck Drop<small>Your 10 minutes of duck time are used up. Back tomorrow!</small></button>`;
-  return `<button class="btn" id="duck" style="background:#e0a21b">🦆 Duck Drop!<small>Unlocked! ${mmss(duckLeft())} of duck time left today${S.duck.best ? ' · best ' + S.duck.best : ''}</small></button>`;
+  if (!duckLeft()) return `<button class="btn grey" id="duck">🦆 Duck Drop<small>Your play time is used up.${bonusHint() ? bonusHint() : ' Back tomorrow!'}</small></button>`;
+  return `<button class="btn" id="duck" style="background:#e0a21b">🦆 Duck Drop!<small>Unlocked! ${mmss(duckLeft())} of play time left today${S.duck.best ? ' · best ' + S.duck.best : ''}</small></button>`;
+}
+function bonusHint() {
+  if (spellToday() >= SPELL_SECS) return '';
+  const m = Math.ceil((SPELL_SECS - spellToday()) / 60);
+  return ` Do ${m} more minute${m === 1 ? '' : 's'} of Spelling Quest for 20 minutes of play.`;
+}
+function blockButton() {
+  if (!duckUnlocked()) return `<button class="btn grey" id="blocks" style="opacity:.8">🔒 🧱 Block World<small>Unlocks with Duck Drop after your times tables</small></button>`;
+  if (!duckLeft()) return '';
+  return `<button class="btn" id="blocks" style="background:#7a5530">🧱 Block World!<small>Mine, craft and build. Shares your ${mmss(duckLeft())} of play time.${bonusHint()}</small></button>`;
 }
 
 // 1 = palette index; '.' = transparent. Minecraft-style 12x12 pixel sprites.
@@ -654,7 +672,7 @@ function duckOver(quit, timeUp) {
       <div><div class="tiny">Time left</div><div class="big">${mmss(duckLeft())}</div></div>
     </div>
     ${best && score ? '<p>🎉 New best score!</p>' : ''}
-    ${duckLeft() ? '<button class="btn" id="again" style="background:#e0a21b">🦆 Play again</button>' : '<p class="sub">That was all your duck time for today. More tomorrow after your 10 minutes of times tables!</p>'}
+    ${duckLeft() ? '<button class="btn" id="again" style="background:#e0a21b">🦆 Play again</button>' : '<p class="sub">That was all your play time for today.' + (bonusHint() || ' More tomorrow after your 10 minutes of times tables!') + '</p>'}
     <button class="btn grey" id="back">Home</button>`;
   const a = document.getElementById('again'); if (a) a.onclick = duckGame;
   document.getElementById('back').onclick = home;
@@ -689,6 +707,13 @@ window.ttPush = function () {
   }, 1200);
 };
 onSnapshot(PROFILE, snap => {
+  // copy in spelling minutes done on other devices (they raise the play time to 20 minutes)
+  const sp = snap.exists() ? snap.data().spellingSecs || {} : {};
+  try {
+    const loc = JSON.parse(localStorage.getItem('spq_secs')) || {};
+    let ch = false; for (const [d, v] of Object.entries(sp)) if (v > (loc[d] || 0)) { loc[d] = v; ch = true; }
+    if (ch) localStorage.setItem('spq_secs', JSON.stringify(loc));
+  } catch (e) {}
   const r = snap.exists() ? snap.data().ttMiner : null;
   if (r) window.ttApplyRemote(r);
   status("synced");
